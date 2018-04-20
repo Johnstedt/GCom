@@ -1,7 +1,7 @@
 <!-- Slightly modified version of example found here:
   http://www8.cs.umu.se/kurser/5DV186/VT18/assignments/tools/ -->
 
-<project name="AntExample" default="dist" basedir=".">
+<project name="AntExample" default="all" basedir=".">
     <description>
         Example of a simple Ant build script
     </description>
@@ -11,7 +11,9 @@
     <property name="src" location="src"/>
     <property name="build" location="build"/>
     <property name="jarfile" location="client.jar"/>
+    <property name="otherjarfile" location="other.jar"/>
     <property name="mainclass" value="Client"/>
+    <property name="othermainclass" value="Client"/>
 
     <!-- classpath -->
     <path id="classpath.lib">
@@ -44,11 +46,24 @@
         -->
     </target>
 
+    <target name="all" depends="dist, drist" />
+
     <target name="dist" depends="compile" description="generate distribution">
         <jar jarfile="${jarfile}" basedir="${build}">
             <!--zipgroupfileset dir="lib" includes="5dv186a1.jar" /-->
             <manifest>
                 <attribute name="Main-Class" value="${mainclass}"/>
+            </manifest>
+        </jar>
+
+        <!--delete dir="${build}"/-->
+    </target>
+
+    <target name="drist" depends="compile" description="generate distribution">
+        <jar jarfile="${otherjarfile}" basedir="${build}">
+            <!--zipgroupfileset dir="lib" includes="5dv186a1.jar" /-->
+            <manifest>
+                <attribute name="Main-Class" value="${othermainclass}"/>
             </manifest>
         </jar>
 
