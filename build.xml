@@ -10,10 +10,10 @@
     <property name="lib" location="lib"/>
     <property name="src" location="src"/>
     <property name="build" location="build"/>
-    <property name="jarfile" location="client.jar"/>
-    <property name="otherjarfile" location="other.jar"/>
-    <property name="mainclass" value="Client"/>
-    <property name="othermainclass" value="Client"/>
+    <property name="jarfile" location="sender.jar"/>
+    <property name="otherjarfile" location="receiver.jar"/>
+    <property name="mainclass" value="communication.Sender"/>
+    <property name="othermainclass" value="communication.Receiver"/>
 
     <!-- classpath -->
     <path id="classpath.lib">
