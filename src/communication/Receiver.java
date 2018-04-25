@@ -3,19 +3,25 @@ package communication;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-public class Receiver {
+public class Receiver implements Runnable {
 
-  public static void main(String args[]) {
+	private Integer port;
 
-    try {
-	  RemoteObject impl = new RemoteObjectImpl();
-	  Registry registry = LocateRegistry.createRegistry(1338);
+	Receiver(Integer port){
+		super();
+		this.port = port;
+	}
 
-	  registry.rebind("MessageService", impl);
-    } catch (Exception e) {
-	    e.printStackTrace();
-    }
+	@Override
+	public void run() {
+		try {
+			RemoteObject impl = new RemoteObjectImpl();
+			Registry registry = LocateRegistry.createRegistry(port);
 
-  }
+			registry.rebind("MessageService", impl);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
 
+	}
 }

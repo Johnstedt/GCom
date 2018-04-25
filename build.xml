@@ -10,10 +10,9 @@
 		<property name="lib" location="lib"/>
 		<property name="src" location="src"/>
 		<property name="build" location="build"/>
-		<property name="jarfile" location="sender.jar"/>
-		<property name="otherjarfile" location="receiver.jar"/>
-		<property name="mainclass" value="communication.Sender"/>
-		<property name="othermainclass" value="communication.Receiver"/>
+		<property name="jarfile" location="client.jar"/>
+		<property name="mainclass" value="client.Model"/>
+
 
 		<!-- classpath -->
 		<path id="classpath.lib">
@@ -46,7 +45,7 @@
 				-->
 		</target>
 
-		<target name="all" depends="dist, drist" />
+		<target name="all" depends="dist" /> <!-- Add drist as dependent if need multiple jar-->
 
 		<target name="dist" depends="compile" description="generate distribution">
 				<jar jarfile="${jarfile}" basedir="${build}">
@@ -59,16 +58,17 @@
 				<!--delete dir="${build}"/-->
 		</target>
 
-		<target name="drist" depends="compile" description="generate distribution">
+
+		<!-- Add if need multiple jars -->
+		<!--target name="drist" depends="compile" description="generate distribution">
 				<jar jarfile="${otherjarfile}" basedir="${build}">
-						<!--zipgroupfileset dir="lib" includes="5dv186a1.jar" /-->
 						<manifest>
 								<attribute name="Main-Class" value="${othermainclass}"/>
 						</manifest>
 				</jar>
 
 				<delete dir="${build}"/>
-		</target>
+		</target-->
 
 		<target name="clean" description="clean up">
 				<!-- Delete the ${build} and ${dist} directory trees -->
