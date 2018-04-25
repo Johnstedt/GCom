@@ -1,4 +1,5 @@
 package message_ordering;
 
-public class Unordered {
+public class Unordered implements Order{
+
 }

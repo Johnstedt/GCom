@@ -1,4 +1,4 @@
 package message_ordering;
 
-public class Fifo {
+public class Fifo implements Order {
 }

@@ -1,4 +1,5 @@
 package message_ordering;
 
-public class Total {
+public class Total implements Order{
+
 }

@@ -1,4 +1,4 @@
 package message_ordering;
 
-public class TotalCasual {
+public class TotalCasual implements Order {
 }
