@@ -1,4 +1,4 @@
 package message_ordering;
 
-public interface Debugger {
+public class Unordered {
 }
