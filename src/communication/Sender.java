@@ -5,6 +5,7 @@ import java.rmi.registry.Registry;
 
 public class Sender {
 
+
   public static void main(String args[]) {
     try {
       Registry registry = LocateRegistry.getRegistry(1338);

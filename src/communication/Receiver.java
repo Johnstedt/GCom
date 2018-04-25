@@ -4,6 +4,7 @@ import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
 public class Receiver {
+
   public static void main(String args[]) {
 
     try {
@@ -16,4 +17,5 @@ public class Receiver {
     }
 
   }
+
 }

@@ -6,7 +6,7 @@ import java.rmi.RemoteException;
 
 public interface RemoteObject extends Remote {
 
-  public boolean printMessage(String msg) throws RemoteException;
+	public boolean printMessage(String msg) throws RemoteException;
 
 }
 

@@ -1,81 +1,81 @@
 <!-- Slightly modified version of example found here:
-  http://www8.cs.umu.se/kurser/5DV186/VT18/assignments/tools/ -->
+\thttp://www8.cs.umu.se/kurser/5DV186/VT18/assignments/tools/ -->
 
 <project name="AntExample" default="all" basedir=".">
-    <description>
-        Example of a simple Ant build script
-    </description>
+		<description>
+				Example of a simple Ant build script
+		</description>
 
-    <!-- global properties -->
-    <property name="lib" location="lib"/>
-    <property name="src" location="src"/>
-    <property name="build" location="build"/>
-    <property name="jarfile" location="sender.jar"/>
-    <property name="otherjarfile" location="receiver.jar"/>
-    <property name="mainclass" value="communication.Sender"/>
-    <property name="othermainclass" value="communication.Receiver"/>
+		<!-- global properties -->
+		<property name="lib" location="lib"/>
+		<property name="src" location="src"/>
+		<property name="build" location="build"/>
+		<property name="jarfile" location="sender.jar"/>
+		<property name="otherjarfile" location="receiver.jar"/>
+		<property name="mainclass" value="communication.Sender"/>
+		<property name="othermainclass" value="communication.Receiver"/>
 
-    <!-- classpath -->
-    <path id="classpath.lib">
-        <fileset dir="${lib}">
-            <include name="**/*.jar"/>
-        </fileset>
-    </path>
+		<!-- classpath -->
+		<path id="classpath.lib">
+				<fileset dir="${lib}">
+						<include name="**/*.jar"/>
+				</fileset>
+		</path>
 
-    <target name="init">
-        <!-- create time stamp -->
-        <tstamp/>
+		<target name="init">
+				<!-- create time stamp -->
+				<tstamp/>
 
-        <!-- create build directory structure -->
-        <mkdir dir="${build}"/>
-    </target>
+				<!-- create build directory structure -->
+				<mkdir dir="${build}"/>
+		</target>
 
-    <target name="compile" depends="init" description="compile source">
-        <!-- compile from ${src} into ${build} -->
-        <javac includeantruntime="false" debug="true"
-               srcdir="${src}" destdir="${build}">
-            <compilerarg value="-Xlint:unchecked"/>
-            <classpath refid="classpath.lib"/>
-        </javac>
+		<target name="compile" depends="init" description="compile source">
+				<!-- compile from ${src} into ${build} -->
+				<javac includeantruntime="false" debug="true"
+							 srcdir="${src}" destdir="${build}">
+						<compilerarg value="-Xlint:unchecked"/>
+						<classpath refid="classpath.lib"/>
+				</javac>
 
-        <!-- delete test classes -->
-        <!--
-            <delete>
-              <fileset dir="${build}" includes="**/*$Test.class"/>
-            </delete>
-        -->
-    </target>
+				<!-- delete test classes -->
+				<!--
+						<delete>
+							<fileset dir="${build}" includes="**/*$Test.class"/>
+						</delete>
+				-->
+		</target>
 
-    <target name="all" depends="dist, drist" />
+		<target name="all" depends="dist, drist" />
 
-    <target name="dist" depends="compile" description="generate distribution">
-        <jar jarfile="${jarfile}" basedir="${build}">
-            <!--zipgroupfileset dir="lib" includes="5dv186a1.jar" /-->
-            <manifest>
-                <attribute name="Main-Class" value="${mainclass}"/>
-            </manifest>
-        </jar>
+		<target name="dist" depends="compile" description="generate distribution">
+				<jar jarfile="${jarfile}" basedir="${build}">
+						<!--zipgroupfileset dir="lib" includes="5dv186a1.jar" /-->
+						<manifest>
+								<attribute name="Main-Class" value="${mainclass}"/>
+						</manifest>
+				</jar>
 
-        <!--delete dir="${build}"/-->
-    </target>
+				<!--delete dir="${build}"/-->
+		</target>
 
-    <target name="drist" depends="compile" description="generate distribution">
-        <jar jarfile="${otherjarfile}" basedir="${build}">
-            <!--zipgroupfileset dir="lib" includes="5dv186a1.jar" /-->
-            <manifest>
-                <attribute name="Main-Class" value="${othermainclass}"/>
-            </manifest>
-        </jar>
+		<target name="drist" depends="compile" description="generate distribution">
+				<jar jarfile="${otherjarfile}" basedir="${build}">
+						<!--zipgroupfileset dir="lib" includes="5dv186a1.jar" /-->
+						<manifest>
+								<attribute name="Main-Class" value="${othermainclass}"/>
+						</manifest>
+				</jar>
 
-        <delete dir="${build}"/>
-    </target>
+				<delete dir="${build}"/>
+		</target>
 
-    <target name="clean" description="clean up">
-        <!-- Delete the ${build} and ${dist} directory trees -->
-        <delete dir="${build}"/>
-        <delete file="${jarfile}"/>
-        <delete>
-            <fileset dir="." includes="**/*.tmp"/>
-        </delete>
-    </target>
+		<target name="clean" description="clean up">
+				<!-- Delete the ${build} and ${dist} directory trees -->
+				<delete dir="${build}"/>
+				<delete file="${jarfile}"/>
+				<delete>
+						<fileset dir="." includes="**/*.tmp"/>
+				</delete>
+		</target>
 </project>
