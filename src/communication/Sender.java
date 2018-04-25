@@ -1,5 +1,7 @@
 package communication;
 
+import message_ordering.Notify_Order;
+
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -14,11 +16,11 @@ public class Sender {
 	private List<RemoteObject> stub; // make list later
 	private String nickname;
 
+
     Sender(String nick) {
 
             this.nickname = nick;
             this.stub = new LinkedList<>();
-
     }
 
     public void addToGroup(Integer port){
@@ -28,7 +30,10 @@ public class Sender {
 		    try {
 			    sleep(1000);
 			    registry = LocateRegistry.getRegistry(port);
-			    this.stub.add((RemoteObject)registry.lookup("MessageService"));
+
+			    RemoteObject ro = (RemoteObject)registry.lookup("MessageService");
+
+			    this.stub.add(ro);
 			    System.out.println("found connection!");
 			    break;
 		    } catch (Exception e) {

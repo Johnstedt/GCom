@@ -1,6 +1,7 @@
 package communication;
 
 import group_management.User;
+import message_ordering.Notify_Order;
 
 import java.util.Scanner;
 
@@ -12,14 +13,15 @@ public class Communicator {
 	Sender s;
 
 
-	public Communicator(User u, Integer connectPort){
+	public Communicator(User u, Integer connectPort, Notify_Order notify_order){
 
-		this.r = new Receiver(u.getPort());
+		this.r = new Receiver(u.getPort(), notify_order);
 		r.run();
 
 		this.s = new Sender(u.getNickname());
 		s.addToGroup(u.getPort());
 		s.addToGroup(connectPort);
+
 
 	}
 
