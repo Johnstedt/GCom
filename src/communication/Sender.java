@@ -1,29 +1,28 @@
 package communication;
 
-import message_ordering.Notify_Order;
+import group_management.User;
 
-import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
-import java.util.LinkedList;
+import java.util.HashMap;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
 
 public class Sender {
 
-	private List<RemoteObject> stub; // make list later
+	private HashMap<String, RemoteObject> stub; // make list later
 	private String nickname;
 
 
     Sender(String nick) {
 
             this.nickname = nick;
-            this.stub = new LinkedList<>();
+            this.stub = new HashMap<>();
     }
 
-    public void addToGroup(Integer port){
+    void addToGroup(String name, Integer port){
 
     	Registry registry;
 	    while(true) {
@@ -33,7 +32,7 @@ public class Sender {
 
 			    RemoteObject ro = (RemoteObject)registry.lookup("MessageService");
 
-			    this.stub.add(ro);
+			    this.stub.put(name, ro);
 			    System.out.println("found connection!");
 			    break;
 		    } catch (Exception e) {
@@ -46,9 +45,15 @@ public class Sender {
 	    }
     }
 
-	public void send(String msg){
+	public void send(List<User> ul, String msg){
 	    try {
-	    	for (RemoteObject ro : stub){
+	    	for (User user : ul){
+
+		        if(!this.stub.containsKey(user.getIp()+Integer.toString(user.getPort()))) {
+	    		    addToGroup(user.getIp()+Integer.toString(user.getPort()), user.getPort());
+		        }
+			    RemoteObject ro = this.stub.get(user.getIp()+Integer.toString(user.getPort()));
+
 	    		ro.sendMessage("msg", nickname +": " +msg);
 		    }
 	    } catch (RemoteException e) {

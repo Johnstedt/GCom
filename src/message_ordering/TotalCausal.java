@@ -4,8 +4,9 @@ import group_management.User;
 
 import java.util.List;
 
-public class Fifo extends Order {
-	public Fifo(User u) {
+public class TotalCausal extends Order {
+
+	public TotalCausal(User u) {
 
 	}
 

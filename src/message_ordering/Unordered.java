@@ -1,30 +1,32 @@
 package message_ordering;
 
-import communication.Communicator;
+import communication.Unreliable_Multicast;
 import group_management.User;
 
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 import java.util.Queue;
-import java.util.concurrent.SynchronousQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
-public class Unordered extends Observable implements Order, Observer {
+
+public class Unordered extends Order implements Observer {
 
 	private Queue<Message> queue;
-	private Communicator communicator;
+	private Unreliable_Multicast communicator;
 
-	public Unordered(User u, Integer p){
+	public Unordered(User u){
 
-		this.queue = new SynchronousQueue<>();
+		this.queue = new LinkedBlockingQueue<>();
 
 		Notify_Order no = new Notify_Order();
 		no.addObserver(this);
-		this.communicator = new Communicator(u, p, no);
+		this.communicator = new Unreliable_Multicast(u, no);
 	}
 
 	@Override
-	public void send(String msg) {
-		communicator.send(msg);
+	public void send(List<User> ul, String msg) {
+		communicator.send(ul, msg);
 
 	}
 
@@ -44,8 +46,8 @@ public class Unordered extends Observable implements Order, Observer {
 	}
 
 	private void sort(){
-		Message m = this.queue.poll();
-		notifyObservers(m.getMsg());
+		Message m = queue.remove();
+		notifyObservers(m);
 	}
 
 }

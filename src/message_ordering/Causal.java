@@ -4,9 +4,10 @@ import group_management.User;
 
 import java.util.List;
 
-public class Fifo extends Order {
-	public Fifo(User u) {
+public class Causal extends Order {
 
+	public Causal(User u) {
+		super();
 	}
 
 	@Override

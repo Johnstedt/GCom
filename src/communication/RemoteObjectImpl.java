@@ -18,8 +18,6 @@ public class RemoteObjectImpl extends UnicastRemoteObject implements RemoteObjec
 	@Override
 	public boolean sendMessage(String type, String msg) {
 
-
-
 		switch (type){
 
 			case "msg":
@@ -32,12 +30,12 @@ public class RemoteObjectImpl extends UnicastRemoteObject implements RemoteObjec
 				break;
 		}
 
-
 		return true;
 	}
 
 	@Override
 	public void setOrderObservable(Notify_Order no) {
+
 		this.notify_order =  no;
 	}
 

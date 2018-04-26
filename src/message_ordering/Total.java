@@ -1,9 +1,17 @@
 package message_ordering;
 
-public class Total implements Order{
+import group_management.User;
+
+import java.util.List;
+
+public class Total extends Order{
+
+	public Total(User u) {
+
+	}
 
 	@Override
-	public void send(String msg) {
+	public void send(List<User> ul, String msg){
 
 	}
 

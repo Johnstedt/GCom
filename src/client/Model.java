@@ -22,7 +22,7 @@ public class Model {
 		while(true) {
 
 			input = in.nextLine();
-			gm.send(input);
+			gm.send( "init", input);
 		}
 
 	}
