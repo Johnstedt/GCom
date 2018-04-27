@@ -1,32 +1,23 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.Button?>
 <?import javafx.scene.control.CheckMenuItem?>
-<?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
-<?import javafx.scene.control.ScrollPane?>
-<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.text.TextFlow?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientController">
+<BorderPane fx:id="chatGroupPane" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientController">
 <top>
     <MenuBar BorderPane.alignment="CENTER">
         <menus>
             <Menu mnemonicParsing="false" text="File">
                 <items>
+                  <MenuItem fx:id="fileMenuCreateGroup" mnemonicParsing="false" onAction="#createGroup" text="Create group" />
+                  <MenuItem fx:id="fileMenuConnectToGroup" mnemonicParsing="false" onAction="#connectToGroup" text="Connect to group" />
                   <CheckMenuItem fx:id="fileMenuDebugItem" mnemonicParsing="false" onAction="#debugCheckbox" text="Debugger" />
                     <MenuItem fx:id="fileMenuCloseItem" mnemonicParsing="false" onAction="#terminateProgram" text="Close" />
-                </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Edit">
-                <items>
-                    <MenuItem mnemonicParsing="false" onAction="#addUser" text="Add 10 user to list" />
-                    <MenuItem mnemonicParsing="false" onAction="#AddChatText" text="Add 20 chatmessages." />
                 </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Help">
@@ -37,26 +28,11 @@
         </menus>
     </MenuBar>
 </top>
-<bottom>
-    <FlowPane prefHeight="32.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-        <children>
-            <TextField fx:id="chatInputField" onAction="#onEnter" prefHeight="32.0" prefWidth="546.0" promptText="Write to chat!">
-                <padding>
-                    <Insets left="5.0" />
-                </padding>
-            </TextField>
-            <Button fx:id="sendButton" alignment="CENTER_RIGHT" mnemonicParsing="false" onAction="#onSendButton" text="Send" />
-        </children>
-    </FlowPane>
-</bottom>
-<right>
-    <ListView fx:id="users" onMouseClicked="#clickOnUser" prefHeight="346.0" prefWidth="174.0" BorderPane.alignment="CENTER" />
-</right>
-<center>
-    <ScrollPane fx:id="chatInputScrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" hvalue="1.0" vbarPolicy="ALWAYS" vvalue="1.0" BorderPane.alignment="CENTER">
-        <content>
-            <TextFlow fx:id="chatOutputField" minHeight="-Infinity" minWidth="-Infinity" />
-        </content>
-    </ScrollPane>
-</center>
+   <center>
+      <TabPane fx:id="tabPane" tabClosingPolicy="ALL_TABS" BorderPane.alignment="CENTER">
+        <tabs>
+          <Tab fx:id="systemTab" text="System" />
+        </tabs>
+      </TabPane>
+   </center>
 </BorderPane>
