@@ -48,7 +48,7 @@
     </FlowPane>
 </bottom>
 <right>
-    <ListView fx:id="users" prefHeight="346.0" prefWidth="174.0" BorderPane.alignment="CENTER" />
+    <ListView fx:id="users" onMouseClicked="#clickOnUser" prefHeight="346.0" prefWidth="174.0" BorderPane.alignment="CENTER" />
 </right>
 <center>
     <ScrollPane fx:id="chatInputScrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" hvalue="1.0" vbarPolicy="ALWAYS" vvalue="1.0" BorderPane.alignment="CENTER">
