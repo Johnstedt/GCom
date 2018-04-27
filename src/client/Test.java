@@ -10,16 +10,16 @@ import javafx.stage.Stage;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
-import java.util.Scanner;
 
 public class Test extends Application {
 	static String username = "";
 	public static void main(String[] args) {
 		if (args.length == 0) {
-			Scanner reader = new Scanner(System.in);
+			/*Scanner reader = new Scanner(System.in);
 			System.out.println("What is your username");
 			username = reader.nextLine();
-			reader.close();
+			reader.close();*/
+			username = "Jw";
 		}
 		launch(args);
 	}

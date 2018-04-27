@@ -10,15 +10,21 @@
 # Mobile Tools for Java (J2ME)
 .mtj.tmp/
 
+# Scenebuilder
+SceneBuilder
+
 # Package Files #
 *.jar
 *.war
 *.ear
 *.zip
+*.tar
 *.tar.gz
+*.tar.xz
 *.rar
 
 # virtual machine crash logs, see http://www.java.com/en/download/help/error_hotspot.xml
 hs_err_pid*
 
 .idea/
+out/
