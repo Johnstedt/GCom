@@ -2,7 +2,9 @@ package message_ordering;
 
 import clock.Clock;
 
-public class Message{
+import java.io.Serializable;
+
+public class Message implements Serializable {
 	private String msg;
 	private Clock cl;
 

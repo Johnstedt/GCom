@@ -1,8 +1,9 @@
 package clock;
 
+import java.io.Serializable;
 import java.util.HashMap;
 
-public class Vector implements Clock{
+public class Vector implements Clock, Serializable{
 	HashMap<String, Long> clock;
 
 	public Vector() {

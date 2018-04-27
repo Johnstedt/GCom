@@ -2,10 +2,11 @@ package communication;
 
 import message_ordering.Notify_Order;
 
+import java.io.Serializable;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 
-public class Receiver implements Runnable {
+public class Receiver implements Runnable, Serializable {
 
 	private Integer port;
 	private Notify_Order notify_order;

@@ -1,14 +1,12 @@
 package message_ordering;
 
+import clock.Vector;
 import communication.Unreliable_Multicast;
+import group_management.Group;
 import group_management.User;
 
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-import java.util.Queue;
+import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
-
 
 public class Unordered extends Order implements Observer {
 
@@ -26,8 +24,9 @@ public class Unordered extends Order implements Observer {
 
 	@Override
 	public void send(List<User> ul, String msg) {
-		communicator.send(ul, msg);
 
+		Message m = new Message(msg, new Vector());
+		communicator.send(ul, m);
 	}
 
 	@Override
@@ -37,12 +36,30 @@ public class Unordered extends Order implements Observer {
 	}
 
 	@Override
-	public void update(Observable observable, Object o) {
-		Message m = new Message((String) o, null);
-		queue.add(m);
-		this.setChanged();
-		sort();
+	public void askGroups(User u, String groupName, Group g) {
+		this.communicator.askGroup(u, groupName, g);
+	}
 
+	@Override
+	public void update(Observable observable, Object o) {
+
+		System.out.println("HEY");
+
+		if(o instanceof Message) {
+			Message m = (Message) o;
+			queue.add(m);
+			sort();
+		}
+		else if (o instanceof HashMap){
+			HashMap hm = (HashMap)o;
+			this.setChanged();
+			notifyObservers(hm);
+		}
+		else if(o instanceof Group) {
+			System.out.println("GROUP ASKED");
+			this.setChanged();
+			notifyObservers(o);
+		}
 	}
 
 	private void sort(){
@@ -50,4 +67,7 @@ public class Unordered extends Order implements Observer {
 		notifyObservers(m);
 	}
 
+	public void sendGroups(List<User> users, HashMap<String, Group> hm){
+		this.communicator.sendGroups(users, hm);
+	}
 }

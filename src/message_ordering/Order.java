@@ -1,11 +1,14 @@
 package message_ordering;
 
+import group_management.Group;
 import group_management.User;
 
+import java.io.Serializable;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Observable;
 
-public abstract class Order extends Observable{
+public abstract class Order extends Observable implements Serializable{
 
 	public void send(List<User> ul, String msg){
 		//hej
@@ -13,4 +16,7 @@ public abstract class Order extends Observable{
 
 	public abstract void receive(String msg);
 
+	public abstract void askGroups(User u, String groupName, Group g);
+
+	public abstract void sendGroups(List<User> users, HashMap<String, Group> hm);
 }

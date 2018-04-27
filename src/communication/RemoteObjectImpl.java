@@ -1,10 +1,13 @@
 package communication;
 
 
+import group_management.Group;
+import message_ordering.Message;
 import message_ordering.Notify_Order;
 
 import java.rmi.*;
 import java.rmi.server.*;
+import java.util.HashMap;
 
 
 public class RemoteObjectImpl extends UnicastRemoteObject implements RemoteObject {
@@ -16,21 +19,24 @@ public class RemoteObjectImpl extends UnicastRemoteObject implements RemoteObjec
 	}
 
 	@Override
-	public boolean sendMessage(String type, String msg) {
+	public boolean sendMessage(Message msg) {
 
-		switch (type){
-
-			case "msg":
-				this.notify_order.hello();
-				this.notify_order.notifyObservers(msg);
-				break;
-
-			case "askGroup":
-				System.out.println("yaaay");
-				break;
-		}
+		this.notify_order.hello();
+		this.notify_order.notifyObservers(msg);
 
 		return true;
+	}
+
+	public boolean askGroup(Group g){
+		this.notify_order.hello();
+		this.notify_order.notifyObservers(g);
+		return true;
+	}
+
+	@Override
+	public void sendGroups(HashMap<String, Group> hm) {
+		this.notify_order.hello();
+		this.notify_order.notifyObservers(hm);
 	}
 
 	@Override
@@ -38,5 +44,7 @@ public class RemoteObjectImpl extends UnicastRemoteObject implements RemoteObjec
 
 		this.notify_order =  no;
 	}
+
+
 
 }

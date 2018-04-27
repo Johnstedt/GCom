@@ -1,7 +1,10 @@
 package communication;
 
+import group_management.Group;
 import group_management.User;
+import message_ordering.Message;
 
+import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -10,11 +13,10 @@ import java.util.List;
 
 import static java.lang.Thread.sleep;
 
-public class Sender {
+public class Sender implements Serializable{
 
 	private HashMap<String, RemoteObject> stub; // make list later
 	private String nickname;
-
 
     Sender(String nick) {
 
@@ -45,7 +47,7 @@ public class Sender {
 	    }
     }
 
-	public void send(List<User> ul, String msg){
+	public void send(List<User> ul, Message msg){
 	    try {
 	    	for (User user : ul){
 
@@ -54,11 +56,41 @@ public class Sender {
 		        }
 			    RemoteObject ro = this.stub.get(user.getIp()+Integer.toString(user.getPort()));
 
-	    		ro.sendMessage("msg", nickname +": " +msg);
+	    		ro.sendMessage(msg);
 		    }
 	    } catch (RemoteException e) {
 		    e.printStackTrace();
 	    }
     }
 
+	public void askGroup(User u, String groupName, Group g) {
+		try {
+			if (!this.stub.containsKey(u.getIp() + Integer.toString(u.getPort()))) {
+				addToGroup(u.getIp() + Integer.toString(u.getPort()), u.getPort());
+			}
+			RemoteObject ro = this.stub.get(u.getIp() + Integer.toString(u.getPort()));
+			ro.askGroup(g);
+		}
+		catch (RemoteException e) {
+			e.printStackTrace();
+		}
+
+	}
+
+	public void sendGroups(List<User> users, HashMap<String, Group> hm) {
+		try {
+			for (User user : users) {
+
+				if (!this.stub.containsKey(user.getIp() + Integer.toString(user.getPort()))) {
+					addToGroup(user.getIp() + Integer.toString(user.getPort()), user.getPort());
+				}
+				if(this.nickname.equals(user.getNickname())) {
+					RemoteObject ro = this.stub.get(user.getIp() + Integer.toString(user.getPort()));
+					ro.sendGroups(hm);
+				}
+			}
+		}catch (RemoteException e) {
+				e.printStackTrace();
+			}
+	}
 }

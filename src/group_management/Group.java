@@ -3,12 +3,10 @@ package group_management;
 import message_ordering.Order;
 import message_ordering.Message;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.io.Serializable;
+import java.util.*;
 
-public class Group extends Observable implements Observer {
+public class Group extends Observable implements Observer, Serializable {
 
 	private List<Message> messages;
 	private List<User> users;
@@ -26,15 +24,34 @@ public class Group extends Observable implements Observer {
 
 	@Override
 	public void update(Observable observable, Object o) {
-		messages.add((Message) o);
-		System.out.println(((Message)o).getMsg());
+		if(o instanceof Message) {
+			messages.add((Message) o);
+			System.out.println(((Message) o).getMsg());
+		}
+		else if (o instanceof HashMap){
+			HashMap hm = (HashMap)o;
+			this.setChanged();
+			notifyObservers(hm);
+
+		} else if(o instanceof Group) {
+			setChanged();
+			notifyObservers(o);
+		}
 	}
 
 	public void send(String msg) {
 		this.order.send(users, msg);
 	}
 
+	public void sendGroups(HashMap<String, Group> hm){
+		this.order.sendGroups(this.users, hm);
+	}
+
 	void addUser(User u) {
 		this.users.add(u);
+	}
+
+	public void askGroups(String groupName, Group g) {
+		this.order.askGroups(this.users.get(0) ,groupName, g);
 	}
 }
