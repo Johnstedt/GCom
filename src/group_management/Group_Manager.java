@@ -83,21 +83,32 @@ public class Group_Manager implements Observer {
 
 			Group g = (Group) o;
 			g.sendGroups(this.groups);
+
+
+
+
 		} else if(o instanceof HashMap){
+
 			HashMap hm = (HashMap)o;
 			Scanner in = new Scanner(System.in);
 			String input;
-			Iterator it = hm.entrySet().iterator();
-			while (it.hasNext()) {
-				HashMap.Entry pair = (HashMap.Entry)it.next();
+
+			LinkedList<Group> l = new LinkedList<Group>();
+
+			for (Object o1 : hm.entrySet()) {
+				HashMap.Entry pair = (HashMap.Entry) o1;
 				System.out.println(pair.getKey() + " join?");
+
 				input = in.nextLine();
-				if(input.equals("yes")){
-					Group g = (Group)pair.getValue();
-					this.groups.put(g.getGroupName(), g);
-					g.join(this.self);
+				if (input.equals("yes")) {
+					Group g = (Group) pair.getValue();
+					l.add(g);
 				}
-				it.remove(); // avoids a ConcurrentModificationException
+			}
+
+			for(Group g: l){
+				this.groups.put(g.getGroupName(), g);
+				g.join(this.self);
 			}
 
 		}
