@@ -2,6 +2,7 @@ package communication;
 
 
 import group_management.Group;
+import group_management.User;
 import message_ordering.Message;
 import message_ordering.Notify_Order;
 
@@ -20,7 +21,6 @@ public class RemoteObjectImpl extends UnicastRemoteObject implements RemoteObjec
 
 	@Override
 	public boolean sendMessage(Message msg) {
-
 		this.notify_order.hello();
 		this.notify_order.notifyObservers(msg);
 
@@ -28,6 +28,7 @@ public class RemoteObjectImpl extends UnicastRemoteObject implements RemoteObjec
 	}
 
 	public boolean askGroup(Group g){
+		System.out.println("asked for groups");
 		this.notify_order.hello();
 		this.notify_order.notifyObservers(g);
 		return true;
@@ -37,6 +38,12 @@ public class RemoteObjectImpl extends UnicastRemoteObject implements RemoteObjec
 	public void sendGroups(HashMap<String, Group> hm) {
 		this.notify_order.hello();
 		this.notify_order.notifyObservers(hm);
+	}
+
+	@Override
+	public void join(User u) throws RemoteException {
+		this.notify_order.hello();
+		this.notify_order.notifyObservers(u);
 	}
 
 	@Override
