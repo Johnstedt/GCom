@@ -8,28 +8,32 @@
 <?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.BorderPane?>
 
-<BorderPane fx:id="chatGroupPane" minHeight="-Infinity" minWidth="-Infinity" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientController">
+<BorderPane fx:id="chatGroupPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientController">
 <top>
-    <MenuBar BorderPane.alignment="CENTER">
-        <menus>
-            <Menu mnemonicParsing="false" text="File">
-                <items>
-                  <MenuItem fx:id="fileMenuCreateGroup" mnemonicParsing="false" onAction="#createGroup" text="Create group" />
-                  <MenuItem fx:id="fileMenuConnectToGroup" mnemonicParsing="false" onAction="#connectToGroup" text="Connect to group" />
-                  <CheckMenuItem fx:id="fileMenuDebugItem" mnemonicParsing="false" onAction="#debugCheckbox" text="Debugger" />
-                    <MenuItem fx:id="fileMenuCloseItem" mnemonicParsing="false" onAction="#terminateProgram" text="Close" />
-                </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Help">
-                <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
-                </items>
-            </Menu>
-        </menus>
-    </MenuBar>
+      <BorderPane BorderPane.alignment="CENTER">
+         <top>
+          <MenuBar BorderPane.alignment="CENTER">
+              <menus>
+                  <Menu mnemonicParsing="false" text="File">
+                      <items>
+                        <MenuItem fx:id="fileMenuCreateGroup" mnemonicParsing="false" onAction="#createGroup" text="Create group" />
+                        <MenuItem fx:id="fileMenuConnectToGroup" mnemonicParsing="false" onAction="#connectToGroup" text="Connect to group" />
+                        <CheckMenuItem fx:id="fileMenuDebugItem" mnemonicParsing="false" onAction="#debugCheckbox" text="Debugger" />
+                          <MenuItem fx:id="fileMenuCloseItem" mnemonicParsing="false" onAction="#terminateProgram" text="Close" />
+                      </items>
+                  </Menu>
+                  <Menu mnemonicParsing="false" text="Help">
+                      <items>
+                          <MenuItem mnemonicParsing="false" text="About" />
+                      </items>
+                  </Menu>
+              </menus>
+          </MenuBar>
+         </top>
+      </BorderPane>
 </top>
    <center>
-      <TabPane fx:id="tabPane" tabClosingPolicy="ALL_TABS" BorderPane.alignment="CENTER">
+      <TabPane fx:id="tabPane" BorderPane.alignment="CENTER">
         <tabs>
           <Tab fx:id="systemTab" text="System" />
         </tabs>

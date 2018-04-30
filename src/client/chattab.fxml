@@ -5,11 +5,13 @@
 <?import javafx.scene.control.ListView?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.text.TextFlow?>
-<BorderPane fx:id="chatGroupPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+
+<BorderPane fx:id="chatGroupPane" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
     <bottom>
-        <FlowPane prefHeight="32.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+        <FlowPane fx:id="lowerFlowPane" prefHeight="32.0" prefWidth="600.0" BorderPane.alignment="CENTER">
             <children>
                 <TextField fx:id="chatInputField" prefHeight="32.0" prefWidth="546.0" promptText="Write to chat!">
                     <padding>
@@ -21,7 +23,11 @@
         </FlowPane>
     </bottom>
     <right>
-        <ListView fx:id="users" prefHeight="346.0" prefWidth="174.0" BorderPane.alignment="CENTER" />
+      <ScrollPane fx:id="userListScrollPane" BorderPane.alignment="CENTER">
+         <content>
+              <ListView fx:id="userList" prefHeight="346.0" prefWidth="174.0" />
+         </content>
+      </ScrollPane>
     </right>
     <center>
         <ScrollPane fx:id="chatInputScrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" hvalue="1.0" vbarPolicy="ALWAYS" vvalue="1.0" BorderPane.alignment="CENTER">

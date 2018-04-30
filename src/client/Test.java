@@ -9,10 +9,16 @@ import javafx.stage.Stage;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.InetAddress;
+import java.net.ServerSocket;
 import java.net.URL;
+import java.net.UnknownHostException;
 
 public class Test extends Application {
 	static String username = "";
+	static int port = 0;
+	static InetAddress ipaddress;
+
 	public static void main(String[] args) {
 		if (args.length == 0) {
 			/*Scanner reader = new Scanner(System.in);
@@ -20,6 +26,18 @@ public class Test extends Application {
 			username = reader.nextLine();
 			reader.close();*/
 			username = "Jw";
+			try {
+				ServerSocket s = new ServerSocket(0);
+				port = s.getLocalPort();
+				s.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			try {
+				ipaddress = InetAddress.getLocalHost();
+			} catch (UnknownHostException e) {
+				e.printStackTrace();
+			}
 		}
 		launch(args);
 	}
@@ -38,7 +56,7 @@ public class Test extends Application {
 			primaryStage.setHeight(400);
 			primaryStage.setMaximized(false);
 			primaryStage.setFullScreen(false);
-			primaryStage.setResizable(false);
+			primaryStage.setResizable(true);
 			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();
