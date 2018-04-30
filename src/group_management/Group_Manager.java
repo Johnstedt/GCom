@@ -12,10 +12,12 @@ public class Group_Manager implements Observer {
 	private User self;
 	private HashMap<String, Group> groups;
 
-
-	public Group_Manager(User u, Integer cp){
-
+	public Group_Manager(User u){
 		this.self = u;
+		this.groups = new HashMap<>();
+	}
+	public Group_Manager(User u, Integer cp){
+		this(u);
 
 		//User otherUser = new User("Stranger", "localhost", cp);
 		//addUserToGroup("thegroup", otherUser);
@@ -23,7 +25,6 @@ public class Group_Manager implements Observer {
 		if(cp == 1338){
 
 			//Initiate communication
-			this.groups = new HashMap<String, Group>();
 			create_group(u, "init", MessageOrderingType.UNORDERED,
 					CommunicationType.UNRELIABLE_MULTICAST);
 
@@ -33,14 +34,13 @@ public class Group_Manager implements Observer {
 
 		} else {
 
-			this.groups = new HashMap<String, Group>();
 			create_group( u, "thegroup",
 					MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
 		}
 
 	}
 
-	public void create_group(User u, String name, MessageOrderingType sort_order, CommunicationType ct) {
+	public Group create_group(User u, String name, MessageOrderingType sort_order, CommunicationType ct) {
 
 		Order order;
 		switch (sort_order){
@@ -68,6 +68,7 @@ public class Group_Manager implements Observer {
 		g.addObserver(this);
 		g.addUser(self);
 		groups.put(name, g);
+		return g;
 	}
 
 	private void addUserToGroup(String groupName, User u){

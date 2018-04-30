@@ -27,6 +27,8 @@ public class Group extends Observable implements Observer, Serializable {
 		if(o instanceof Message) {
 			messages.add((Message) o);
 			System.out.println(((Message) o).getMsg());
+			setChanged();
+			notifyObservers(o);
 		}
 		else if (o instanceof HashMap){
 			HashMap hm = (HashMap)o;
@@ -54,4 +56,21 @@ public class Group extends Observable implements Observer, Serializable {
 	public void askGroups(String groupName, Group g) {
 		this.order.askGroups(this.users.get(0) ,groupName, g);
 	}
+
+	public List<Message> getMessages() {
+		return messages;
+	}
+
+	public List<User> getUsers() {
+		return users;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public Order getOrder() {
+		return order;
+	}
+
 }

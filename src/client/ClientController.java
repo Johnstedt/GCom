@@ -1,11 +1,15 @@
 package client;
 
+import group_management.*;
 import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
@@ -17,6 +21,7 @@ import utils.TimeFormat;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.LinkedList;
 
 public class ClientController {
 
@@ -24,35 +29,59 @@ public class ClientController {
 	public MenuItem fileMenuCreateGroup;
 	public MenuItem fileMenuConnectToGroup;
 	public MenuItem fileMenuCloseItem;
-
 	public TabPane tabPane;
 	public Tab systemTab;
 
-
 	private DebuggerController debugger = null;
-	int textSize = 13;
-
+	private int textSize = 13;
+	private User user;
+	private Group_Manager groupManager;
+	private LinkedList<GroupClientTab> tabChat = new LinkedList<>();
 
 	public void initialize() {
+		String host = Test.ipaddress.getHostName();
+		String ip = Test.ipaddress.getHostAddress();
+
+		user = new User(Test.username, ip, Test.port);
+		groupManager = new Group_Manager(user);
+
 		ScrollPane systemScroll = new ScrollPane();
 		FlowPane systemFlow = new FlowPane();
 		systemScroll.setContent(systemFlow);
 
 		Platform.runLater(()->systemTab.setContent(systemScroll));
 		Platform.runLater(()->systemScroll.vvalueProperty().bind(systemFlow.heightProperty()));
+		Platform.runLater(()->systemScroll.setFitToWidth(true));
 		Platform.runLater(()->setTextInChat(systemFlow, TimeFormat.getTimestamp(),"System","Welcome "+Test.username));
+		Platform.runLater(()->setTextInChat(systemFlow, TimeFormat.getTimestamp(),"System","Currently served at "+ ip+":"+String.valueOf(Test.port)+" ("+host+")"));
+		Platform.runLater(()->setTextInChat(systemFlow, TimeFormat.getTimestamp(),"System","holla"));
+
+		fileMenuCreateGroup.setAccelerator(
+			KeyCombination.keyCombination("ALT+n")
+		);
+		fileMenuConnectToGroup.setAccelerator(
+					KeyCombination.keyCombination("ALT+c")
+		);
 		//Platform.runLater(()-> chatInputField.requestFocus());
-
-
+		tabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+			@Override
+			public void changed(ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) {
+				if (newValue != null) {
+					//TODO: When focus remove "!" in tabname.
+				}
+			}
+		});
 
 	}
+
+
 	public ClientController() {
 
 	}
 
 
 
-	private void setTextInChat(FlowPane pane, String timestamp, String user, String msg) {
+	private synchronized void setTextInChat(FlowPane pane, String timestamp, String user, String msg) {
 		msg = msg.trim();
 		if (msg.length() == 0)
 			return;
@@ -71,50 +100,8 @@ public class ClientController {
 		text3.setFill(Color.BLACK);
 		text3.setFont(Font.font("Helvetica", textSize));
 
-		pane.getChildren().addAll(text1, text2, text3, new Text("\n"));
+		pane.getChildren().addAll(text1, text2, text3, new Text(System.lineSeparator()));
 	}
-
-	/*
-	public void onSendButton() {
-		setTextInChat(TimeFormat.getTimestamp(), Test.username, chatInputField.getText());
-		chatInputField.setText("");
-	}
-
-
-	public void onEnter(javafx.event.ActionEvent actionEvent) {
-		setTextInChat(TimeFormat.getTimestamp(), Test.username, chatInputField.getText());
-		chatInputField.setText("");
-	}
-
-	public void clickOnUser(MouseEvent click) {
-		if (click.getClickCount() == 2) {
-			chatInputField.setText("@"+users.getSelectionModel().getSelectedItem()+" " + chatInputField.getText());
-			chatInputField.requestFocus();
-			chatInputField.end();
-		}
-	}
-
-
-
-	private int tmpUsers = 1;
-	public void addUser() {
-		for (int i = 0; i < 10; i++) {
-			users.getItems().add(tmpUsers - 1, "User"+ tmpUsers++);
-		}
-	}
-
-	private int tmpchatmsgs = 1;
-	public void AddChatText() {
-		for (int i = 0; i < 20; i++) {
-			String user = "";
-			if (users.getItems().size() > 0) {
-				user = (String) users.getItems().get(tmpchatmsgs % users.getItems().size());
-			}
-			String msg = "Chat a message "+tmpchatmsgs++;
-			setTextInChat(TimeFormat.getTimestamp(), user, msg);
-		}
-	}
-	*/
 
 	public void terminateProgram() {
 		//TODO: gracefully close the connections etc.
@@ -148,8 +135,16 @@ public class ClientController {
 
 	public void createGroup(ActionEvent actionEvent) {
 		TwoFieldDialog cgd = new TwoFieldDialog();
-		cgd.show("Create group", "Create group", "Name", "Description");
+		boolean valid = cgd.show("Create group", "Create group", "Name", "Description");
 		//TODO: select communication, ordering etc.
+		if (valid) {
+			//TODO: Description?
+			Group g = groupManager.create_group(user, cgd.val1, MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
+			Tab tab = addNewGroupTab(cgd.val1, cgd.val1);
+			GroupClientTab gct = new GroupClientTab(g, tab);
+			tabChat.add(gct);
+		}
+
 
 	}
 
@@ -158,59 +153,27 @@ public class ClientController {
 		boolean valid = cgd.show("Connect to group", "Connect to group", "IP-address", "Port");
 		if (valid) {
 			//TODO: get groupname.
-			Tab newGroup = new Tab();
-			newGroup.setText(cgd.val1+":"+cgd.val2);
+			String con = cgd.val1+":"+cgd.val2;
 
-			/*SplitPane outerPane = new SplitPane();
-			outerPane.setOrientation(Orientation.VERTICAL);
-			outerPane.setDividerPositions(0.9);
-
-			SplitPane innerPane = new SplitPane();
-			innerPane.setOrientation(Orientation.HORIZONTAL);
-			innerPane.setDividerPositions(0.75);
-
-			ScrollPane chatScrollPane = new ScrollPane();
-			FlowPane chatFlowPane = new FlowPane();
-			chatScrollPane.setContent(chatFlowPane);
-
-			ScrollPane userScrollPane = new ScrollPane();
-			ObservableList<String> names = FXCollections.observableArrayList(
-						"Julia", "Ian", "Sue", "Matthew", "Hannah", "Stephan", "Denise");
-			ListView userList = new ListView(names);
-			userScrollPane.setContent(userList);
-			innerPane.getItems().add(chatScrollPane);
-			innerPane.getItems().add(userScrollPane);
-			outerPane.getItems().add(innerPane);
-
-			HBox downer = new HBox();
-			TextField input = new TextField();
-			input.setPromptText("Write to chat!");
-			Button sendBtn = new Button();
-			sendBtn.setText("Send");
-			downer.getChildren().add(input);
-			downer.getChildren().add(sendBtn);
-
-			outerPane.getItems().add(downer);
-
-
-
-			Platform.runLater(()->newGroup.setContent(outerPane));
-			Platform.runLater(()->userList.setMinHeight(innerPane.heightProperty().doubleValue()));
-
-			Platform.runLater(()->chatScrollPane.vvalueProperty().bind(chatFlowPane.heightProperty()));
-			Platform.runLater(()->userScrollPane.vvalueProperty().bind(userList.heightProperty()));
-			Platform.runLater(()->setTextInChat(chatFlowPane, TimeFormat.getTimestamp(),"System","Connecting "+newGroup.getText()+".."));
-			*/
-			try {
-				newGroup.setContent(FXMLLoader.load(this.getClass().getResource("chattab.fxml")));
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-			BorderPane outer = (BorderPane)newGroup.getContent().lookup("#chatGroupPane");
-			Platform.runLater(()->outer.setPrefHeight(0.9));
-			Platform.runLater(()->outer.setPrefWidth(0.9));
-			tabPane.getTabs().add(newGroup);
+			//tabChat.add(gct);
 
 		}
+	}
+
+	private Tab addNewGroupTab(String name, String id) {
+		Tab newGroup = new Tab();
+		newGroup.setText(name);
+		newGroup.setId(id);
+		try {
+			newGroup.setContent(FXMLLoader.load(this.getClass().getResource("chattab.fxml")));
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		BorderPane outer = (BorderPane)newGroup.getContent().lookup("#chatGroupPane");
+		Platform.runLater(()->outer.setPrefHeight(0.9));
+		Platform.runLater(()->outer.setPrefWidth(0.9));
+		tabPane.getTabs().add(newGroup);
+		tabPane.getSelectionModel().select(newGroup);
+		return newGroup;
 	}
 }
