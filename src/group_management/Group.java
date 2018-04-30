@@ -26,7 +26,7 @@ public class Group extends Observable implements Observer, Serializable {
 	public void update(Observable observable, Object o) {
 		if(o instanceof Message) {
 			messages.add((Message) o);
-			System.out.println(((Message) o).getMsg());
+			System.out.println(((Message) o).getFrom().getNickname() + ": "+ ((Message) o).getMsg());
 			setChanged();
 			notifyObservers(o);
 		}
