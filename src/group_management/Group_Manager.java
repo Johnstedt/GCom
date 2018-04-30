@@ -103,4 +103,7 @@ public class Group_Manager implements Observer {
 		}
 	}
 
+	public User getSelf() {
+		return self;
+	}
 }

@@ -1,6 +1,7 @@
 package client;
 
 import group_management.Group;
+import group_management.User;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -17,6 +18,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 public class GroupClientTab implements Observer{
+	private User self;
 	private Button sendButton;
 	private TextFlow chatOutputField;
 	private ListView userList;
@@ -25,8 +27,9 @@ public class GroupClientTab implements Observer{
 	private TextField chatInputField;
 	private int textSize = 13;
 
-	public GroupClientTab(Group g, Tab tab) {
+	public GroupClientTab(Group g, User self, Tab tab) {
 		this.group = g;
+		this.self = self;
 		this.tab = tab;
 		//chatInputField = (TextField) tab.getContent().lookup("chatInputField");
 		//chatInputField.setOnAction(this::onEnter);
@@ -75,7 +78,7 @@ public class GroupClientTab implements Observer{
 
 	private void onSendMessage(String msg) {
 		setTextInChat(TimeFormat.getTimestamp(), Test.username, msg);
-		group.send(msg);
+		group.send(msg, self);
 	}
 
 	private void onSendButton(ActionEvent actionEvent) {

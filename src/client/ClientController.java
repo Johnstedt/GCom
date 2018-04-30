@@ -141,7 +141,7 @@ public class ClientController {
 			//TODO: Description?
 			Group g = groupManager.create_group(user, cgd.val1, MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
 			Tab tab = addNewGroupTab(cgd.val1, cgd.val1);
-			GroupClientTab gct = new GroupClientTab(g, tab);
+			GroupClientTab gct = new GroupClientTab(g, groupManager.getSelf(), tab);
 			tabChat.add(gct);
 		}
 
