@@ -34,4 +34,10 @@ public class Unreliable_Multicast implements Serializable{
 	public void sendGroups(List<User> users, HashMap<String, Group> hm) {
 		this.s.sendGroups(users, hm);
 	}
+
+	public void join(List<User> users, User u) {
+		this.s.join(users, u);
+	}
+
+
 }

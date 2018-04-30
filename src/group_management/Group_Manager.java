@@ -2,10 +2,7 @@ package group_management;
 
 import message_ordering.*;
 
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
 public class Group_Manager implements Observer {
 
@@ -18,9 +15,6 @@ public class Group_Manager implements Observer {
 	}
 	public Group_Manager(User u, Integer cp){
 		this(u);
-
-		//User otherUser = new User("Stranger", "localhost", cp);
-		//addUserToGroup("thegroup", otherUser);
 
 		if(cp == 1338){
 
@@ -76,7 +70,7 @@ public class Group_Manager implements Observer {
 	}
 
 	public void send(String groupName, String input){
-		groups.get(groupName).send(input);
+		groups.get(groupName).send(input, this.self);
 	}
 
 	public void askForGroups(String groupName, Group g){
@@ -86,19 +80,26 @@ public class Group_Manager implements Observer {
 	@Override
 	public void update(Observable observable, Object o) {
 		if(o instanceof Group) {
-			System.out.println("SENDING GROUPS");
+
 			Group g = (Group) o;
 			g.sendGroups(this.groups);
 		} else if(o instanceof HashMap){
 			HashMap hm = (HashMap)o;
-
+			Scanner in = new Scanner(System.in);
+			String input;
 			Iterator it = hm.entrySet().iterator();
 			while (it.hasNext()) {
 				HashMap.Entry pair = (HashMap.Entry)it.next();
-				System.out.println(pair.getKey());
+				System.out.println(pair.getKey() + " join?");
+				input = in.nextLine();
+				if(input.equals("yes")){
+					Group g = (Group)pair.getValue();
+					this.groups.put(g.getGroupName(), g);
+					g.join(this.self);
+				}
 				it.remove(); // avoids a ConcurrentModificationException
 			}
-			System.out.println();
+
 		}
 	}
 

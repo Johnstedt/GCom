@@ -12,7 +12,7 @@ public class Fifo extends Order {
 	}
 
 	@Override
-	public void send(List<User> ul, String msg){
+	public void send(List<User> ul, String msg, User self){
 
 	}
 
@@ -29,6 +29,11 @@ public class Fifo extends Order {
 
 	@Override
 	public void sendGroups(List<User> users, HashMap<String, Group> hm) {
+
+	}
+
+	@Override
+	public void join(List<User> users, User u) {
 
 	}
 }

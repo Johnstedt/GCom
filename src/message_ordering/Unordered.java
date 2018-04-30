@@ -23,16 +23,15 @@ public class Unordered extends Order implements Observer {
 	}
 
 	@Override
-	public void send(List<User> ul, String msg) {
+	public void send(List<User> ul, String msg, User self) {
 
-		Message m = new Message(msg, new Vector());
+		Message m = new Message(msg, new Vector(), self);
 		communicator.send(ul, m);
 	}
 
 	@Override
 	public void receive(String msg) {
-		Message m = new Message(msg, null);
-		queue.add(m);
+
 	}
 
 	@Override
@@ -43,11 +42,10 @@ public class Unordered extends Order implements Observer {
 	@Override
 	public void update(Observable observable, Object o) {
 
-		System.out.println("HEY");
-
 		if(o instanceof Message) {
 			Message m = (Message) o;
 			queue.add(m);
+			this.setChanged();
 			sort();
 		}
 		else if (o instanceof HashMap){
@@ -56,9 +54,19 @@ public class Unordered extends Order implements Observer {
 			notifyObservers(hm);
 		}
 		else if(o instanceof Group) {
-			System.out.println("GROUP ASKED");
+
 			this.setChanged();
 			notifyObservers(o);
+		}
+		else if (o instanceof User){
+
+			User u = (User)o;
+			Message m = new Message(u.getNickname()+" joined the group!", new Vector(), u);
+			queue.add(m);
+			this.setChanged();
+			sort();
+			this.setChanged();
+			notifyObservers(u);
 		}
 	}
 
@@ -69,5 +77,10 @@ public class Unordered extends Order implements Observer {
 
 	public void sendGroups(List<User> users, HashMap<String, Group> hm){
 		this.communicator.sendGroups(users, hm);
+	}
+
+	@Override
+	public void join(List<User> users, User u) {
+		this.communicator.join(users, u);
 	}
 }

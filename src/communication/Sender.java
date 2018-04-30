@@ -93,4 +93,21 @@ public class Sender implements Serializable{
 				e.printStackTrace();
 			}
 	}
+
+	public void join(List<User> users, User u) {
+		try {
+			for (User user : users) {
+
+				if (!this.stub.containsKey(user.getIp() + Integer.toString(user.getPort()))) {
+					addToGroup(user.getIp() + Integer.toString(user.getPort()), user.getPort());
+				}
+
+				RemoteObject ro = this.stub.get(user.getIp() + Integer.toString(user.getPort()));
+				ro.join(u);
+
+			}
+		}catch (RemoteException e) {
+			e.printStackTrace();
+		}
+	}
 }
