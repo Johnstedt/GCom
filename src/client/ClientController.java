@@ -49,12 +49,6 @@ public class ClientController {
 		FlowPane systemFlow = new FlowPane();
 		systemScroll.setContent(systemFlow);
 
-		Platform.runLater(()->systemTab.setContent(systemScroll));
-		Platform.runLater(()->systemScroll.vvalueProperty().bind(systemFlow.heightProperty()));
-		Platform.runLater(()->systemScroll.setFitToWidth(true));
-		Platform.runLater(()->setTextInChat(systemFlow, TimeFormat.getTimestamp(),"System","Welcome "+Test.username));
-		Platform.runLater(()->setTextInChat(systemFlow, TimeFormat.getTimestamp(),"System","Currently served at "+ ip+":"+String.valueOf(Test.port)+" ("+host+")"));
-		Platform.runLater(()->setTextInChat(systemFlow, TimeFormat.getTimestamp(),"System","holla"));
 
 		fileMenuCreateGroup.setAccelerator(
 			KeyCombination.keyCombination("ALT+n")
@@ -71,6 +65,11 @@ public class ClientController {
 				}
 			}
 		});
+		Platform.runLater(()->systemTab.setContent(systemScroll));
+		Platform.runLater(()->systemScroll.vvalueProperty().bind(systemFlow.heightProperty()));
+		Platform.runLater(()->systemScroll.setFitToWidth(true));
+		Platform.runLater(()->setTextInChat(systemFlow, TimeFormat.getTimestamp(),"System","Welcome "+Test.username));
+		Platform.runLater(()->setTextInChat(systemFlow, TimeFormat.getTimestamp(),"System","Currently served at "+ ip+":"+String.valueOf(Test.port)+" ("+host+")"));
 
 	}
 
@@ -138,14 +137,13 @@ public class ClientController {
 		boolean valid = cgd.show("Create group", "Create group", "Name", "Description");
 		//TODO: select communication, ordering etc.
 		if (valid) {
+
 			//TODO: Description?
 			Group g = groupManager.create_group(user, cgd.val1, MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
 			Tab tab = addNewGroupTab(cgd.val1, cgd.val1);
 			GroupClientTab gct = new GroupClientTab(g, groupManager.getSelf(), tab);
 			tabChat.add(gct);
 		}
-
-
 	}
 
 	public void connectToGroup(ActionEvent actionEvent) {
@@ -153,10 +151,8 @@ public class ClientController {
 		boolean valid = cgd.show("Connect to group", "Connect to group", "IP-address", "Port");
 		if (valid) {
 			//TODO: get groupname.
-			String con = cgd.val1+":"+cgd.val2;
-
+			groupManager.askForGroups(cgd.val1, Integer.parseInt(cgd.val2));
 			//tabChat.add(gct);
-
 		}
 	}
 

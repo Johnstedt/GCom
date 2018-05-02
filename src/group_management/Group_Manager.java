@@ -12,16 +12,16 @@ public class Group_Manager implements Observer {
 	public Group_Manager(User u){
 		this.self = u;
 		this.groups = new HashMap<>();
+		//create_group(u, "init", MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
 	}
 	public Group_Manager(User u, String ch, Integer cp){
 
 		this(u);
 
+
 		if(cp == 1338){
 
 			//Initiate communication
-			create_group(u, "init", MessageOrderingType.UNORDERED,
-					CommunicationType.UNRELIABLE_MULTICAST);
 
 			User otherUser = new User("connect_point", ch, cp);
 			addUserToGroup("init", otherUser);
@@ -76,6 +76,11 @@ public class Group_Manager implements Observer {
 
 	public void askForGroups(String groupName, Group g){
 		groups.get(groupName).askGroups(groupName, g);
+	}
+	public void askForGroups(String connectionHost, int connectionPort) {
+		User otherUser = new User("connect_point", connectionHost, connectionPort);
+		addUserToGroup("init", otherUser);
+		askForGroups("init", this.groups.get("init"));
 	}
 
 	@Override

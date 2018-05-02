@@ -2,6 +2,8 @@ package client;
 
 import group_management.Group;
 import group_management.User;
+import javafx.application.Platform;
+import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -41,7 +43,6 @@ public class GroupClientTab implements Observer{
 		ScrollPane userListScrollPane = (ScrollPane) borderPane.lookup("#userListScrollPane");
 		userList = (ListView) userListScrollPane.getContent();
 		userList.setOnMouseClicked(this::clickOnUser);
-		//userList.setItems(group.getUsers());
 		Node lowerPane = borderPane.lookup("#lowerFlowPane");
 
 		sendButton = (Button) lowerPane.lookup("#sendButton");
@@ -50,6 +51,20 @@ public class GroupClientTab implements Observer{
 		chatInputField.setOnAction(this::onEnter);
 		group.addObserver(this::update);
 		setTextInChat(TimeFormat.getTimestamp(), "System", "Created Group "+g.getGroupName());
+
+		ObservableList<User> ul = group.getUsers();
+		userList.setItems(ul);
+		/*ul.addListener(new ListChangeListener<User>() {
+			@Override
+			public void onChanged(Change<? extends User> c) {
+
+			}
+		}*/
+
+	}
+
+	private void userListChange(Object u) {
+
 	}
 
 
@@ -62,8 +77,6 @@ public class GroupClientTab implements Observer{
 		text1.setFont(Font.font("Helvetica", textSize));
 
 		Text text2 = new Text(user);
-		if (user.length() == 0)
-			text2 = new Text();
 		text2.setFill(Color.BLUE);
 		if (user.equals("Client") || user.equals("System") || user.equals(Test.username))
 			text2.setFill(Color.RED);
@@ -72,12 +85,12 @@ public class GroupClientTab implements Observer{
 		text3.setFill(Color.BLACK);
 		text3.setFont(Font.font("Helvetica", textSize));
 
-		chatOutputField.getChildren().addAll(text1, text2, text3, new Text(System.lineSeparator()));
+		Platform.runLater(()->chatOutputField.getChildren().addAll(text1, text2, text3, new Text(System.lineSeparator())));
 	}
 
 
 	private void onSendMessage(String msg) {
-		setTextInChat(TimeFormat.getTimestamp(), Test.username, msg);
+		//setTextInChat(TimeFormat.getTimestamp(), Test.username, msg);
 		group.send(msg, self);
 	}
 
@@ -86,13 +99,13 @@ public class GroupClientTab implements Observer{
 		chatInputField.setText("");
 	}
 
-	public void onEnter(javafx.event.ActionEvent actionEvent) {
+	private void onEnter(javafx.event.ActionEvent actionEvent) {
 		onSendMessage(chatInputField.getText());
 		chatInputField.setText("");
 	}
 
 
-	public void clickOnUser(MouseEvent click) {
+	private void clickOnUser(MouseEvent click) {
 		if (click.getClickCount() == 2) {
 			chatInputField.setText("@"+userList.getSelectionModel().getSelectedItem()+" " + chatInputField.getText());
 			chatInputField.requestFocus();
@@ -104,7 +117,7 @@ public class GroupClientTab implements Observer{
 	public void update(Observable observable, Object o) {
 		if (o instanceof Message) {
 			Message msg = (Message) o;
-			setTextInChat(TimeFormat.getTimestamp(), "???", msg.getMsg());
+			setTextInChat(TimeFormat.getTimestamp(), msg.getFrom().getNickname(), msg.getMsg());
 			if (!tab.isSelected()) {
 				tab.setText("!"+group.getGroupName());
 			}

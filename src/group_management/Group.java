@@ -1,7 +1,9 @@
 package group_management;
 
-import message_ordering.Order;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import message_ordering.Message;
+import message_ordering.Order;
 
 import java.io.Serializable;
 import java.util.*;
@@ -9,7 +11,8 @@ import java.util.*;
 public class Group extends Observable implements Observer, Serializable {
 
 	private List<Message> messages;
-	private List<User> users;
+
+	private ObservableList<User> users;
 	private String groupName;
 	private Order order;
 
@@ -18,7 +21,7 @@ public class Group extends Observable implements Observer, Serializable {
 		this.order.addObserver(this);
 		this.groupName = groupName;
 		this.messages = new LinkedList<>();
-		this.users = new LinkedList<>();
+		this.users = FXCollections.observableList(new LinkedList<>());
 	}
 
 
@@ -27,17 +30,11 @@ public class Group extends Observable implements Observer, Serializable {
 		if(o instanceof Message) {
 			messages.add((Message) o);
 			System.out.println(((Message) o).getFrom().getNickname() + ": "+ ((Message) o).getMsg());
-			setChanged();
-			notifyObservers(o);
 		}
 		else if (o instanceof HashMap){
 			HashMap hm = (HashMap)o;
-			this.setChanged();
-			notifyObservers(hm);
 
 		} else if(o instanceof Group) {
-			setChanged();
-			notifyObservers(o);
 		}
 		else if(o instanceof User) {
 			this.users.add((User)o);
@@ -71,7 +68,7 @@ public class Group extends Observable implements Observer, Serializable {
 		return messages;
 	}
 
-	public List<User> getUsers() {
+	public ObservableList<User> getUsers() {
 		return users;
 	}
 

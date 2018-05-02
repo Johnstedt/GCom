@@ -76,4 +76,9 @@ public class User implements Serializable, Comparable{
 		result = 31 * result + (port != null ? port.hashCode() : 0);
 		return result;
 	}
+
+	@Override
+	public String toString() {
+		return nickname;
+	}
 }

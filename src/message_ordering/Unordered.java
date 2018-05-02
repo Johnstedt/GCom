@@ -1,6 +1,5 @@
 package message_ordering;
 
-import clock.Clock;
 import clock.Vector;
 import communication.Unreliable_Multicast;
 import group_management.Group;
@@ -56,7 +55,7 @@ public class Unordered extends Order implements Observer {
 
 		if(o instanceof Message) {
 			Message m = (Message) o;
-			this.vectorClock.incrementEveryone(m.getCl());
+			this.vectorClock.incrementEveryone((Vector) m.getCl());
 			queue.add(m);
 			this.setChanged();
 			sort();
