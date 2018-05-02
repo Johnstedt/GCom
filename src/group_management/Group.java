@@ -83,4 +83,7 @@ public class Group extends Observable implements Observer, Serializable {
 		return order;
 	}
 
+	public void removeStubs() {
+		this.order.removeStubs();
+	}
 }

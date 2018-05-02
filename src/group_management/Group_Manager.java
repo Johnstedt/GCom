@@ -13,7 +13,8 @@ public class Group_Manager implements Observer {
 		this.self = u;
 		this.groups = new HashMap<>();
 	}
-	public Group_Manager(User u, Integer cp){
+	public Group_Manager(User u, String ch, Integer cp){
+
 		this(u);
 
 		if(cp == 1338){
@@ -22,7 +23,7 @@ public class Group_Manager implements Observer {
 			create_group(u, "init", MessageOrderingType.UNORDERED,
 					CommunicationType.UNRELIABLE_MULTICAST);
 
-			User otherUser = new User("connect_point", "localhost", cp);
+			User otherUser = new User("connect_point", ch, cp);
 			addUserToGroup("init", otherUser);
 			askForGroups("init", this.groups.get("init"));
 
@@ -85,8 +86,6 @@ public class Group_Manager implements Observer {
 			g.sendGroups(this.groups);
 
 
-
-
 		} else if(o instanceof HashMap){
 
 			HashMap hm = (HashMap)o;
@@ -102,6 +101,7 @@ public class Group_Manager implements Observer {
 				input = in.nextLine();
 				if (input.equals("yes")) {
 					Group g = (Group) pair.getValue();
+					g.removeStubs();
 					l.add(g);
 				}
 			}

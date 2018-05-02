@@ -1,5 +1,6 @@
 package message_ordering;
 
+import clock.Clock;
 import clock.Vector;
 import communication.Unreliable_Multicast;
 import group_management.Group;
@@ -12,10 +13,12 @@ public class Unordered extends Order implements Observer {
 
 	private Queue<Message> queue;
 	private Unreliable_Multicast communicator;
+	private Vector vectorClock;
 
 	public Unordered(User u){
 
 		this.queue = new LinkedBlockingQueue<>();
+		this.vectorClock = new Vector();
 
 		Notify_Order no = new Notify_Order();
 		no.addObserver(this);
@@ -25,7 +28,16 @@ public class Unordered extends Order implements Observer {
 	@Override
 	public void send(List<User> ul, String msg, User self) {
 
-		Message m = new Message(msg, new Vector(), self);
+		Vector v = null;
+		try {
+			this.vectorClock.increment(self);
+			v = (Vector) this.vectorClock.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+			System.out.println("WHY U NOT CLONE!?");
+		}
+
+		Message m = new Message(msg, v, self);
 		communicator.send(ul, m);
 	}
 
@@ -44,6 +56,7 @@ public class Unordered extends Order implements Observer {
 
 		if(o instanceof Message) {
 			Message m = (Message) o;
+			this.vectorClock.incrementEveryone(m.getCl());
 			queue.add(m);
 			this.setChanged();
 			sort();
@@ -82,5 +95,10 @@ public class Unordered extends Order implements Observer {
 	@Override
 	public void join(List<User> users, User u) {
 		this.communicator.join(users, u);
+	}
+
+	@Override
+	public void removeStubs() {
+		this.communicator.removeStubs();
 	}
 }

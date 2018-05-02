@@ -21,4 +21,6 @@ public abstract class Order extends Observable implements Serializable{
 	public abstract void sendGroups(List<User> users, HashMap<String, Group> hm);
 
 	public abstract void join(List<User> users, User u);
+
+	public abstract void removeStubs();
 }

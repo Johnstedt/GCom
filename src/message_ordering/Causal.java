@@ -36,4 +36,9 @@ public class Causal extends Order {
 	public void join(List<User> users, User u) {
 
 	}
+
+	@Override
+	public void removeStubs() {
+
+	}
 }

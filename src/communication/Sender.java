@@ -24,13 +24,13 @@ public class Sender implements Serializable{
             this.stub = new HashMap<>();
     }
 
-    void addToGroup(String name, Integer port){
+    void addToGroup(String name, User u){
 
     	Registry registry;
 	    while(true) {
 		    try {
 			    sleep(1000);
-			    registry = LocateRegistry.getRegistry(port);
+			    registry = LocateRegistry.getRegistry(u.getIp(), u.getPort());
 
 			    RemoteObject ro = (RemoteObject)registry.lookup("MessageService");
 
@@ -38,7 +38,7 @@ public class Sender implements Serializable{
 			    System.out.println("found connection!");
 			    break;
 		    } catch (Exception e) {
-			    System.out.println(port);
+			    System.out.println(u.getPort());
 			    //Wait til connect
 			    //e.printStackTrace();
 		    }
@@ -52,7 +52,7 @@ public class Sender implements Serializable{
 	    	for (User user : ul){
 
 		        if(!this.stub.containsKey(user.getIp()+Integer.toString(user.getPort()))) {
-	    		    addToGroup(user.getIp()+Integer.toString(user.getPort()), user.getPort());
+	    		    addToGroup(user.getIp()+Integer.toString(user.getPort()), user);
 		        }
 			    RemoteObject ro = this.stub.get(user.getIp()+Integer.toString(user.getPort()));
 
@@ -66,7 +66,7 @@ public class Sender implements Serializable{
 	public void askGroup(User u, String groupName, Group g) {
 		try {
 			if (!this.stub.containsKey(u.getIp() + Integer.toString(u.getPort()))) {
-				addToGroup(u.getIp() + Integer.toString(u.getPort()), u.getPort());
+				addToGroup(u.getIp() + Integer.toString(u.getPort()), u);
 			}
 			RemoteObject ro = this.stub.get(u.getIp() + Integer.toString(u.getPort()));
 			ro.askGroup(g);
@@ -82,7 +82,7 @@ public class Sender implements Serializable{
 			for (User user : users) {
 
 				if (!this.stub.containsKey(user.getIp() + Integer.toString(user.getPort()))) {
-					addToGroup(user.getIp() + Integer.toString(user.getPort()), user.getPort());
+					addToGroup(user.getIp() + Integer.toString(user.getPort()), user);
 				}
 				if(this.nickname.equals(user.getNickname())) {
 					RemoteObject ro = this.stub.get(user.getIp() + Integer.toString(user.getPort()));
@@ -99,7 +99,7 @@ public class Sender implements Serializable{
 			for (User user : users) {
 
 				if (!this.stub.containsKey(user.getIp() + Integer.toString(user.getPort()))) {
-					addToGroup(user.getIp() + Integer.toString(user.getPort()), user.getPort());
+					addToGroup(user.getIp() + Integer.toString(user.getPort()), user);
 				}
 
 				RemoteObject ro = this.stub.get(user.getIp() + Integer.toString(user.getPort()));
@@ -109,5 +109,9 @@ public class Sender implements Serializable{
 		}catch (RemoteException e) {
 			e.printStackTrace();
 		}
+	}
+
+	public void remove() {
+		this.stub.clear();
 	}
 }

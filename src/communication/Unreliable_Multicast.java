@@ -40,4 +40,7 @@ public class Unreliable_Multicast implements Serializable{
 	}
 
 
+	public void removeStubs() {
+		this.s.remove();
+	}
 }

@@ -1,16 +1,17 @@
 package message_ordering;
 
 import clock.Clock;
+import clock.Vector;
 import group_management.User;
 
 import java.io.Serializable;
 
 public class Message implements Serializable {
 	private String msg;
-	private Clock cl;
+	private Vector cl;
 	private User from;
 
-	Message(String msg, Clock cl, User from){
+	Message(String msg, Vector cl, User from){
 		this.msg = msg;
 		this.cl = cl;
 		this.from = from;
