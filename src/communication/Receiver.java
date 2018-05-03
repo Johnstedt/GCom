@@ -23,13 +23,14 @@ public class Receiver implements Runnable, Serializable {
 	}
 
 	public void addOrder(Notify_Order no, String GroupName){
+
 		this.notify_orders.put(GroupName, no);
 	}
 
 	@Override
 	public void run() {
 		try {
-			System.out.println("receiver created");
+
 			RemoteObject impl = new RemoteObjectImpl();
 			impl.setOrderObservable(this);
 			Registry registry = LocateRegistry.createRegistry(port);
@@ -42,11 +43,12 @@ public class Receiver implements Runnable, Serializable {
 	}
 
 	public void notifyObservers(String group, Object o) {
-		System.out.println("??");
 		if(this.notify_orders.containsKey(group)){
+
 			this.notify_orders.get(group).hello();
 			this.notify_orders.get(group).notifyObservers(o);
 		} else {
+
 			this.notify_orders.entrySet().iterator().next().getValue().hello();
 			this.notify_orders.entrySet().iterator().next().getValue().notifyObservers(o);
 		}

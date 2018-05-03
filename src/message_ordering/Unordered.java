@@ -1,6 +1,8 @@
 package message_ordering;
 
 import clock.Vector;
+import com.sun.org.apache.regexp.internal.RE;
+import communication.Receiver;
 import communication.Unreliable_Multicast;
 import group_management.Group;
 import group_management.User;
@@ -13,14 +15,14 @@ public class Unordered extends Order implements Observer {
 	private Queue<Message> queue;
 	private Unreliable_Multicast communicator;
 	private Vector vectorClock;
-	private Notify_Order no;
+
 
 	public Unordered(User u){
 
 		this.queue = new LinkedBlockingQueue<>();
 		this.vectorClock = new Vector();
 
-		this.no = new Notify_Order();
+		Notify_Order no = new Notify_Order();
 		no.addObserver(this);
 		this.communicator = new Unreliable_Multicast(u, no);
 	}
@@ -47,7 +49,9 @@ public class Unordered extends Order implements Observer {
 	}
 
 	public Notify_Order getNo(){
-		return this.no;
+		Notify_Order new_not = new Notify_Order();
+		new_not.addObserver(this);
+		return new_not;
 	}
 
 	@Override
@@ -60,7 +64,9 @@ public class Unordered extends Order implements Observer {
 
 		if(o instanceof Message) {
 			Message m = (Message) o;
+
 			this.vectorClock.incrementEveryone((Vector) m.getCl());
+
 			queue.add(m);
 			this.setChanged();
 			sort();
@@ -85,6 +91,9 @@ public class Unordered extends Order implements Observer {
 			this.setChanged();
 			notifyObservers(u);
 		}
+		else {
+			System.out.println("it is else");
+		}
 	}
 
 	private void sort(){
@@ -94,6 +103,10 @@ public class Unordered extends Order implements Observer {
 
 	public void sendGroups(String gn, List<User> users, HashMap<String, Group> hm){
 		this.communicator.sendGroups(gn, users, hm);
+	}
+
+	public void addObservable(Receiver r, String g){
+
 	}
 
 	@Override

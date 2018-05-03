@@ -113,14 +113,16 @@ public class Group_Manager implements Observer {
 				input = in.nextLine();
 				if (input.equals("yes")) {
 					Group g = (Group) pair.getValue();
-					g.addReceiver(this.r);
-					g.removeStubs();
+
 					l.add(g);
 				}
 			}
 
 			for(Group g: l){
 				this.groups.put(g.getGroupName(), g);
+				g.removeStubs();
+				g.addReceiver(this.r);
+				g.addObserver(this);
 				g.join(this.self);
 			}
 

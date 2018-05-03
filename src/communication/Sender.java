@@ -51,7 +51,7 @@ public class Sender implements Serializable{
 	    try {
 	    	for (User user : ul){
 
-		        if(!this.stub.containsKey(user.getIp()+Integer.toString(user.getPort()))) {
+			    if(!this.stub.containsKey(user.getIp()+Integer.toString(user.getPort()))) {
 	    		    addToGroup(user.getIp()+Integer.toString(user.getPort()), user);
 		        }
 			    RemoteObject ro = this.stub.get(user.getIp()+Integer.toString(user.getPort()));

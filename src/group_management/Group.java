@@ -28,6 +28,7 @@ public class Group extends Observable implements Observer, Serializable {
 
 	@Override
 	public void update(Observable observable, Object o) {
+
 		if(o instanceof Message) {
 			messages.add((Message) o);
 			System.out.println(((Message) o).getFrom().getNickname() + ": "+ ((Message) o).getMsg());
@@ -83,11 +84,12 @@ public class Group extends Observable implements Observer, Serializable {
 		return order;
 	}
 
-	public void removeStubs() {
+	void removeStubs() {
 		this.order.removeStubs();
 	}
 
-	public void addReceiver(Receiver r) {
+	void addReceiver(Receiver r) {
 		r.addOrder(this.order.getNo(), this.groupName);
+		this.order.addObserver(this);
 	}
 }
