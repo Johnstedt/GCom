@@ -10,7 +10,7 @@ public interface Clock extends Cloneable {
 
 	void receive(HashMap<String, Long> givenClock);
 
-	public Object clone();
+	public Object clone() throws CloneNotSupportedException;
 
 	public void increment(User self);
 
