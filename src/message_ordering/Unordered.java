@@ -1,7 +1,6 @@
 package message_ordering;
 
 import clock.Vector;
-import com.sun.org.apache.regexp.internal.RE;
 import communication.Receiver;
 import communication.Unreliable_Multicast;
 import group_management.Group;
