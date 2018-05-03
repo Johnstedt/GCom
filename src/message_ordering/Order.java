@@ -25,4 +25,6 @@ public abstract class Order extends Observable implements Serializable{
 	public abstract void removeStubs();
 
 	public abstract Notify_Order getNo();
+
+	public abstract void rebindObserver();
 }

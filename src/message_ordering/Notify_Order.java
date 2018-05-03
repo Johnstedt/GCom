@@ -6,7 +6,7 @@ import java.util.Observable;
 
 public class Notify_Order extends Observable implements Serializable {
 
-	Notify_Order(){
+	public Notify_Order(){
 
 	}
 

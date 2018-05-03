@@ -1,5 +1,6 @@
 package message_ordering;
 
+import group_management.CommunicationType;
 import group_management.Group;
 import group_management.User;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 public class Causal extends Order {
 
-	public Causal(User u) {
+	public Causal(User u, CommunicationType ct) {
 		super();
 	}
 
@@ -41,5 +42,10 @@ public class Causal extends Order {
 	@Override
 	public Notify_Order getNo() {
 		return null;
+	}
+
+	@Override
+	public void rebindObserver() {
+
 	}
 }

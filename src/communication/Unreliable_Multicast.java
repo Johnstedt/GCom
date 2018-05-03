@@ -8,17 +8,23 @@ import message_ordering.Notify_Order;
 import java.io.Serializable;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
-public class Unreliable_Multicast implements Serializable{
+public class Unreliable_Multicast extends Multicast implements Serializable, Observer {
 
 	private Sender s;
 
-	public Unreliable_Multicast(User u, Notify_Order r){
-
-		//this.r = new Receiver(u.getPort(), notify_order);
-		//r.run();
+	public Unreliable_Multicast(User u){
 
 		this.s = new Sender(u.getNickname());
+	}
+
+	public Notify_Order getListener(){
+		Notify_Order no = new Notify_Order();
+		no.addObserver(this);
+
+		return no;
 	}
 
 	public void send(String gn, List<User> ul, Message msg) {
@@ -37,8 +43,14 @@ public class Unreliable_Multicast implements Serializable{
 		this.s.join(gn, users, u);
 	}
 
-
 	public void removeStubs() {
 		this.s.remove();
+	}
+
+	@Override
+	public void update(Observable observable, Object o) {
+		this.setChanged();
+		this.notifyObservers(o);
+
 	}
 }

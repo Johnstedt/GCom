@@ -1,5 +1,6 @@
 package message_ordering;
 
+import group_management.CommunicationType;
 import group_management.Group;
 import group_management.User;
 
@@ -7,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 
 public class Fifo extends Order {
-	public Fifo(User u) {
+	public Fifo(User u, CommunicationType ct) {
 
 	}
 
@@ -39,5 +40,10 @@ public class Fifo extends Order {
 	@Override
 	public Notify_Order getNo() {
 		return null;
+	}
+
+	@Override
+	public void rebindObserver() {
+
 	}
 }

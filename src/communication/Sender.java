@@ -9,6 +9,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import static java.lang.Thread.sleep;
@@ -62,6 +63,30 @@ public class Sender implements Serializable{
 		    e.printStackTrace();
 	    }
     }
+
+    public void broadcast(Message msg, String gn){
+	    Iterator it = stub.entrySet().iterator();
+	    while (it.hasNext()) {
+		    try {
+			    ((RemoteObject)((HashMap.Entry)it.next()).getValue()).sendMessage(gn, msg);
+		    } catch (RemoteException e) {
+			    e.printStackTrace();
+		    }
+		    it.remove(); // avoids a ConcurrentModificationException
+	    }
+    }
+
+    public void broadcastJoin(User user, String gn){
+		Iterator it = stub.entrySet().iterator();
+		while (it.hasNext()) {
+			try {
+				((RemoteObject)((HashMap.Entry)it.next()).getValue()).join(gn, user);
+			} catch (RemoteException e) {
+				e.printStackTrace();
+			}
+			it.remove(); // avoids a ConcurrentModificationException
+		}
+	}
 
 	public void askGroup(User u, String groupName, Group g) {
 		try {

@@ -91,5 +91,6 @@ public class Group extends Observable implements Observer, Serializable {
 	void addReceiver(Receiver r) {
 		r.addOrder(this.order.getNo(), this.groupName);
 		this.order.addObserver(this);
+		this.order.rebindObserver();
 	}
 }

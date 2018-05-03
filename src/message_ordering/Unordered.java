@@ -1,8 +1,11 @@
 package message_ordering;
 
 import clock.Vector;
+import communication.Multicast;
 import communication.Receiver;
+import communication.Reliable_Multicast;
 import communication.Unreliable_Multicast;
+import group_management.CommunicationType;
 import group_management.Group;
 import group_management.User;
 
@@ -12,18 +15,24 @@ import java.util.concurrent.LinkedBlockingQueue;
 public class Unordered extends Order implements Observer {
 
 	private Queue<Message> queue;
-	private Unreliable_Multicast communicator;
+	private Multicast communicator;
 	private Vector vectorClock;
 
 
-	public Unordered(User u){
+	public Unordered(User u, CommunicationType ct, String gn){
 
 		this.queue = new LinkedBlockingQueue<>();
 		this.vectorClock = new Vector();
 
-		Notify_Order no = new Notify_Order();
-		no.addObserver(this);
-		this.communicator = new Unreliable_Multicast(u, no);
+		switch (ct) {
+			case UNRELIABLE_MULTICAST:
+				this.communicator = new Unreliable_Multicast(u);
+				break;
+			case RELIABLE_MULTICAST:
+				this.communicator = new Reliable_Multicast(u, gn);
+		}
+
+		this.communicator.addObserver(this);
 	}
 
 	@Override
@@ -48,9 +57,15 @@ public class Unordered extends Order implements Observer {
 	}
 
 	public Notify_Order getNo(){
-		Notify_Order new_not = new Notify_Order();
+		Notify_Order new_not = this.communicator.getListener();
 		new_not.addObserver(this);
+
 		return new_not;
+	}
+
+	@Override
+	public void rebindObserver() {
+		this.communicator.addObserver(this);
 	}
 
 	@Override

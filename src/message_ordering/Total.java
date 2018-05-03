@@ -1,5 +1,6 @@
 package message_ordering;
 
+import group_management.CommunicationType;
 import group_management.Group;
 import group_management.User;
 
@@ -8,7 +9,7 @@ import java.util.List;
 
 public class Total extends Order{
 
-	public Total(User u) {
+	public Total(User u, CommunicationType ct) {
 
 	}
 
@@ -40,5 +41,10 @@ public class Total extends Order{
 	@Override
 	public Notify_Order getNo() {
 		return null;
+	}
+
+	@Override
+	public void rebindObserver() {
+
 	}
 }
