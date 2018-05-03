@@ -25,7 +25,7 @@ public class Test extends Application {
 			System.out.println("What is your username");
 			username = reader.nextLine();
 			reader.close();*/
-			username = "Jw";
+			username = "JJ";
 			try {
 				ServerSocket s = new ServerSocket(0);
 				port = s.getLocalPort();

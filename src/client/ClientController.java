@@ -21,9 +21,9 @@ import utils.TimeFormat;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.LinkedList;
+import java.util.*;
 
-public class ClientController {
+public class ClientController implements Observer {
 
 	public CheckMenuItem fileMenuDebugItem;
 	public MenuItem fileMenuCreateGroup;
@@ -44,6 +44,7 @@ public class ClientController {
 
 		user = new User(Test.username, ip, Test.port);
 		groupManager = new Group_Manager(user);
+		groupManager.addObserver(this);
 
 		ScrollPane systemScroll = new ScrollPane();
 		FlowPane systemFlow = new FlowPane();
@@ -171,5 +172,32 @@ public class ClientController {
 		tabPane.getTabs().add(newGroup);
 		tabPane.getSelectionModel().select(newGroup);
 		return newGroup;
+	}
+
+	@Override
+	public void update(Observable o, Object arg) {
+		System.out.println("ClientControl update:"+arg.getClass().toString());
+		if (arg.getClass() == HashMap.class) {
+			HashMap<String, Group> hm = (HashMap) arg;
+			List<String> dialogData = new ArrayList<>(hm.keySet());
+
+			Platform.runLater(()-> {
+				ChoiceDialog dialog = new ChoiceDialog(dialogData.get(0), dialogData);
+				dialog.setTitle("Select group");
+				dialog.setHeaderText("Select your choice");
+
+				Optional<String> result = dialog.showAndWait();
+
+
+				if (result.isPresent()) {
+					Group g = hm.get(result.get());
+					groupManager.addGroup(g.getGroupName(), g);
+					Tab tab = addNewGroupTab(g.getGroupName(), g.getGroupName());
+					GroupClientTab gct = new GroupClientTab(g, groupManager.getSelf(), tab);
+					tabChat.add(gct);
+				}
+			});
+
+		}
 	}
 }

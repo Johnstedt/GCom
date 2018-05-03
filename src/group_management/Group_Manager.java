@@ -5,7 +5,7 @@ import message_ordering.*;
 
 import java.util.*;
 
-public class Group_Manager implements Observer {
+public class Group_Manager extends Observable implements Observer {
 
 	private User self;
 	private HashMap<String, Group> groups;
@@ -14,14 +14,13 @@ public class Group_Manager implements Observer {
 	public Group_Manager(User u){
 		this.self = u;
 		this.groups = new HashMap<>();
-
-		//create_group(u, "init", MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
+		this.r = new Receiver(u.getPort());
+		this.r.run();
+		create_group(u, "init", MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
 	}
 	public Group_Manager(User u, String ch, Integer cp){
 
 		this(u);
-		this.r = new Receiver(u.getPort());
-		this.r.run();
 		if(cp == 1338){
 
 			//Initiate communication
@@ -92,44 +91,25 @@ public class Group_Manager implements Observer {
 
 	@Override
 	public void update(Observable observable, Object o) {
+		System.out.println("GroupManager update:"+o.getClass().toString());
 		if(o instanceof Group) {
-
 			Group g = (Group) o;
 			g.sendGroups(this.groups);
-
-
 		} else if(o instanceof HashMap){
-
-			HashMap hm = (HashMap)o;
-			Scanner in = new Scanner(System.in);
-			String input;
-
-			LinkedList<Group> l = new LinkedList<Group>();
-
-			for (Object o1 : hm.entrySet()) {
-				HashMap.Entry pair = (HashMap.Entry) o1;
-				System.out.println(pair.getKey() + " join?");
-
-				input = in.nextLine();
-				if (input.equals("yes")) {
-					Group g = (Group) pair.getValue();
-
-					l.add(g);
-				}
-			}
-
-			for(Group g: l){
-				this.groups.put(g.getGroupName(), g);
-				g.removeStubs();
-				g.addReceiver(this.r);
-				g.addObserver(this);
-				g.join(this.self);
-			}
-
+			this.setChanged();
+			this.notifyObservers(o);
 		}
 	}
 
 	public User getSelf() {
 		return self;
+	}
+
+	public void addGroup(String groupName, Group g) {
+		g.removeStubs();
+		g.addReceiver(this.r);
+		g.addObserver(this);
+		g.join(this.self);
+
 	}
 }
