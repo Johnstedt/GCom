@@ -47,7 +47,7 @@ public class Sender implements Serializable{
 	    }
     }
 
-	public void send(List<User> ul, Message msg){
+	public void send(String groupName, List<User> ul, Message msg){
 	    try {
 	    	for (User user : ul){
 
@@ -56,7 +56,7 @@ public class Sender implements Serializable{
 		        }
 			    RemoteObject ro = this.stub.get(user.getIp()+Integer.toString(user.getPort()));
 
-	    		ro.sendMessage(msg);
+	    		ro.sendMessage(groupName, msg);
 		    }
 	    } catch (RemoteException e) {
 		    e.printStackTrace();
@@ -69,7 +69,8 @@ public class Sender implements Serializable{
 				addToGroup(u.getIp() + Integer.toString(u.getPort()), u);
 			}
 			RemoteObject ro = this.stub.get(u.getIp() + Integer.toString(u.getPort()));
-			ro.askGroup(g);
+			System.out.println(groupName);
+			ro.askGroup(groupName, g);
 		}
 		catch (RemoteException e) {
 			e.printStackTrace();
@@ -77,7 +78,7 @@ public class Sender implements Serializable{
 
 	}
 
-	public void sendGroups(List<User> users, HashMap<String, Group> hm) {
+	public void sendGroups(String gn, List<User> users, HashMap<String, Group> hm) {
 		try {
 			for (User user : users) {
 
@@ -86,7 +87,7 @@ public class Sender implements Serializable{
 				}
 				if(this.nickname.equals(user.getNickname())) {
 					RemoteObject ro = this.stub.get(user.getIp() + Integer.toString(user.getPort()));
-					ro.sendGroups(hm);
+					ro.sendGroups(gn, hm);
 				}
 			}
 		}catch (RemoteException e) {
@@ -94,7 +95,7 @@ public class Sender implements Serializable{
 			}
 	}
 
-	public void join(List<User> users, User u) {
+	public void join(String gn, List<User> users, User u) {
 		try {
 			for (User user : users) {
 
@@ -103,7 +104,7 @@ public class Sender implements Serializable{
 				}
 
 				RemoteObject ro = this.stub.get(user.getIp() + Integer.toString(user.getPort()));
-				ro.join(u);
+				ro.join(gn, u);
 
 			}
 		}catch (RemoteException e) {

@@ -1,5 +1,6 @@
 package group_management;
 
+import communication.Receiver;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import message_ordering.Message;
@@ -12,7 +13,7 @@ public class Group extends Observable implements Observer, Serializable {
 
 	private List<Message> messages;
 
-	private ObservableList<User> users;
+	private List<User> users;
 	private String groupName;
 	private Order order;
 
@@ -21,7 +22,7 @@ public class Group extends Observable implements Observer, Serializable {
 		this.order.addObserver(this);
 		this.groupName = groupName;
 		this.messages = new LinkedList<>();
-		this.users = FXCollections.observableList(new LinkedList<>());
+		this.users = new LinkedList<>();
 	}
 
 
@@ -32,9 +33,11 @@ public class Group extends Observable implements Observer, Serializable {
 			System.out.println(((Message) o).getFrom().getNickname() + ": "+ ((Message) o).getMsg());
 		}
 		else if (o instanceof HashMap){
-			HashMap hm = (HashMap)o;
+
 
 		} else if(o instanceof Group) {
+
+
 		}
 		else if(o instanceof User) {
 			this.users.add((User)o);
@@ -44,11 +47,11 @@ public class Group extends Observable implements Observer, Serializable {
 	}
 
 	public void send(String msg, User self) {
-		this.order.send(users, msg, self);
+		this.order.send(groupName, users, msg, self);
 	}
 
 	public void sendGroups(HashMap<String, Group> hm){
-		this.order.sendGroups(this.users, hm);
+		this.order.sendGroups(groupName, this.users, hm);
 	}
 
 	void addUser(User u) {
@@ -60,7 +63,7 @@ public class Group extends Observable implements Observer, Serializable {
 	}
 
 	public void join(User u) {
-		this.order.join(this.users, u);
+		this.order.join(groupName, this.users, u);
 		this.users.add(u);
 	}
 
@@ -68,7 +71,7 @@ public class Group extends Observable implements Observer, Serializable {
 		return messages;
 	}
 
-	public ObservableList<User> getUsers() {
+	public List<User> getUsers() {
 		return users;
 	}
 
@@ -82,5 +85,9 @@ public class Group extends Observable implements Observer, Serializable {
 
 	public void removeStubs() {
 		this.order.removeStubs();
+	}
+
+	public void addReceiver(Receiver r) {
+		r.addOrder(this.order.getNo(), this.groupName);
 	}
 }

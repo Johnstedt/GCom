@@ -13,11 +13,6 @@ public class Causal extends Order {
 	}
 
 	@Override
-	public void send(List<User> ul, String msg, User self){
-
-	}
-
-	@Override
 	public void receive(String msg) {
 
 	}
@@ -28,17 +23,23 @@ public class Causal extends Order {
 	}
 
 	@Override
-	public void sendGroups(List<User> users, HashMap<String, Group> hm) {
+	public void sendGroups(String gn, List<User> users, HashMap<String, Group> hm) {
 
 	}
 
 	@Override
-	public void join(List<User> users, User u) {
+	public void join(String gn, List<User> users, User u) {
 
 	}
+
 
 	@Override
 	public void removeStubs() {
 
+	}
+
+	@Override
+	public Notify_Order getNo() {
+		return null;
 	}
 }

@@ -1,5 +1,6 @@
 package group_management;
 
+import communication.Receiver;
 import message_ordering.*;
 
 import java.util.*;
@@ -8,22 +9,26 @@ public class Group_Manager implements Observer {
 
 	private User self;
 	private HashMap<String, Group> groups;
+	private Receiver r;
 
 	public Group_Manager(User u){
 		this.self = u;
 		this.groups = new HashMap<>();
+
 		//create_group(u, "init", MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
 	}
 	public Group_Manager(User u, String ch, Integer cp){
 
 		this(u);
-
-
+		this.r = new Receiver(u.getPort());
+		this.r.run();
 		if(cp == 1338){
 
 			//Initiate communication
 
+			create_group(u, "init", MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
 			User otherUser = new User("connect_point", ch, cp);
+			System.out.println(ch + cp);
 			addUserToGroup("init", otherUser);
 			askForGroups("init", this.groups.get("init"));
 
@@ -60,6 +65,7 @@ public class Group_Manager implements Observer {
 		}
 
 		Group g = new Group(order, name);
+		g.addReceiver(this.r);
 		g.addObserver(this);
 		g.addUser(self);
 		groups.put(name, g);
@@ -77,6 +83,7 @@ public class Group_Manager implements Observer {
 	public void askForGroups(String groupName, Group g){
 		groups.get(groupName).askGroups(groupName, g);
 	}
+
 	public void askForGroups(String connectionHost, int connectionPort) {
 		User otherUser = new User("connect_point", connectionHost, connectionPort);
 		addUserToGroup("init", otherUser);
@@ -106,6 +113,7 @@ public class Group_Manager implements Observer {
 				input = in.nextLine();
 				if (input.equals("yes")) {
 					Group g = (Group) pair.getValue();
+					g.addReceiver(this.r);
 					g.removeStubs();
 					l.add(g);
 				}

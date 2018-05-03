@@ -52,8 +52,8 @@ public class GroupClientTab implements Observer{
 		group.addObserver(this::update);
 		setTextInChat(TimeFormat.getTimestamp(), "System", "Created Group "+g.getGroupName());
 
-		ObservableList<User> ul = group.getUsers();
-		userList.setItems(ul);
+		//ObservableList<User> ul = group.getUsers();
+		//userList.setItems(ul);
 		/*ul.addListener(new ListChangeListener<User>() {
 			@Override
 			public void onChanged(Change<? extends User> c) {

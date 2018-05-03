@@ -11,32 +11,30 @@ import java.util.List;
 
 public class Unreliable_Multicast implements Serializable{
 
-	private Receiver r;
 	private Sender s;
 
+	public Unreliable_Multicast(User u, Notify_Order r){
 
-	public Unreliable_Multicast(User u, Notify_Order notify_order){
-
-		this.r = new Receiver(u.getPort(), notify_order);
-		r.run();
+		//this.r = new Receiver(u.getPort(), notify_order);
+		//r.run();
 
 		this.s = new Sender(u.getNickname());
 	}
 
-	public void send(List<User> ul, Message msg) {
-		s.send(ul, msg);
+	public void send(String gn, List<User> ul, Message msg) {
+		s.send(gn, ul, msg);
 	}
 
 	public void askGroup(User u, String groupName, Group g) {
 		s.askGroup(u, groupName, g);
 	}
 
-	public void sendGroups(List<User> users, HashMap<String, Group> hm) {
-		this.s.sendGroups(users, hm);
+	public void sendGroups(String gn, List<User> users, HashMap<String, Group> hm) {
+		this.s.sendGroups(gn, users, hm);
 	}
 
-	public void join(List<User> users, User u) {
-		this.s.join(users, u);
+	public void join(String gn, List<User> users, User u) {
+		this.s.join(gn, users, u);
 	}
 
 

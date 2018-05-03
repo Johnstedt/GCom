@@ -13,19 +13,20 @@ public class Unordered extends Order implements Observer {
 	private Queue<Message> queue;
 	private Unreliable_Multicast communicator;
 	private Vector vectorClock;
+	private Notify_Order no;
 
 	public Unordered(User u){
 
 		this.queue = new LinkedBlockingQueue<>();
 		this.vectorClock = new Vector();
 
-		Notify_Order no = new Notify_Order();
+		this.no = new Notify_Order();
 		no.addObserver(this);
 		this.communicator = new Unreliable_Multicast(u, no);
 	}
 
 	@Override
-	public void send(List<User> ul, String msg, User self) {
+	public void send(String gn, List<User> ul, String msg, User self) {
 
 		Vector v = null;
 		try {
@@ -37,12 +38,16 @@ public class Unordered extends Order implements Observer {
 		}
 
 		Message m = new Message(msg, v, self);
-		communicator.send(ul, m);
+		communicator.send(gn, ul, m);
 	}
 
 	@Override
 	public void receive(String msg) {
 
+	}
+
+	public Notify_Order getNo(){
+		return this.no;
 	}
 
 	@Override
@@ -87,13 +92,13 @@ public class Unordered extends Order implements Observer {
 		notifyObservers(m);
 	}
 
-	public void sendGroups(List<User> users, HashMap<String, Group> hm){
-		this.communicator.sendGroups(users, hm);
+	public void sendGroups(String gn, List<User> users, HashMap<String, Group> hm){
+		this.communicator.sendGroups(gn, users, hm);
 	}
 
 	@Override
-	public void join(List<User> users, User u) {
-		this.communicator.join(users, u);
+	public void join(String gn, List<User> users, User u) {
+		this.communicator.join(gn, users, u);
 	}
 
 	@Override

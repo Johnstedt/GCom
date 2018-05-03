@@ -13,41 +13,41 @@ import java.util.HashMap;
 
 public class RemoteObjectImpl extends UnicastRemoteObject implements RemoteObject {
 
-	private Notify_Order notify_order;
+	private Receiver notify_order;
 
 	public RemoteObjectImpl() throws RemoteException {
 		super();
 	}
 
 	@Override
-	public boolean sendMessage(Message msg) {
-		this.notify_order.hello();
-		this.notify_order.notifyObservers(msg);
+	public boolean sendMessage(String group, Message msg) {
+
+		this.notify_order.notifyObservers(group, msg);
 
 		return true;
 	}
 
-	public boolean askGroup(Group g){
+	public boolean askGroup(String group, Group g){
 		System.out.println("asked for groups");
-		this.notify_order.hello();
-		this.notify_order.notifyObservers(g);
+
+		this.notify_order.notifyObservers(group, g);
 		return true;
 	}
 
 	@Override
-	public void sendGroups(HashMap<String, Group> hm) {
-		this.notify_order.hello();
-		this.notify_order.notifyObservers(hm);
+	public void sendGroups(String group, HashMap<String, Group> hm) {
+		System.out.println("received groups");
+		this.notify_order.notifyObservers(group, hm);
 	}
 
 	@Override
-	public void join(User u) throws RemoteException {
-		this.notify_order.hello();
-		this.notify_order.notifyObservers(u);
+	public void join(String group, User u) throws RemoteException {
+
+		this.notify_order.notifyObservers(group, u);
 	}
 
 	@Override
-	public void setOrderObservable(Notify_Order no) {
+	public void setOrderObservable(Receiver no) {
 
 		this.notify_order =  no;
 	}

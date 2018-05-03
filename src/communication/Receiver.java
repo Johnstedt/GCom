@@ -5,23 +5,33 @@ import message_ordering.Notify_Order;
 import java.io.Serializable;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 public class Receiver implements Runnable, Serializable {
 
 	private Integer port;
-	private Notify_Order notify_order;
+	private HashMap<String, Notify_Order> notify_orders;
 
-	Receiver(Integer port, Notify_Order no){
+	public Receiver(Integer port){
 		super();
 		this.port = port;
-		this.notify_order = no;
+		this.notify_orders = new HashMap<>();
+
+	}
+
+	public void addOrder(Notify_Order no, String GroupName){
+		this.notify_orders.put(GroupName, no);
 	}
 
 	@Override
 	public void run() {
 		try {
+			System.out.println("receiver created");
 			RemoteObject impl = new RemoteObjectImpl();
-			impl.setOrderObservable(this.notify_order);
+			impl.setOrderObservable(this);
 			Registry registry = LocateRegistry.createRegistry(port);
 
 			registry.rebind("MessageService", impl);
@@ -30,4 +40,18 @@ public class Receiver implements Runnable, Serializable {
 		}
 
 	}
+
+	public void notifyObservers(String group, Object o) {
+		System.out.println("??");
+		if(this.notify_orders.containsKey(group)){
+			this.notify_orders.get(group).hello();
+			this.notify_orders.get(group).notifyObservers(o);
+		} else {
+			this.notify_orders.entrySet().iterator().next().getValue().hello();
+			this.notify_orders.entrySet().iterator().next().getValue().notifyObservers(o);
+		}
+
+	}
+
+
 }
