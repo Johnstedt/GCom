@@ -177,26 +177,36 @@ public class ClientController implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		System.out.println("ClientControl update:"+arg.getClass().toString());
-		if (arg.getClass() == HashMap.class) {
+		if (arg instanceof HashMap) {
 			HashMap<String, Group> hm = (HashMap) arg;
-			List<String> dialogData = new ArrayList<>(hm.keySet());
-
-			Platform.runLater(()-> {
-				ChoiceDialog dialog = new ChoiceDialog(dialogData.get(0), dialogData);
-				dialog.setTitle("Select group");
-				dialog.setHeaderText("Select your choice");
-
-				Optional<String> result = dialog.showAndWait();
-
-
-				if (result.isPresent()) {
-					Group g = hm.get(result.get());
-					groupManager.addGroup(g.getGroupName(), g);
-					Tab tab = addNewGroupTab(g.getGroupName(), g.getGroupName());
-					GroupClientTab gct = new GroupClientTab(g, groupManager.getSelf(), tab);
-					tabChat.add(gct);
+			List<String> dialogData = new ArrayList<>();
+			for (String s : hm.keySet()) {
+				if (!s.equals("init")) {
+					Group g = hm.get(s);
+					if (!groupManager.alreadyInGroup(s))  {
+						dialogData.add(s);
+					}
 				}
-			});
+			}
+			if (dialogData.size()>0) {
+				Platform.runLater(()-> {
+					ChoiceDialog dialog = new ChoiceDialog(dialogData.get(0), dialogData);
+					dialog.setTitle("Select group");
+					dialog.setHeaderText("Select your choice");
+					dialog.setWidth(400);
+					dialog.setHeight(400);
+
+					Optional<String> result = dialog.showAndWait();
+
+					if (result.isPresent()) {
+						Group g = hm.get(result.get());
+						groupManager.addGroup(g.getGroupName(), g);
+						Tab tab = addNewGroupTab(g.getGroupName(), g.getGroupName());
+						GroupClientTab gct = new GroupClientTab(g, groupManager.getSelf(), tab);
+						tabChat.add(gct);
+					}
+				});
+			}
 
 		}
 	}

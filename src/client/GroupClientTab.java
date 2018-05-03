@@ -3,7 +3,7 @@ package client;
 import group_management.Group;
 import group_management.User;
 import javafx.application.Platform;
-import javafx.collections.ObservableList;
+import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.*;
@@ -52,14 +52,7 @@ public class GroupClientTab implements Observer{
 		group.addObserver(this::update);
 		setTextInChat(TimeFormat.getTimestamp(), "System", "Created Group "+g.getGroupName());
 
-		//ObservableList<User> ul = group.getUsers();
-		//userList.setItems(ul);
-		/*ul.addListener(new ListChangeListener<User>() {
-			@Override
-			public void onChanged(Change<? extends User> c) {
-
-			}
-		}*/
+		userList.setItems(FXCollections.observableArrayList(group.getUsers()));
 
 	}
 
@@ -121,6 +114,8 @@ public class GroupClientTab implements Observer{
 			if (!tab.isSelected()) {
 				tab.setText("!"+group.getGroupName());
 			}
+		} else if (o instanceof User) {
+			userList.setItems(FXCollections.observableArrayList(group.getUsers()));
 		} else {
 			System.err.println("Dont know!" + o.getClass());
 		}

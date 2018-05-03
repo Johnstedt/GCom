@@ -112,4 +112,8 @@ public class Group_Manager extends Observable implements Observer {
 		g.join(this.self);
 
 	}
+
+	public boolean alreadyInGroup(String s) {
+		return groups.values().contains(s);
+	}
 }
