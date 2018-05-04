@@ -1,10 +1,7 @@
 package message_ordering;
 
 import clock.Vector;
-import communication.Multicast;
-import communication.Receiver;
-import communication.Reliable_Multicast;
-import communication.Unreliable_Multicast;
+import communication.*;
 import group_management.CommunicationType;
 import group_management.Group;
 import group_management.User;
@@ -30,6 +27,9 @@ public class Unordered extends Order implements Observer {
 				break;
 			case RELIABLE_MULTICAST:
 				this.communicator = new Reliable_Multicast(u, gn);
+				break;
+			case TREE_MULTICAST:
+				this.communicator = new Tree_Multicast(u, gn);
 		}
 
 		this.communicator.addObserver(this);
