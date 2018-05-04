@@ -20,7 +20,7 @@ public class Unordered extends Order implements Observer {
 
 		this.queue = new LinkedBlockingQueue<>();
 		this.vectorClock = new Vector();
-
+		//ct = CommunicationType.RELIABLE_MULTICAST;
 		switch (ct) {
 			case UNRELIABLE_MULTICAST:
 				this.communicator = new Unreliable_Multicast(u);
@@ -48,6 +48,7 @@ public class Unordered extends Order implements Observer {
 		}
 
 		Message m = new Message(msg, v, self);
+		System.out.println("I WILL SEND IN UNORDERED ");
 		communicator.send(gn, ul, m);
 	}
 
@@ -58,7 +59,7 @@ public class Unordered extends Order implements Observer {
 
 	public Notify_Order getNo(){
 		Notify_Order new_not = this.communicator.getListener();
-		new_not.addObserver(this);
+		//new_not.addObserver(this);
 
 		return new_not;
 	}
@@ -70,7 +71,9 @@ public class Unordered extends Order implements Observer {
 
 	@Override
 	public void askGroups(User u, String groupName, Group g) {
+
 		this.communicator.askGroup(u, groupName, g);
+		System.out.println("I WILL ASK FOR GROUPS IN ORDER");
 	}
 
 	@Override
@@ -91,7 +94,7 @@ public class Unordered extends Order implements Observer {
 			notifyObservers(hm);
 		}
 		else if(o instanceof Group) {
-
+			System.out.println("I RECEIVED ASK FOR GROUP IN ORDER");
 			this.setChanged();
 			notifyObservers(o);
 		}
@@ -116,6 +119,7 @@ public class Unordered extends Order implements Observer {
 	}
 
 	public void sendGroups(String gn, List<User> users, HashMap<String, Group> hm){
+		System.out.println("I WILL SEND GROUPS IN MULTI");
 		this.communicator.sendGroups(gn, users, hm);
 	}
 

@@ -12,7 +12,7 @@ public class Model {
 
 	public static void main(String args[]) {
 
-		int port = Integer.parseInt(args[0]);
+		/*int port = Integer.parseInt(args[0]);
 		String connectHost = args[1];
 		int connectPort = Integer.parseInt(args[2]);
 		String nick = args[3];
@@ -44,7 +44,7 @@ public class Model {
 			input = in.nextLine();
 			gm.send( "thegroup", input);
 		}
-
+*/
 	}
 
 }

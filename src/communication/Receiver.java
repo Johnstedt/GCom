@@ -23,7 +23,7 @@ public class Receiver implements Runnable, Serializable {
 	}
 
 	public void addOrder(Notify_Order no, String GroupName){
-
+		System.out.println("THIS WILL NOTIFY ");
 		this.notify_orders.put(GroupName, no);
 	}
 
@@ -43,12 +43,12 @@ public class Receiver implements Runnable, Serializable {
 	}
 
 	public void notifyObservers(String group, Object o) {
-		if(this.notify_orders.containsKey(group)){
+		System.out.println("RECEIVER IS SENDING: "+ group);
 
+		if(this.notify_orders.containsKey(group)){
 			this.notify_orders.get(group).hello();
 			this.notify_orders.get(group).notifyObservers(o);
 		} else {
-
 			this.notify_orders.entrySet().iterator().next().getValue().hello();
 			this.notify_orders.entrySet().iterator().next().getValue().notifyObservers(o);
 		}

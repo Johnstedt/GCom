@@ -17,6 +17,8 @@ public class Group extends Observable implements Observer, Serializable {
 	private String groupName;
 	private Order order;
 
+	private User u;
+
 	Group(Order o, String groupName){
 		this.order = o;
 		this.order.addObserver(this);
@@ -37,8 +39,7 @@ public class Group extends Observable implements Observer, Serializable {
 
 
 		} else if(o instanceof Group) {
-
-
+			System.out.println("I RECEIVED ASK FOR GROUP IN GROUP");
 		}
 		else if(o instanceof User) {
 			this.users.add((User)o);
@@ -48,11 +49,13 @@ public class Group extends Observable implements Observer, Serializable {
 	}
 
 	public void send(String msg, User self) {
+		System.out.println("I WILL SEND MESSAGE IN GROUP ");
 		this.order.send(groupName, users, msg, self);
 	}
 
 	public void sendGroups(HashMap<String, Group> hm){
 		this.order.sendGroups(groupName, this.users, hm);
+		System.out.println("I WILL SEND GROUPS IN GROUP");
 	}
 
 	void addUser(User u) {
@@ -93,4 +96,5 @@ public class Group extends Observable implements Observer, Serializable {
 		this.order.addObserver(this);
 		this.order.rebindObserver();
 	}
+
 }

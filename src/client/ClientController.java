@@ -152,6 +152,7 @@ public class ClientController implements Observer {
 		boolean valid = cgd.show("Connect to group", "Connect to group", "IP-address", "Port");
 		if (valid) {
 			//TODO: get groupname.
+			System.out.println("I WILL ASK FOR GROUP");
 			groupManager.askForGroups(cgd.val1, Integer.parseInt(cgd.val2));
 			//tabChat.add(gct);
 		}

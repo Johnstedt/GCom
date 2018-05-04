@@ -18,26 +18,6 @@ public class Group_Manager extends Observable implements Observer {
 		this.r.run();
 		create_group(u, "init", MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
 	}
-	public Group_Manager(User u, String ch, Integer cp){
-
-		this(u);
-		if(cp == 1338){
-
-			//Initiate communication
-
-			create_group(u, "init", MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
-			User otherUser = new User("connect_point", ch, cp);
-			System.out.println(ch + cp);
-			addUserToGroup("init", otherUser);
-			askForGroups("init", this.groups.get("init"));
-
-		} else {
-
-			create_group( u, "thegroup",
-					MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
-		}
-
-	}
 
 	public Group create_group(User u, String name, MessageOrderingType sort_order, CommunicationType ct) {
 
@@ -93,6 +73,7 @@ public class Group_Manager extends Observable implements Observer {
 	public void update(Observable observable, Object o) {
 		System.out.println("GroupManager update:"+o.getClass().toString());
 		if(o instanceof Group) {
+			System.out.println("I WILL SEND GROUPS IN GROUPMANAGER");
 			Group g = (Group) o;
 			g.sendGroups(this.groups);
 		} else if(o instanceof HashMap){

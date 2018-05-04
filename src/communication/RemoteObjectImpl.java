@@ -36,13 +36,13 @@ public class RemoteObjectImpl extends UnicastRemoteObject implements RemoteObjec
 
 	@Override
 	public void sendGroups(String group, HashMap<String, Group> hm) {
-
+		System.out.println("RECEIVED THEM GROUPS");
 		this.notify_order.notifyObservers(group, hm);
 	}
 
 	@Override
 	public void join(String group, User u) throws RemoteException {
-
+		System.out.println("RECEIVED A JOIN");
 		this.notify_order.notifyObservers(group, u);
 	}
 

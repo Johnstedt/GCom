@@ -56,7 +56,7 @@ public class Reliable_Multicast extends Multicast implements Serializable, Obser
 	public void update(Observable observable, Object o) {
 
 		Boolean shouldSend = false;
-		if(o instanceof Message) {
+		if(o instanceof Message) { // Check clock for join also later
 			for (Clock c : clocks) {
 				if (c.equals(((Message) o).getCl())) {
 
@@ -72,6 +72,9 @@ public class Reliable_Multicast extends Multicast implements Serializable, Obser
 				clocks.add(((Message)o).getCl());
 				s.broadcast((Message) o, gn);
 			}
+		} else {
+			this.setChanged();
+			this.notifyObservers(o);
 		}
 	}
 }
