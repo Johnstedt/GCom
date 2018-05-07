@@ -76,6 +76,19 @@ public class Vector implements Clock, Serializable, Cloneable{
 				return false;
 			}
 		}
+
+		for (Object o1 : this.clock.entrySet()) {
+			HashMap.Entry pair = (HashMap.Entry) o1;
+
+			if(comparison.getClock().containsKey(pair.getKey())){
+				if(pair.getValue() != comparison.getClock().get(pair.getKey())){
+					return false;
+				}
+			}else {
+				return false;
+			}
+		}
+
 		return true;
 	}
 

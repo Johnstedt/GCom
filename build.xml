@@ -12,6 +12,7 @@
 		<property name="build" location="build"/>
 		<property name="jarfile" location="guji.jar"/>
 		<property name="mainclass" value="client.Test"/>
+		<property name="tests" location="src" />
 
 		<!-- classpath -->
 		<path id="classpath.lib">
@@ -19,6 +20,8 @@
 						<include name="**/*.jar"/>
 				</fileset>
 		</path>
+
+
 
 		<target name="init">
 				<!-- create time stamp -->
@@ -44,7 +47,7 @@
 				-->
 		</target>
 
-		<target name="all" depends="dist" /> <!-- Add drist as dependent if need multiple jar-->
+		<target name="all" depends="junit" /> <!-- Add drist as dependent if need multiple jar-->
 
 		<target name="dist" depends="compile" description="generate distribution">
 				<jar jarfile="${jarfile}" basedir="${build}">
@@ -57,6 +60,25 @@
 				<!--delete dir="${build}"/-->
 		</target>
 
+	<target name="junit" depends="dist">
+
+		<junit printsummary="yes" haltonfailure="no">
+
+			<!-- Project classpath, must include junit.jar -->
+			<classpath refid="classpath.lib" />
+
+			<!-- test class -->
+			<classpath location="${build}" />
+
+			<batchtest fork="yes" >
+				<fileset dir="${tests}">
+					<include name="**/*test*.java" />
+				</fileset>
+			</batchtest>
+			<formatter type="plain" usefile="false"/>
+
+		</junit>
+	</target>
 
 		<!-- Add if need multiple jars -->
 		<!--target name="drist" depends="compile" description="generate distribution">
