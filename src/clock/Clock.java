@@ -10,7 +10,7 @@ public interface Clock extends Cloneable {
 
 	void receive(HashMap<String, Long> givenClock);
 
-	public Object clone() throws CloneNotSupportedException;
+	public Clock getClone() throws CloneNotSupportedException;
 
 	public void increment(User self);
 
@@ -20,5 +20,5 @@ public interface Clock extends Cloneable {
 
 	public void incrementEveryone(Vector cl);
 
-	public boolean equals(Vector comparison);
+	public boolean equalsQ(Vector comparison);
 }

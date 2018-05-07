@@ -20,7 +20,7 @@ public class Unordered extends Order implements Observer {
 
 		this.queue = new LinkedBlockingQueue<>();
 		this.vectorClock = new Vector();
-		//ct = CommunicationType.RELIABLE_MULTICAST;
+		ct = CommunicationType.RELIABLE_MULTICAST;
 		switch (ct) {
 			case UNRELIABLE_MULTICAST:
 				this.communicator = new Unreliable_Multicast(u);
@@ -41,14 +41,13 @@ public class Unordered extends Order implements Observer {
 		Vector v = null;
 		try {
 			this.vectorClock.increment(self);
-			v = (Vector) this.vectorClock.clone();
+			v = (Vector) this.vectorClock.getClone();
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 			System.out.println("WHY U NOT CLONE!?");
 		}
 
 		Message m = new Message(msg, v, self);
-		System.out.println("I WILL SEND IN UNORDERED ");
 		communicator.send(gn, ul, m);
 	}
 
@@ -59,7 +58,6 @@ public class Unordered extends Order implements Observer {
 
 	public Notify_Order getNo(){
 		Notify_Order new_not = this.communicator.getListener();
-		//new_not.addObserver(this);
 
 		return new_not;
 	}
@@ -94,7 +92,6 @@ public class Unordered extends Order implements Observer {
 			notifyObservers(hm);
 		}
 		else if(o instanceof Group) {
-			System.out.println("I RECEIVED ASK FOR GROUP IN ORDER");
 			this.setChanged();
 			notifyObservers(o);
 		}
@@ -108,9 +105,6 @@ public class Unordered extends Order implements Observer {
 			this.setChanged();
 			notifyObservers(u);
 		}
-		else {
-			System.out.println("it is else");
-		}
 	}
 
 	private void sort(){
@@ -119,12 +113,8 @@ public class Unordered extends Order implements Observer {
 	}
 
 	public void sendGroups(String gn, List<User> users, HashMap<String, Group> hm){
-		System.out.println("I WILL SEND GROUPS IN MULTI");
+		System.out.println("I WILL SEND TO GROUPS IN UNORDERED");
 		this.communicator.sendGroups(gn, users, hm);
-	}
-
-	public void addObservable(Receiver r, String g){
-
 	}
 
 	@Override

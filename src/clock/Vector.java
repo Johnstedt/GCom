@@ -21,8 +21,8 @@ public class Vector implements Clock, Serializable, Cloneable{
 	public void receive(HashMap<String, Long> givenClock) {
 	}
 
-	public Object clone() throws CloneNotSupportedException {
-		return super.clone();
+	public Vector getClone() throws CloneNotSupportedException {
+		return (Vector) super.clone();
 	}
 
 	public void increment(User self) {
@@ -64,32 +64,45 @@ public class Vector implements Clock, Serializable, Cloneable{
 		}
 	}
 
-	public boolean equals(Vector comparison){
+	public boolean equalsQ(Vector comparison){
 		for (Object o1 : comparison.getClock().entrySet()) {
 			HashMap.Entry pair = (HashMap.Entry) o1;
 
 			if(this.clock.containsKey(pair.getKey())){
-				if(pair.getValue() != this.clock.get(pair.getKey())){
+
+				System.out.println("COPM KEY: "+pair.getKey());
+				System.out.println("COPM VAL: "+pair.getValue());
+				System.out.println("CLOCK VAL: " +this.clock.get(pair.getKey()) );
+				if(!((Long)pair.getValue()).equals((Long)this.clock.get(pair.getKey()))){
+					System.out.println("THEY ARE NOT EQUAL");
 					return false;
 				}
 			}else {
 				return false;
 			}
 		}
-
 		for (Object o1 : this.clock.entrySet()) {
 			HashMap.Entry pair = (HashMap.Entry) o1;
 
 			if(comparison.getClock().containsKey(pair.getKey())){
-				if(pair.getValue() != comparison.getClock().get(pair.getKey())){
+				if(!((Long)pair.getValue()).equals((Long)comparison.getClock().get(pair.getKey()))){
+					System.out.println("THEY ARE NOT EQUAL");
 					return false;
 				}
 			}else {
 				return false;
 			}
 		}
-
 		return true;
+	}
+
+	public void printClock(){
+		for (Object o1 : this.clock.entrySet()) {
+			HashMap.Entry pair = (HashMap.Entry) o1;
+
+			System.out.println("ClockKey: "+pair.getKey() + " ClockValue: "+pair.getValue());
+		}
+
 	}
 
 

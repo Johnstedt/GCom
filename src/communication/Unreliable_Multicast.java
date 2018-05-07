@@ -28,7 +28,6 @@ public class Unreliable_Multicast extends Multicast implements Serializable, Obs
 	}
 
 	public void send(String gn, List<User> ul, Message msg) {
-		System.out.println("I WILL ASK FOR GROUP IN MULTICAST ");
 		s.send(gn, ul, msg);
 	}
 
@@ -50,7 +49,6 @@ public class Unreliable_Multicast extends Multicast implements Serializable, Obs
 
 	@Override
 	public void update(Observable observable, Object o) {
-		System.out.println("I RECEIVED SOMETHING IN MULTI");
 		this.setChanged();
 		this.notifyObservers(o);
 

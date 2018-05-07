@@ -25,49 +25,50 @@ public class testVectorClock {
 
 		v1.increment(user1);
 
-		Assert.assertFalse(v2.equals(v1));
-		Assert.assertFalse(v1.equals(v2));
+		Assert.assertFalse(v2.equalsQ(v1));
+		Assert.assertFalse(v1.equalsQ(v2));
 	}
 
 	@Test
 	public void testVectorShouldEquals(){
 
-		Assert.assertTrue(v2.equals(v1));
-		Assert.assertTrue(v1.equals(v2));
+		Assert.assertTrue(v2.equalsQ(v1));
+		Assert.assertTrue(v1.equalsQ(v2));
 
 		v1.increment(user1);
 		v2.increment(user1);
 
-		Assert.assertTrue(v2.equals(v1));
-		Assert.assertTrue(v1.equals(v2));
+		Assert.assertTrue(v2.equalsQ(v1));
+		Assert.assertTrue(v1.equalsQ(v2));
 
 		v1.increment(user1);
 		v2.increment(user1);
 
-		Assert.assertTrue(v2.equals(v1));
-		Assert.assertTrue(v1.equals(v2));
+		Assert.assertTrue(v2.equalsQ(v1));
+		Assert.assertTrue(v1.equalsQ(v2));
 
 		v1.increment(user2);
 		v2.increment(user2);
 
-		Assert.assertTrue(v2.equals(v1));
-		Assert.assertTrue(v1.equals(v2));
+		Assert.assertTrue(v2.equalsQ(v1));
+		Assert.assertTrue(v1.equalsQ(v2));
 	}
 
 	@Test
 	public void testVectorClone(){
 
 		v1.increment(user1);
+		v2.increment(user2);
 		Vector v3 = null;
 		try {
-			v3 = (Vector) v1.clone();
+			v3 = v1.getClone();
 			v3.increment(user2);
 			v1.increment(user2);
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
-
-		Assert.assertTrue(v1.equals(v3));
+		Assert.assertFalse(v3.equalsQ(v2));
+		Assert.assertTrue(v1.equalsQ(v3));
 	}
 
 	@Test
@@ -78,11 +79,11 @@ public class testVectorClock {
 		v1.increment(user1);
 		v1.increment(user2);
 
-		Assert.assertFalse(v2.equals(v1));
-		Assert.assertFalse(v1.equals(v2));
+		Assert.assertFalse(v2.equalsQ(v1));
+		Assert.assertFalse(v1.equalsQ(v2));
 
 		v2.incrementEveryone(v1);
-		Assert.assertTrue(v2.equals(v1));
-		Assert.assertTrue(v1.equals(v2));
+		Assert.assertTrue(v2.equalsQ(v1));
+		Assert.assertTrue(v1.equalsQ(v2));
 	}
 }
