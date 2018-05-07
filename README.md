@@ -1,2 +1,3 @@
 # GCom
-A distributed system is composed of group(s) of processes that coordinate their activities by exchanging messages over a network. For such systems, pair-wise exchange of messages need not be the most efficient or reliable way to communicate. Multicast is an operation that sends a message from one process to a group of processes. This is typically achieved without the sending process having explicit knowledge of the group members.
+
+GCom, short for Group Communication, is a distributed decentralized chat. It receives knowledge of groups directly from users and sends messages directly to those users without a server or third party.
