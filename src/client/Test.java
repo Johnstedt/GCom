@@ -50,7 +50,7 @@ public class Test extends Application {
 			Scene scene = new Scene(root, 750, 700);
 			scene.getStylesheets().add(this.getClass().getResource("style.css").toExternalForm());
 			primaryStage.setScene(scene);
-			primaryStage.setTitle("ChatClient GCom "+ ipaddress.getHostName()+":"+port);
+			primaryStage.setTitle("ChatClient GCom " + username + "@" + ipaddress.getHostName()+":"+port);
 			primaryStage.setMinWidth(750);
 			primaryStage.setMinHeight(650);
 			primaryStage.setWidth(750);
