@@ -16,9 +16,11 @@ public class Group_Manager extends Observable implements Observer {
 		this.groups = new HashMap<>();
 		this.r = new Receiver(u.getPort());
 		this.r.run();
-		create_group(u, "init", MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
 	}
 
+	public Group create_group(String name, MessageOrderingType sort_order, CommunicationType ct) {
+		return create_group(self, name, sort_order, ct);
+	}
 	public Group create_group(User u, String name, MessageOrderingType sort_order, CommunicationType ct) {
 
 		Order order;
@@ -96,5 +98,17 @@ public class Group_Manager extends Observable implements Observer {
 
 	public boolean alreadyInGroup(String s) {
 		return groups.values().contains(s);
+	}
+
+	/**
+	 * Can only remove groups that the owner owns.
+	 * @param groupname
+	 */
+	public void remove_group(String groupname) {
+		if (groups.containsKey(groupname)) {
+			//TODO: disjoin all users.
+			groups.remove(groupname);
+		}
+
 	}
 }

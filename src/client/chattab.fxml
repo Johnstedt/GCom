@@ -3,37 +3,27 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.text.TextFlow?>
 
-<BorderPane fx:id="chatGroupPane" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
-    <bottom>
-        <FlowPane fx:id="lowerFlowPane" prefHeight="32.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-            <children>
-                <TextField fx:id="chatInputField" prefHeight="32.0" prefWidth="546.0" promptText="Write to chat!">
+<BorderPane fx:id="chatGroupPane" prefHeight="300.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <ListView fx:id="chatOutputField" minHeight="200.0" minWidth="200.0" BorderPane.alignment="CENTER" />
+   </center>
+   <right>
+        <ListView fx:id="userList" prefHeight="346.0" prefWidth="174.0" BorderPane.alignment="CENTER" />
+   </right>
+   <bottom>
+      <AnchorPane fx:id="lowerFlowPane" BorderPane.alignment="CENTER">
+         <children>
+                <TextField fx:id="chatInputField" prefHeight="32.0" prefWidth="366.0" promptText="Write to chat!" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="57.0">
                     <padding>
                         <Insets left="5.0" />
                     </padding>
                 </TextField>
-                <Button fx:id="sendButton" alignment="CENTER_RIGHT" mnemonicParsing="false" text="Send" />
-            </children>
-        </FlowPane>
-    </bottom>
-    <right>
-      <ScrollPane fx:id="userListScrollPane" BorderPane.alignment="CENTER">
-         <content>
-              <ListView fx:id="userList" prefHeight="346.0" prefWidth="174.0" />
-         </content>
-      </ScrollPane>
-    </right>
-    <center>
-        <ScrollPane fx:id="chatInputScrollPane" fitToHeight="true" fitToWidth="true" hbarPolicy="NEVER" hvalue="1.0" vbarPolicy="ALWAYS" vvalue="1.0" BorderPane.alignment="CENTER">
-            <content>
-                <TextFlow fx:id="chatOutputField" minHeight="-Infinity" minWidth="-Infinity" />
-            </content>
-        </ScrollPane>
-    </center>
+                <Button fx:id="sendButton" alignment="CENTER_RIGHT" layoutX="481.0" layoutY="3.0" mnemonicParsing="false" text="Send" AnchorPane.rightAnchor="0.0" />
+         </children>
+      </AnchorPane>
+   </bottom>
 </BorderPane>
