@@ -16,8 +16,8 @@ public class TwoFieldDialog {
 	public boolean show(String title, String header, String val1, String val2) {
 		// Create the custom dialog.
 		Dialog<Pair<String, String>> dialog = new Dialog<>();
-		dialog.setTitle("Connect directly to a group");
-		dialog.setHeaderText("Direct Connect Dialog");
+		dialog.setTitle(title);
+		dialog.setHeaderText(header);
 
 		// Set the icon (must be included in the project).
 		//dialog.setGraphic(new ImageView(this.getClass().getResource("login.png").toString()));

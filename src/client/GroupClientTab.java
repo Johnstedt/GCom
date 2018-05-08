@@ -8,11 +8,11 @@ import javafx.event.ActionEvent;
 import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import javafx.scene.text.TextFlow;
 import message_ordering.Message;
 import utils.TimeFormat;
 
@@ -22,7 +22,7 @@ import java.util.Observer;
 public class GroupClientTab implements Observer{
 	private User self;
 	private Button sendButton;
-	private TextFlow chatOutputField;
+	private ListView<Node> chatOutputField;
 	private ListView userList;
 	private Group group;
 	private Tab tab;
@@ -37,11 +37,9 @@ public class GroupClientTab implements Observer{
 		//chatInputField.setOnAction(this::onEnter);
 		Node borderPane = tab.getContent().lookup("#chatGroupPane");
 
-		ScrollPane chatInputScrollPane = (ScrollPane) borderPane.lookup("#chatInputScrollPane");
-		chatOutputField = (TextFlow) chatInputScrollPane.getContent();
+		chatOutputField = (ListView<Node>) borderPane.lookup("#chatOutputField");
 
-		ScrollPane userListScrollPane = (ScrollPane) borderPane.lookup("#userListScrollPane");
-		userList = (ListView) userListScrollPane.getContent();
+		userList = (ListView) borderPane.lookup("#userList");
 		userList.setOnMouseClicked(this::clickOnUser);
 		Node lowerPane = borderPane.lookup("#lowerFlowPane");
 
@@ -50,9 +48,10 @@ public class GroupClientTab implements Observer{
 		chatInputField = (TextField) lowerPane.lookup("#chatInputField");
 		chatInputField.setOnAction(this::onEnter);
 		group.addObserver(this::update);
-		setTextInChat(TimeFormat.getTimestamp(), "System", "Created Group "+g.getGroupName());
-
+		setTextInChat(TimeFormat.getTimestamp(), "System", "Joined group "+g.getGroupName());
 		userList.setItems(FXCollections.observableArrayList(group.getUsers()));
+		chatOutputField.autosize();
+		Platform.runLater(()->chatInputField.requestFocus());
 
 	}
 
@@ -77,8 +76,13 @@ public class GroupClientTab implements Observer{
 		Text text3 = new Text(": " + msg);
 		text3.setFill(Color.BLACK);
 		text3.setFont(Font.font("Helvetica", textSize));
+		FlowPane field = new FlowPane();
+		field.setPrefWrapLength(chatOutputField.getWidth());
+		field.getChildren().addAll(text1, text2, text3);
 
-		Platform.runLater(()->chatOutputField.getChildren().addAll(text1, text2, text3, new Text(System.lineSeparator())));
+		Platform.runLater(()->chatOutputField.getItems().addAll(field));
+		Platform.runLater( () ->chatOutputField.scrollTo(chatOutputField.getItems().size()-1) );
+
 	}
 
 

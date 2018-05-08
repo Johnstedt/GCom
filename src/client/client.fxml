@@ -1,14 +1,22 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import com.gluonhq.charm.glisten.control.ToggleButtonGroup?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.CheckMenuItem?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.control.Tab?>
 <?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.control.ToolBar?>
 <?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
-<BorderPane fx:id="chatGroupPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientController">
+<BorderPane fx:id="chatGroupPane" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="700.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1" fx:controller="client.ClientController">
 <top>
       <BorderPane BorderPane.alignment="CENTER">
          <top>
@@ -17,7 +25,7 @@
                   <Menu mnemonicParsing="false" text="File">
                       <items>
                         <MenuItem fx:id="fileMenuCreateGroup" mnemonicParsing="false" onAction="#createGroup" text="Create group" />
-                        <MenuItem fx:id="fileMenuConnectToGroup" mnemonicParsing="false" onAction="#connectToGroup" text="Connect to group" />
+                        <MenuItem fx:id="fileMenuConnectToNameServer" mnemonicParsing="false" onAction="#connectToNameServer" text="Connect to NameServer" />
                         <CheckMenuItem fx:id="fileMenuDebugItem" mnemonicParsing="false" onAction="#debugCheckbox" text="Debugger" />
                           <MenuItem fx:id="fileMenuCloseItem" mnemonicParsing="false" onAction="#terminateProgram" text="Close" />
                       </items>
@@ -30,10 +38,51 @@
               </menus>
           </MenuBar>
          </top>
+         <center>
+            <ToolBar prefHeight="28.0" prefWidth="600.0" BorderPane.alignment="CENTER">
+              <items>
+                <Button fx:id="newNsBtn" mnemonicParsing="false" onAction="#connectToNameServer" text="New NS">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </Button>
+                  <Button fx:id="newGroupBtn" mnemonicParsing="false" onAction="#createGroup" text="New Group">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </Button>
+                  <HBox alignment="CENTER_RIGHT" style="-fx-border-color: lightgray; -fx-border-width: 0 2 0 2; -fx-padding: 0 4 0 4;">
+                     <children>
+                          <ToggleButton fx:id="debuggerOnBtn" onAction="#debugOn" text="On">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                          </ToggleButton>
+                          <ToggleButton fx:id="offDebuggerBtn" onAction="#debugOff" selected="true" text="Off">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                          </ToggleButton>
+                        <Text fontSmoothingType="LCD" strokeType="OUTSIDE" strokeWidth="0.0" text="Debugger">
+                           <font>
+                              <Font size="11.0" />
+                           </font>
+                        </Text>
+                     </children>
+                  </HBox>
+                  <ToggleButtonGroup selectionType="SINGLE" />
+                  <CheckBox fx:id="isNameServer" mnemonicParsing="false" onAction="#isNameServer" selected="true" text="Is Nameserver">
+                     <font>
+                        <Font size="11.0" />
+                     </font>
+                  </CheckBox>
+              </items>
+            </ToolBar>
+         </center>
       </BorderPane>
 </top>
    <center>
-      <TabPane fx:id="tabPane" BorderPane.alignment="CENTER">
+      <TabPane fx:id="tabPane" prefHeight="537.0" prefWidth="400.0" BorderPane.alignment="CENTER">
         <tabs>
           <Tab fx:id="systemTab" text="System" />
         </tabs>

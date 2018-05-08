@@ -25,7 +25,7 @@ public class Test extends Application {
 			System.out.println("What is your username");
 			username = reader.nextLine();
 			reader.close();*/
-			username = "JJ";
+			username = "Jw";
 			try {
 				ServerSocket s = new ServerSocket(0);
 				port = s.getLocalPort();
@@ -47,16 +47,18 @@ public class Test extends Application {
 		try {
 			URL url = new File("src/client/client.fxml").toURL();
 			Parent root = FXMLLoader.load(url);
-			Scene scene = new Scene(root, 600, 400);
+			Scene scene = new Scene(root, 750, 700);
+			scene.getStylesheets().add(this.getClass().getResource("style.css").toExternalForm());
 			primaryStage.setScene(scene);
-			primaryStage.setTitle("Hello You");
-			primaryStage.setMinWidth(600);
-			primaryStage.setMinHeight(400);
-			primaryStage.setWidth(600);
-			primaryStage.setHeight(400);
+			primaryStage.setTitle("ChatClient GCom " + username + "@" + ipaddress.getHostName()+":"+port);
+			primaryStage.setMinWidth(750);
+			primaryStage.setMinHeight(650);
+			primaryStage.setWidth(750);
+			primaryStage.setHeight(650);
 			primaryStage.setMaximized(false);
 			primaryStage.setFullScreen(false);
 			primaryStage.setResizable(true);
+			primaryStage.sizeToScene();
 			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();

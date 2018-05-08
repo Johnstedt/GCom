@@ -2,10 +2,9 @@ package client;
 
 import group_management.*;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -25,18 +24,31 @@ import java.util.*;
 
 public class ClientController implements Observer {
 
+	//Menu - File
 	public CheckMenuItem fileMenuDebugItem;
 	public MenuItem fileMenuCreateGroup;
-	public MenuItem fileMenuConnectToGroup;
+	public MenuItem fileMenuConnectToNameServer;
 	public MenuItem fileMenuCloseItem;
+
+	//Toolbar
+	public CheckBox isNameServer;
+	public ToggleButton offDebuggerBtn;
+	public ToggleButton debuggerOnBtn;
+	public TreeView serverTree;
+	private ListView<Node> systemTextList;
+
+	//Tab
 	public TabPane tabPane;
 	public Tab systemTab;
+	private BorderPane systemPane;
 
+	//Other
+	private LinkedList<GroupClientTab> tabChat = new LinkedList<>();
 	private DebuggerController debugger = null;
-	private int textSize = 13;
+	private int textSize = 12;
 	private User user;
 	private Group_Manager groupManager;
-	private LinkedList<GroupClientTab> tabChat = new LinkedList<>();
+
 
 	public void initialize() {
 		String host = Test.ipaddress.getHostName();
@@ -46,42 +58,59 @@ public class ClientController implements Observer {
 		groupManager = new Group_Manager(user);
 		groupManager.addObserver(this);
 
-		ScrollPane systemScroll = new ScrollPane();
-		FlowPane systemFlow = new FlowPane();
-		systemScroll.setContent(systemFlow);
+		//systemScroll = new ScrollPane();
+		systemTextList = new ListView<>();
+		//systemScroll.setContent(systemTextList);
 
 
 		fileMenuCreateGroup.setAccelerator(
-			KeyCombination.keyCombination("ALT+n")
+					KeyCombination.keyCombination("ALT+n")
 		);
-		fileMenuConnectToGroup.setAccelerator(
+		fileMenuConnectToNameServer.setAccelerator(
 					KeyCombination.keyCombination("ALT+c")
 		);
 		//Platform.runLater(()-> chatInputField.requestFocus());
-		tabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
-			@Override
-			public void changed(ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) {
-				if (newValue != null) {
-					//TODO: When focus remove "!" in tabname.
-				}
+		tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				//TODO: When focus remove "!" in tabname.
 			}
 		});
-		Platform.runLater(()->systemTab.setContent(systemScroll));
-		Platform.runLater(()->systemScroll.vvalueProperty().bind(systemFlow.heightProperty()));
-		Platform.runLater(()->systemScroll.setFitToWidth(true));
-		Platform.runLater(()->setTextInChat(systemFlow, TimeFormat.getTimestamp(),"System","Welcome "+Test.username));
-		Platform.runLater(()->setTextInChat(systemFlow, TimeFormat.getTimestamp(),"System","Currently served at "+ ip+":"+String.valueOf(Test.port)+" ("+host+")"));
+
+
+		//System tab
+
+		systemPane = new BorderPane();
+
+		//System tab - Tree servers
+		TreeItem<String> dummyRoot = new TreeItem<>("Dummy");
+		TreeItem<String> ns = new TreeItem<>("My NameServer");
+		dummyRoot.getChildren().add(ns);
+
+		TreeItem<String> nsgroups = new TreeItem<>("Chat1");
+		ns.getChildren().add(nsgroups);
+
+		serverTree = new TreeView();
+		serverTree.setRoot(dummyRoot);
+		serverTree.setShowRoot(false);
+		systemPane.setRight(serverTree);
+		//System tab - TextList (text output)
+		systemPane.setCenter(systemTextList);
+		Platform.runLater(()->systemTab.setContent(systemPane));
+		Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Welcome "+Test.username+""));
+		Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Currently served at "+ ip+":"+String.valueOf(Test.port)+" ("+host+")"));
+
+		isNameServer(null);
 
 	}
 
 
 	public ClientController() {
 
-	}
+		}
 
 
 
-	private synchronized void setTextInChat(FlowPane pane, String timestamp, String user, String msg) {
+	private synchronized void setTextInChat(ListView<Node> pane, String timestamp, String user, String msg) {
 		msg = msg.trim();
 		if (msg.length() == 0)
 			return;
@@ -100,7 +129,13 @@ public class ClientController implements Observer {
 		text3.setFill(Color.BLACK);
 		text3.setFont(Font.font("Helvetica", textSize));
 
-		pane.getChildren().addAll(text1, text2, text3, new Text(System.lineSeparator()));
+
+		FlowPane field = new FlowPane();
+		field.setPrefWrapLength(pane.getWidth());
+		field.getChildren().addAll(text1, text2, text3);
+		pane.getItems().addAll(field);
+
+
 	}
 
 	public void terminateProgram() {
@@ -109,29 +144,7 @@ public class ClientController implements Observer {
 	}
 
 
-	public void debugCheckbox(ActionEvent actionEvent) {
-		if (fileMenuDebugItem.isSelected()) {
-			if (debugger == null) {
-				debugger = new DebuggerController();
-				System.err.println("Do it");
-				Parent root;
-				try {
-					root = FXMLLoader.load( new File("src/client/debugger.fxml").toURL());
-					Stage stage = new Stage();
-					stage.setTitle("My New Stage Title");
-					stage.setScene(new Scene(root, 450, 450));
-					stage.show();
-					// Hide this current window (if this is what you want)
-				}
-				catch (IOException e) {
-					e.printStackTrace();
-				}
-			}
-		} else {
-			debugger.terminate();
-			debugger = null;
-		}
-	}
+
 
 	public void createGroup(ActionEvent actionEvent) {
 		TwoFieldDialog cgd = new TwoFieldDialog();
@@ -147,12 +160,12 @@ public class ClientController implements Observer {
 		}
 	}
 
-	public void connectToGroup(ActionEvent actionEvent) {
+	public void connectToNameServer(ActionEvent actionEvent) {
 		TwoFieldDialog cgd = new TwoFieldDialog();
-		boolean valid = cgd.show("Connect to group", "Connect to group", "IP-address", "Port");
+		boolean valid = cgd.show("Connect to NameServer", "Connect to NameServer", "IP-address", "Port");
 		if (valid) {
 			//TODO: get groupname.
-			System.out.println("I WILL ASK FOR GROUP");
+			Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Connecting to NameServer "+cgd.val1+":"+cgd.val2));
 			groupManager.askForGroups(cgd.val1, Integer.parseInt(cgd.val2));
 			//tabChat.add(gct);
 		}
@@ -168,10 +181,10 @@ public class ClientController implements Observer {
 			e.printStackTrace();
 		}
 		BorderPane outer = (BorderPane)newGroup.getContent().lookup("#chatGroupPane");
-		Platform.runLater(()->outer.setPrefHeight(0.9));
-		Platform.runLater(()->outer.setPrefWidth(0.9));
 		tabPane.getTabs().add(newGroup);
 		tabPane.getSelectionModel().select(newGroup);
+		Platform.runLater(outer::autosize);
+
 		return newGroup;
 	}
 
@@ -181,6 +194,7 @@ public class ClientController implements Observer {
 		if (arg instanceof HashMap) {
 			HashMap<String, Group> hm = (HashMap) arg;
 			List<String> dialogData = new ArrayList<>();
+			Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"NameServer","Returned with "+(hm.size()-1)+" groups."));
 			for (String s : hm.keySet()) {
 				if (!s.equals("init")) {
 					Group g = hm.get(s);
@@ -208,7 +222,52 @@ public class ClientController implements Observer {
 					}
 				});
 			}
+		}
+	}
 
+	public void debugCheckbox(ActionEvent actionEvent) {
+		if (fileMenuDebugItem.isSelected()) {
+			debugOn(actionEvent);
+		} else {
+			debugOff(actionEvent);
+		}
+	}
+
+	public void debugOn(ActionEvent actionEvent) {
+		offDebuggerBtn.setSelected(false);
+		debuggerOnBtn.setSelected(true);
+		if (debugger == null) {
+			debugger = new DebuggerController();
+			System.err.println("Do it");
+			Parent root;
+			try {
+				root = FXMLLoader.load( new File("src/client/debugger.fxml").toURL());
+				Stage stage = new Stage();
+				stage.setTitle("My New Stage Title");
+				stage.setScene(new Scene(root, 450, 450));
+				stage.show();
+				// Hide this current window (if this is what you want)
+			}
+			catch (IOException e) {
+				e.printStackTrace();
+			}
+		}
+	}
+
+	public void debugOff(ActionEvent actionEvent) {
+		offDebuggerBtn.setSelected(true);
+		debuggerOnBtn.setSelected(false);
+		debugger.terminate();
+		debugger = null;
+	}
+
+	public void isNameServer(ActionEvent actionEvent) {
+		if (isNameServer.isSelected()) {
+			Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Initialize NameServer"));
+			groupManager.create_group("init", MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
+		} else {
+			groupManager.remove_group("init");
+			Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Closing down NameServer"));
 		}
 	}
 }
