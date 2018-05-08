@@ -48,7 +48,7 @@ public class Test extends Application {
 			URL url = new File("src/client/client.fxml").toURL();
 			Parent root = FXMLLoader.load(url);
 			Scene scene = new Scene(root, 750, 700);
-			scene.getStylesheets().add(this.getClass().getResource("style.css").toExternalForm());
+			scene.getStylesheets().add(new File("src/client/style.css").toURL().toExternalForm());
 			primaryStage.setScene(scene);
 			primaryStage.setTitle("ChatClient GCom " + username + "@" + ipaddress.getHostName()+":"+port);
 			primaryStage.setMinWidth(750);
