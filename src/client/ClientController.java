@@ -176,7 +176,7 @@ public class ClientController implements Observer {
 		newGroup.setText(name);
 		newGroup.setId(id);
 		try {
-			newGroup.setContent(FXMLLoader.load(this.getClass().getResource("chattab.fxml")));
+			newGroup.setContent(FXMLLoader.load(new File("src/client/chattab.fxml").toURL()));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
