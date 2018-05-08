@@ -21,8 +21,6 @@
 				</fileset>
 		</path>
 
-
-
 		<target name="init">
 				<!-- create time stamp -->
 				<tstamp/>
@@ -51,7 +49,7 @@
 
 		<target name="dist" depends="compile" description="generate distribution">
 				<jar jarfile="${jarfile}" basedir="${build}">
-						<!--zipgroupfileset dir="lib" includes="5dv186a1.jar" /-->
+						<zipgroupfileset dir="lib" includes="charm-glisten-4.4.5.jar" />
 						<manifest>
 								<attribute name="Main-Class" value="${mainclass}"/>
 						</manifest>
