@@ -2,10 +2,9 @@ package client;
 
 import group_management.*;
 import javafx.application.Platform;
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -31,6 +30,7 @@ public class ClientController implements Observer {
 	public MenuItem fileMenuCloseItem;
 	public TabPane tabPane;
 	public Tab systemTab;
+	private ListView<Node> systemTextFlow;
 
 	private DebuggerController debugger = null;
 	private int textSize = 13;
@@ -46,42 +46,39 @@ public class ClientController implements Observer {
 		groupManager = new Group_Manager(user);
 		groupManager.addObserver(this);
 
-		ScrollPane systemScroll = new ScrollPane();
-		FlowPane systemFlow = new FlowPane();
-		systemScroll.setContent(systemFlow);
+		//systemScroll = new ScrollPane();
+		systemTextFlow = new ListView<>();
+		//systemScroll.setContent(systemTextFlow);
 
 
 		fileMenuCreateGroup.setAccelerator(
-			KeyCombination.keyCombination("ALT+n")
+					KeyCombination.keyCombination("ALT+n")
 		);
 		fileMenuConnectToGroup.setAccelerator(
 					KeyCombination.keyCombination("ALT+c")
 		);
 		//Platform.runLater(()-> chatInputField.requestFocus());
-		tabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
-			@Override
-			public void changed(ObservableValue<? extends Tab> observable, Tab oldValue, Tab newValue) {
-				if (newValue != null) {
-					//TODO: When focus remove "!" in tabname.
-				}
+		tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+			if (newValue != null) {
+				//TODO: When focus remove "!" in tabname.
 			}
 		});
-		Platform.runLater(()->systemTab.setContent(systemScroll));
-		Platform.runLater(()->systemScroll.vvalueProperty().bind(systemFlow.heightProperty()));
-		Platform.runLater(()->systemScroll.setFitToWidth(true));
-		Platform.runLater(()->setTextInChat(systemFlow, TimeFormat.getTimestamp(),"System","Welcome "+Test.username));
-		Platform.runLater(()->setTextInChat(systemFlow, TimeFormat.getTimestamp(),"System","Currently served at "+ ip+":"+String.valueOf(Test.port)+" ("+host+")"));
+		Platform.runLater(()->systemTab.setContent(systemTextFlow));
+		systemTextFlow.setPrefSize(440, 440);
 
-	}
+
+		Platform.runLater(()->setTextInChat(systemTextFlow, TimeFormat.getTimestamp(),"System","Welcome "+Test.username+""));
+		Platform.runLater(()->setTextInChat(systemTextFlow, TimeFormat.getTimestamp(),"System","Currently served at "+ ip+":"+String.valueOf(Test.port)+" ("+host+")"));
+		}
 
 
 	public ClientController() {
 
-	}
+		}
 
 
 
-	private synchronized void setTextInChat(FlowPane pane, String timestamp, String user, String msg) {
+	private synchronized void setTextInChat(ListView<Node> pane, String timestamp, String user, String msg) {
 		msg = msg.trim();
 		if (msg.length() == 0)
 			return;
@@ -96,11 +93,16 @@ public class ClientController implements Observer {
 		if (user.equals("Client") || user.equals("System") || user.equals(Test.username))
 			text2.setFill(Color.RED);
 		text2.setFont(Font.font( "Helvetica", FontWeight.BOLD, textSize));
-		Text text3 = new Text(": " + msg);
+		Text text3 = new Text("  " + msg);
 		text3.setFill(Color.BLACK);
 		text3.setFont(Font.font("Helvetica", textSize));
 
-		pane.getChildren().addAll(text1, text2, text3, new Text(System.lineSeparator()));
+		FlowPane field = new FlowPane();
+		field.getChildren().addAll(text1, text2, text3);
+		pane.getItems().addAll(field);
+		//Platform.runLater(()->systemScroll.vvalueProperty().bind(systemTextFlow.heightProperty()));
+		//Platform.runLater(()->systemScroll.setFitToWidth(true));
+
 	}
 
 	public void terminateProgram() {
