@@ -19,7 +19,7 @@ public class Tree_Multicast extends Multicast implements Serializable, Observer 
 
 	public Tree_Multicast(User u, String gn){
 
-		this.s = new Sender(u.getNickname());
+		this.s = new Sender(u);
 		this.gn = gn;
 	}
 

@@ -70,11 +70,7 @@ public class Vector implements Clock, Serializable, Cloneable{
 
 			if(this.clock.containsKey(pair.getKey())){
 
-				System.out.println("COPM KEY: "+pair.getKey());
-				System.out.println("COPM VAL: "+pair.getValue());
-				System.out.println("CLOCK VAL: " +this.clock.get(pair.getKey()) );
 				if(!((Long)pair.getValue()).equals((Long)this.clock.get(pair.getKey()))){
-					System.out.println("THEY ARE NOT EQUAL");
 					return false;
 				}
 			}else {
@@ -86,7 +82,6 @@ public class Vector implements Clock, Serializable, Cloneable{
 
 			if(comparison.getClock().containsKey(pair.getKey())){
 				if(!((Long)pair.getValue()).equals((Long)comparison.getClock().get(pair.getKey()))){
-					System.out.println("THEY ARE NOT EQUAL");
 					return false;
 				}
 			}else {

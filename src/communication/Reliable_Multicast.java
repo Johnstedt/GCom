@@ -15,11 +15,13 @@ public class Reliable_Multicast extends Multicast implements Serializable, Obser
 	private final String gn;
 	private Sender s;
 	private List<Vector> clocks;
+	private List<Vector> sent;
 
 	public Reliable_Multicast(User u, String gn){
 
-		this.s = new Sender(u.getNickname());
+		this.s = new Sender(u);
 		this.clocks = new LinkedList<>();
+		this.sent = new LinkedList<>();
 		this.gn = gn;
 	}
 
@@ -54,26 +56,16 @@ public class Reliable_Multicast extends Multicast implements Serializable, Obser
 	@Override
 	public void update(Observable observable, Object o) {
 
-		Boolean shouldSend = true;
 		if(o instanceof Message) { // Check clock for join also later
 
-			System.out.println("THIS IS MESSAGE");
+			Boolean shouldSend = true;
+			Boolean shouldDeliver = true;
+
+			System.out.println("MESSAGE IS: "+((Message)o).getMsg());
 
 			for (Vector c : this.clocks) {
 
-				System.out.println("CLOCK IN RECEIVED");
-				((Vector) ((Message) o).getCl()).printClock();
-
-				System.out.println("CLOCK IN LIST");
-				c.printClock();
-
-				Boolean b = c.equalsQ(((Vector) ((Message) o).getCl()));
-				System.out.println(b);
-				if (b) {
-					System.out.println("already have clock");
-					clocks.remove(c);
-					this.setChanged();
-					this.notifyObservers(o);
+				if (c.equalsQ(((Vector) ((Message) o).getCl()))) {
 					shouldSend = false;
 				}
 			}
@@ -81,6 +73,20 @@ public class Reliable_Multicast extends Multicast implements Serializable, Obser
 				System.out.println("Add clock, length: "+this.clocks.size());
 				this.clocks.add((Vector) ((Message)o).getCl());
 				s.broadcast((Message) o, gn);
+			}else {
+				for (Vector c : this.sent) {
+					if (c.equalsQ(((Vector) ((Message) o).getCl()))) {
+						shouldDeliver = false;
+					}
+				}
+				if(shouldDeliver){
+					System.out.println("WILL DELIVER");
+					this.sent.add(((Vector) ((Message) o).getCl()));
+					this.setChanged();
+					this.notifyObservers(o);
+				}else {
+					System.out.println("WILL NOT DELIVER");
+				}
 			}
 		} else {
 			this.setChanged();

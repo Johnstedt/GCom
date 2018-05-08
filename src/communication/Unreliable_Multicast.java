@@ -17,7 +17,7 @@ public class Unreliable_Multicast extends Multicast implements Serializable, Obs
 
 	public Unreliable_Multicast(User u){
 
-		this.s = new Sender(u.getNickname());
+		this.s = new Sender(u);
 	}
 
 	public Notify_Order getListener(){

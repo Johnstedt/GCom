@@ -19,10 +19,11 @@ public class Sender implements Serializable{
 	private HashMap<String, RemoteObject> stub; // make list later
 	private String nickname;
 
-    Sender(String nick) {
+    Sender(User u) {
 
-            this.nickname = nick;
+            this.nickname = u.getNickname();
             this.stub = new HashMap<>();
+	        addToGroup(u.getIp()+Integer.toString(u.getPort()), u);
     }
 
     void addToGroup(String name, User u){
@@ -65,14 +66,21 @@ public class Sender implements Serializable{
     }
 
     public void broadcast(Message msg, String gn){
-	    Iterator it = stub.entrySet().iterator();
-	    while (it.hasNext()) {
+
+	    for ( String s : this.stub.keySet() ) {
+		    System.out.println(s);
+	    }
+
+	    for ( RemoteObject ro : this.stub.values() ){
 		    try {
-			    ((RemoteObject)((HashMap.Entry)it.next()).getValue()).sendMessage(gn, msg);
+			    //HashMap.Entry pair = (HashMap.Entry)it.next();
+			    //System.out.println(pair.getKey());
+			    ro.sendMessage(gn, msg);
+
 		    } catch (RemoteException e) {
 			    e.printStackTrace();
 		    }
-		    it.remove(); // avoids a ConcurrentModificationException
+
 	    }
     }
 
