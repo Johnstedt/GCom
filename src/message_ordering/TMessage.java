@@ -34,7 +34,7 @@ public class TMessage extends Message implements Serializable {
 
 	public User getUser(int i) {
 
-		if(ul.size() > i){
+		if(ul.size() < i){
 			return null;
 		}
 		return ul.get(i);

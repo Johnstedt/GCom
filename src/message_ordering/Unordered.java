@@ -20,7 +20,7 @@ public class Unordered extends Order implements Observer {
 
 		this.queue = new LinkedBlockingQueue<>();
 		this.vectorClock = new Vector();
-		ct = CommunicationType.RELIABLE_MULTICAST;
+		ct = CommunicationType.TREE_MULTICAST;
 		switch (ct) {
 			case UNRELIABLE_MULTICAST:
 				this.communicator = new Unreliable_Multicast(u);
