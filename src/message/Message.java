@@ -7,7 +7,7 @@ import group_management.User;
 import java.io.Serializable;
 import java.util.List;
 
-public abstract class Message implements Serializable {
+public class Message implements Serializable {
 	private MessageType type;
 	private String groupName;
 	private Vector clock;
@@ -16,13 +16,20 @@ public abstract class Message implements Serializable {
 	private List<User> sendTo;
 
 
-	Message(MessageType type, String groupName, Vector clock, User from, List<User> sendTo, Object msg){
+	public Message(MessageType type,
+	               String groupName,
+	               User from,
+	               List<User> sendTo,
+	               Object msg) {
 		this.type = type;
 		this.groupName = groupName;
 		this.msg = msg;
-		this.clock = clock;
 		this.from = from;
 		this.sendTo = sendTo;
+	}
+	public Message(MessageType type, String groupName, Vector clock, User from, List<User> sendTo, Object msg){
+		this(type, groupName, from, sendTo, msg);
+		this.clock = clock;
 	}
 
 	public Clock getClock() {

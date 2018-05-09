@@ -1,23 +1,26 @@
 package group_management;
 
-import rmi.Receiver;
 import message.Message;
+import message.MessageType;
 import message_ordering.Order;
 
 import java.io.Serializable;
 import java.util.*;
 
+import static message.MessageType.INTERNAL_SET_NEW_RECEIVER;
+import static message.MessageType.TEXT;
+
 public class Group extends Observable implements Observer, Serializable {
 
+	private User self;
 	private List<Message> messages;
 
 	private List<User> users;
 	private String groupName;
 	private Order order;
 
-	private User u;
-
-	Group(Order o, String groupName){
+	Group(Order o, String groupName, User self){
+		this.self = self;
 		this.order = o;
 		this.order.addObserver(this);
 		this.groupName = groupName;
@@ -30,8 +33,10 @@ public class Group extends Observable implements Observer, Serializable {
 	public void update(Observable observable, Object o) {
 
 		if(o instanceof Message) {
-			messages.add((Message) o);
-			System.out.println(((Message) o).getFrom().getNickname() + ": "+ ((Message) o).getMsg());
+			Message msg = (Message) o;
+			System.out.println("Group got message:"+msg.getType());
+			messages.add(msg);
+			System.out.println(msg.getFrom().getNickname() + ": "+ msg.getMsg());
 		}
 		else if (o instanceof HashMap){
 
@@ -46,13 +51,20 @@ public class Group extends Observable implements Observer, Serializable {
 		notifyObservers(o);
 	}
 
-	public void send(String msg, User self) {
-		System.out.println("I WILL SEND MESSAGE IN GROUP ");
-		this.order.send(groupName, users, msg, self);
+	public void send(String msgTxt) {
+		Message msg = new Message(TEXT, groupName, self, users, msgTxt);
+		send(msg);
 	}
 
-	public void sendGroups(HashMap<String, Group> hm){
-		this.order.sendGroups(groupName, this.users, hm);
+
+	public void send(Message msg) {
+		System.out.println("I WILL SEND MESSAGE IN GROUP, type:"+msg.getType());
+		this.order.send(msg);
+	}
+
+	public void sendGroups(HashMap<String, Group> hm, User self, List<User> from){
+		Message msg = new Message(MessageType.SEND_GROUPS, groupName, self, from, hm);
+		this.order.send(msg);
 		System.out.println("I WILL SEND GROUPS IN GROUP");
 	}
 
@@ -60,12 +72,15 @@ public class Group extends Observable implements Observer, Serializable {
 		this.users.add(u);
 	}
 
-	public void askGroups(String groupName, Group g) {
-		this.order.askGroups(this.users.get(1) ,groupName, g);
+	public void askGroups(User self, List<User> to) {
+		Message msg = new Message(MessageType.ASK_GROUPS, groupName, self, to, null);
+		this.order.send(msg);
 	}
 
 	public void join(User u) {
-		this.order.join(groupName, this.users, u);
+
+		//TODO: is this when a user has joined or want to join?
+		// this.order.join(groupName, this.users, u);
 		this.users.add(u);
 	}
 
@@ -89,10 +104,10 @@ public class Group extends Observable implements Observer, Serializable {
 		this.order.removeStubs();
 	}
 
-	void addReceiver(Receiver r) {
-		r.addOrder(this.order.getNo(), this.groupName);
-		this.order.addObserver(this);
-		this.order.rebindObserver();
+	public void setNewReceiver(User self, Observable newReceiver) {
+		List<User> to = new LinkedList<>();
+		to.add(self);
+		Message msg = new Message(INTERNAL_SET_NEW_RECEIVER, groupName, self, to, newReceiver);
+		send(msg);
 	}
-
 }

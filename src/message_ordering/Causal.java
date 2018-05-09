@@ -1,51 +1,22 @@
 package message_ordering;
 
 import group_management.CommunicationType;
-import group_management.Group;
 import group_management.User;
-
-import java.util.HashMap;
-import java.util.List;
+import message.Message;
 
 public class Causal extends Order {
 
-	public Causal(User u, CommunicationType ct) {
-		super();
+	public Causal(User u, CommunicationType communicationType) {
+		super(u, communicationType);
 	}
 
 	@Override
-	public void receive(String msg) {
+	public void send(Message msg) {
 
 	}
-
-	@Override
-	public void askGroups(User u, String groupName, Group g) {
-
-	}
-
-	@Override
-	public void sendGroups(String gn, List<User> users, HashMap<String, Group> hm) {
-
-	}
-
-	@Override
-	public void join(String gn, List<User> users, User u) {
-
-	}
-
 
 	@Override
 	public void removeStubs() {
-
-	}
-
-	@Override
-	public Notify_Order getNo() {
-		return null;
-	}
-
-	@Override
-	public void rebindObserver() {
 
 	}
 }

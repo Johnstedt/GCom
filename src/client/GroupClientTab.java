@@ -6,7 +6,10 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.scene.Node;
-import javafx.scene.control.*;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.paint.Color;
@@ -87,8 +90,7 @@ public class GroupClientTab implements Observer{
 
 
 	private void onSendMessage(String msg) {
-		//setTextInChat(TimeFormat.getTimestamp(), Test.username, msg);
-		group.send(msg, self);
+		group.send(msg);
 	}
 
 	private void onSendButton(ActionEvent actionEvent) {
@@ -104,7 +106,7 @@ public class GroupClientTab implements Observer{
 
 	private void clickOnUser(MouseEvent click) {
 		if (click.getClickCount() == 2) {
-			chatInputField.setText("@"+userList.getSelectionModel().getSelectedItem()+" " + chatInputField.getText());
+			chatInputField.setText("@"+userList.getSelectionModel().getSelectedItem());
 			chatInputField.requestFocus();
 			chatInputField.end();
 		}
@@ -114,7 +116,8 @@ public class GroupClientTab implements Observer{
 	public void update(Observable observable, Object o) {
 		if (o instanceof Message) {
 			Message msg = (Message) o;
-			setTextInChat(TimeFormat.getTimestamp(), msg.getFrom().getNickname(), msg.getMsg());
+			String msgText = (String) msg.getMsg();
+			setTextInChat(TimeFormat.getTimestamp(), msg.getFrom().getNickname(), msgText);
 			if (!tab.isSelected()) {
 				tab.setText("!"+group.getGroupName());
 			}

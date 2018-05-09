@@ -17,7 +17,7 @@ public abstract class Order extends Observable implements Serializable, Observer
 	protected LinkedBlockingQueue<Message> queue;
 	protected Multicast communicator;
 
-	Order(User u, CommunicationType communicationType, String groupName) {
+	Order(User u, CommunicationType communicationType) {
 		this.queue = new LinkedBlockingQueue<>();
 
 		switch (communicationType) {
@@ -33,11 +33,6 @@ public abstract class Order extends Observable implements Serializable, Observer
 				break;
 		}
 		this.communicator.addObserver(this);
-	}
-
-
-	public void setObservableReceiver(Observer receiver) {
-		this.communicator.setObservableReceiver(receiver);
 	}
 
 	public abstract void send(Message msg);

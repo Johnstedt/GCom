@@ -1,6 +1,7 @@
 package rmi;
 
 import message.Message;
+import message.MessageType;
 
 import java.io.Serializable;
 import java.rmi.registry.LocateRegistry;
@@ -18,25 +19,30 @@ public class Receiver extends Observable implements Serializable {
 		super();
 		this.port = port;
 		this.communicationLayer = new HashMap<>();
-		System.err.println("Start Reciever thread");
+		System.err.println("Start Reciever thread ERROR");
 		new Thread(this::run).start();
-		System.err.println("done start Reciever thread (remove this output, it works!");
+		System.err.println("done start Reciever thread (remove this output, it works IGNORE ABOVE)!");
 	}
 
-	public void addOrder(Observer no, String GroupName){
+	public void addOrder(Observer no, String groupName){
 		System.out.println("THIS WILL NOTIFY ");
-		this.communicationLayer.put(GroupName, no);
+		if (this.communicationLayer.containsKey(groupName)) {
+			this.communicationLayer.remove(groupName);
+		}
+		this.communicationLayer.put(groupName, no);
 	}
 
 	public void notifyObservers(Message msg) {
 		System.out.println("RECEIVER IS SENDING: "+ msg.getGroupName());
-
+		if (msg.getType().equals(MessageType.INTERNAL_SET_NEW_RECEIVER)) {
+			System.err.println("Receiver got internal message");
+		}
 		if(this.communicationLayer.containsKey(msg.getGroupName())){
 			// Go around Java implemented observable to get specific observer.
 			Observer o = this.communicationLayer.get(msg.getGroupName());
 			o.update(this, msg);
 		} else {
-			System.err.println("Receiver.notifyObserver ELSE - This should not run! FIX!");
+			System.err.println("Receiver.notifyObserver ELSE - This should not run! FIX!" + msg.getGroupName());
 			//this.communicationLayer.entrySet().iterator().next().getValue().changeAndNotifyObservers();
 		}
 	}
