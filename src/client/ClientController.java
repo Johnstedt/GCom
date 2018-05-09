@@ -95,6 +95,7 @@ public class ClientController implements Observer {
 		systemPane.setRight(serverTree);
 		//System tab - TextList (text output)
 		systemPane.setCenter(systemTextList);
+		systemTab.closableProperty().setValue(false);
 		Platform.runLater(()->systemTab.setContent(systemPane));
 		Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Welcome "+Test.username+""));
 		Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Currently served at "+ ip+":"+String.valueOf(Test.port)+" ("+host+")"));
@@ -167,7 +168,7 @@ public class ClientController implements Observer {
 			//TODO: get groupname.
 			Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Connecting to NameServer "+cgd.val1+":"+cgd.val2));
 			groupManager.askForGroups(cgd.val1, Integer.parseInt(cgd.val2));
-			//tabChat.add(gct);
+
 		}
 	}
 

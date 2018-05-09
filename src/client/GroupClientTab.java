@@ -13,7 +13,7 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
-import message_ordering.Message;
+import message.Message;
 import utils.TimeFormat;
 
 import java.util.Observable;

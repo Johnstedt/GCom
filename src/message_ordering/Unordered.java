@@ -5,34 +5,19 @@ import communication.*;
 import group_management.CommunicationType;
 import group_management.Group;
 import group_management.User;
+import message.Message;
 
 import java.util.*;
 import java.util.concurrent.LinkedBlockingQueue;
 
-public class Unordered extends Order implements Observer {
+public class Unordered extends Order {
 
-	private Queue<Message> queue;
-	private Multicast communicator;
+
 	private Vector vectorClock;
 
-
 	public Unordered(User u, CommunicationType ct, String gn){
-
-		this.queue = new LinkedBlockingQueue<>();
+		super(u, ct, gn);
 		this.vectorClock = new Vector();
-		ct = CommunicationType.TREE_MULTICAST;
-		switch (ct) {
-			case UNRELIABLE_MULTICAST:
-				this.communicator = new Unreliable_Multicast(u);
-				break;
-			case RELIABLE_MULTICAST:
-				this.communicator = new Reliable_Multicast(u, gn);
-				break;
-			case TREE_MULTICAST:
-				this.communicator = new Tree_Multicast(u, gn);
-		}
-
-		this.communicator.addObserver(this);
 	}
 
 	@Override
@@ -56,12 +41,6 @@ public class Unordered extends Order implements Observer {
 
 	}
 
-	public Notify_Order getNo(){
-		Notify_Order new_not = this.communicator.getListener();
-
-		return new_not;
-	}
-
 	@Override
 	public void rebindObserver() {
 		this.communicator.addObserver(this);
@@ -80,7 +59,7 @@ public class Unordered extends Order implements Observer {
 		if(o instanceof Message) {
 			Message m = (Message) o;
 
-			this.vectorClock.incrementEveryone((Vector) m.getCl());
+			this.vectorClock.incrementEveryone((Vector) m.getClock());
 
 			queue.add(m);
 			this.setChanged();

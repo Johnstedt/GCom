@@ -1,0 +1,56 @@
+package rmi;
+
+import message.Message;
+
+import java.io.Serializable;
+import java.rmi.registry.LocateRegistry;
+import java.rmi.registry.Registry;
+import java.util.HashMap;
+import java.util.Observable;
+import java.util.Observer;
+
+public class Receiver extends Observable implements Serializable {
+
+	private Integer port;
+	private HashMap<String, Observer> communicationLayer;
+
+	public Receiver(Integer port){
+		super();
+		this.port = port;
+		this.communicationLayer = new HashMap<>();
+		System.err.println("Start Reciever thread");
+		new Thread(this::run).start();
+		System.err.println("done start Reciever thread (remove this output, it works!");
+	}
+
+	public void addOrder(Observer no, String GroupName){
+		System.out.println("THIS WILL NOTIFY ");
+		this.communicationLayer.put(GroupName, no);
+	}
+
+	public void notifyObservers(Message msg) {
+		System.out.println("RECEIVER IS SENDING: "+ msg.getGroupName());
+
+		if(this.communicationLayer.containsKey(msg.getGroupName())){
+			// Go around Java implemented observable to get specific observer.
+			Observer o = this.communicationLayer.get(msg.getGroupName());
+			o.update(this, msg);
+		} else {
+			System.err.println("Receiver.notifyObserver ELSE - This should not run! FIX!");
+			//this.communicationLayer.entrySet().iterator().next().getValue().changeAndNotifyObservers();
+		}
+	}
+
+	private void run() {
+		try {
+			RemoteObject impl = new RemoteObjectImpl();
+			impl.setOrderObservable(this);
+			Registry registry = LocateRegistry.createRegistry(port);
+			registry.rebind("MessageService", impl);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+
+}

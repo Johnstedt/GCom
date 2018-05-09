@@ -1,9 +1,7 @@
 package group_management;
 
-import communication.Receiver;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
-import message_ordering.Message;
+import rmi.Receiver;
+import message.Message;
 import message_ordering.Order;
 
 import java.io.Serializable;

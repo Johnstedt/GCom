@@ -1,6 +1,6 @@
 package group_management;
 
-import communication.Receiver;
+import rmi.Receiver;
 import message_ordering.*;
 
 import java.util.*;
@@ -9,13 +9,12 @@ public class Group_Manager extends Observable implements Observer {
 
 	private User self;
 	private HashMap<String, Group> groups;
-	private Receiver r;
+	private Observable receiver;
 
 	public Group_Manager(User u){
 		this.self = u;
 		this.groups = new HashMap<>();
-		this.r = new Receiver(u.getPort());
-		this.r.run();
+		this.receiver = new Receiver(u.getPort());
 	}
 
 	public Group create_group(String name, MessageOrderingType sort_order, CommunicationType ct) {
@@ -46,7 +45,7 @@ public class Group_Manager extends Observable implements Observer {
 		}
 
 		Group g = new Group(order, name);
-		g.addReceiver(this.r);
+		g.addReceiveur(this.receiver);
 		g.addObserver(this);
 		g.addUser(self);
 		groups.put(name, g);
@@ -90,7 +89,7 @@ public class Group_Manager extends Observable implements Observer {
 
 	public void addGroup(String groupName, Group g) {
 		g.removeStubs();
-		g.addReceiver(this.r);
+		g.addReceiver(this.receiver);
 		g.addObserver(this);
 		g.join(this.self);
 
