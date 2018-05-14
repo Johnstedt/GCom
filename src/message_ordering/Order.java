@@ -2,6 +2,7 @@ package message_ordering;
 
 import communication.Multicast;
 import communication.ReliableMultiCast;
+import communication.TreeMulticast;
 import communication.Unreliable_Multicast;
 import group_management.CommunicationType;
 import group_management.User;
@@ -28,8 +29,8 @@ public abstract class Order extends Observable implements Serializable, Observer
 				this.communicator = new ReliableMultiCast(u);
 				break;
 			case TREE_MULTICAST:
-				//TODO: fix tree
-				//this.communicator = new Tree_Multicast(u);
+
+				this.communicator = new TreeMulticast(u);
 				break;
 		}
 		this.communicator.addObserver(this);

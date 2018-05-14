@@ -5,10 +5,11 @@ import message.Message;
 import message.MessageType;
 import rmi.Sender;
 
+import java.io.Serializable;
 import java.util.Observable;
 import java.util.Observer;
 
-public abstract class Multicast extends Observable implements Observer {
+public abstract class Multicast extends Observable implements Observer, Serializable {
 	Sender sender;
 
 	Multicast(User u) {
