@@ -78,6 +78,18 @@ public class Tree_Multicast extends Multicast implements Serializable, Observer 
 		return result < 0? result + y : result;
 	}
 
+	private int tree (int me, int from, int len){
+		return mod(me - from, len);
+	}
+
+	private int first(int me, int from, int len){
+		return (tree(me, from, len) *2 + 1 + from) % len;
+	}
+
+	private int second(int me, int from, int len){
+		return (tree(me, from, len) *2 + 2 + from) % len;
+	}
+
 	private List<User> whoSend(TMessage tMsg){
 		int me = tMsg.getIndexOfUser(self);
 		System.out.println("me: "+ me );
@@ -88,34 +100,32 @@ public class Tree_Multicast extends Multicast implements Serializable, Observer 
 
 		LinkedList<User> ul = new LinkedList<>();
 
-		System.out.println("FIRST SEND FAKE: "+ ((mod(me - from, len))*2 + 1 + from) % len);
-		System.out.println("SECOND SEND FAKE: "+ ((mod(me - from, len))*2 + 2 + from) % len);
+		if( (tree(me, from, len)) >= Math.pow(log2(len), 2) ){
 
-		System.out.println("in tree: "+(mod(me - from, len)));
-		System.out.println("power: "+Math.pow(log2(len), 2));
-		if( (mod(me - from, len)) >= Math.pow(log2(len), 2) ){
-			System.out.println("IM A LEAF DUDE");
 			return ul;
 		}
 
 		boolean hasPeopleToSendTo = false;
-		System.out.println("hello");
-		if(tMsg.getUser(((mod(me - from, len))*2 + 1 + from) % len) != null && (me != ((mod(me - from, len))*2 + 1 + from) % len)){
-			System.out.println("this is first kefbab: "+mod( ( ((mod(me - from, len))*2 + 1 + from)%len) -from, len ));
-			if((mod(me - from, len)) <  mod( ( ((mod(me - from, len))*2 + 1 + from)%len) -from, len )) {
-				System.out.println("FIRST SEND: " + ((mod(me - from, len)) * 2 + 1 + from) % len);
-				ul.add(tMsg.getUser(((mod(me - from, len)) * 2 + 1 + from) % len));
+
+		if(tMsg.getUser(first(me, from, len)) != null && me != first(me,from,len) ){
+
+			if(tree(me, from, len) <  tree( first(me,from,len), from, len)) {
+
+				ul.add(tMsg.getUser(first(me, from, len)));
 				hasPeopleToSendTo = true;
 			}
 		}
-		if(tMsg.getUser(((mod(me - from, len))*2 + 2 + from) % len) != null && (me != ((mod(me - from, len))*2 + 2 + from) % len)){
-			System.out.println("this is first kefbab: "+mod( ( ((mod(me - from, len))*2 + 2 + from)%len) -from, len ));
-			if((mod(me - from, len)) <  mod( ( ((mod(me - from, len))*2 + 2 + from)%len) -from, len )) {
-				System.out.println("SECOND SEND: " + ((mod(me - from, len)) * 2 + 2 + from) % len);
-				ul.add(tMsg.getUser(((mod(me - from, len)) * 2 + 2 + from) % len));
+
+		if(tMsg.getUser(first(me, from, len)) != null && me != second(me,from,len) ){
+
+			if(tree(me, from, len) <  tree( second(me, from, len), from, len)) {
+
+				ul.add(tMsg.getUser(second(me, from, len)));
 				hasPeopleToSendTo = true;
 			}
 		}
+
+
 		if(hasPeopleToSendTo) {
 			return ul;
 		} else {
