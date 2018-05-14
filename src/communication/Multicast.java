@@ -1,28 +1,45 @@
 package communication;
 
-import clock.Clock;
-import group_management.Group;
 import group_management.User;
+import message.Message;
+import message.MessageType;
+import rmi.Sender;
 
-import message_ordering.Message;
-import message_ordering.Notify_Order;
-
-import java.util.HashMap;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
 public abstract class Multicast extends Observable implements Observer {
+	Sender sender;
 
-	public abstract Notify_Order getListener();
+	Multicast(User u) {
+		this.sender = new Sender(u);
+	}
 
-	public abstract void send(String gn, List<User> ul, Message msg);
+	public void send(Message msg) {
+		if (msg.getType().equals(MessageType.INTERNAL_SET_NEW_RECEIVER)) {
+			System.err.println("Multicast, setting new internal receiver.");
+			setObservableReceiver((Observable) msg.getMsg());
+			//Resetting.
+			//msg = new Message(MessageType.INTERNAL_SET_NEW_RECEIVER, msg.getGroupName(), msg.getFrom(), msg.getSendTo(), this);
+		} else {
+			sender.send(msg);
+		}
 
-	public abstract void askGroup(User u, String groupName, Group g);
+	}
 
-	public abstract void sendGroups(String gn, List<User> users, HashMap<String, Group> hm);
+	public void removeStubs() {
+		this.sender.remove();
+	}
 
-	public abstract void join(String gn, List<User> users, User u);
 
-	public abstract void removeStubs();
+	private void setObservableReceiver(Observable observableReceiver) {
+		this.deleteObservers();
+		observableReceiver.addObserver(this);
+	}
+
+	@Override
+	public void update(Observable observable, Object o) {
+		this.setChanged();
+		this.notifyObservers(o);
+	}
 }

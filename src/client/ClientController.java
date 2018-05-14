@@ -47,7 +47,7 @@ public class ClientController implements Observer {
 	private DebuggerController debugger = null;
 	private int textSize = 12;
 	private User user;
-	private Group_Manager groupManager;
+	private GroupManager groupManager;
 
 
 	public void initialize() {
@@ -55,7 +55,7 @@ public class ClientController implements Observer {
 		String ip = Test.ipaddress.getHostAddress();
 
 		user = new User(Test.username, ip, Test.port);
-		groupManager = new Group_Manager(user);
+		groupManager = new GroupManager(user);
 		groupManager.addObserver(this);
 
 		//systemScroll = new ScrollPane();
@@ -95,6 +95,7 @@ public class ClientController implements Observer {
 		systemPane.setRight(serverTree);
 		//System tab - TextList (text output)
 		systemPane.setCenter(systemTextList);
+		systemTab.closableProperty().setValue(false);
 		Platform.runLater(()->systemTab.setContent(systemPane));
 		Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Welcome "+Test.username+""));
 		Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Currently served at "+ ip+":"+String.valueOf(Test.port)+" ("+host+")"));
@@ -153,7 +154,7 @@ public class ClientController implements Observer {
 		if (valid) {
 
 			//TODO: Description?
-			Group g = groupManager.create_group(user, cgd.val1, MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
+			Group g = groupManager.createGroup(user, cgd.val1, MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
 			Tab tab = addNewGroupTab(cgd.val1, cgd.val1);
 			GroupClientTab gct = new GroupClientTab(g, groupManager.getSelf(), tab);
 			tabChat.add(gct);
@@ -167,7 +168,7 @@ public class ClientController implements Observer {
 			//TODO: get groupname.
 			Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Connecting to NameServer "+cgd.val1+":"+cgd.val2));
 			groupManager.askForGroups(cgd.val1, Integer.parseInt(cgd.val2));
-			//tabChat.add(gct);
+
 		}
 	}
 
@@ -190,6 +191,10 @@ public class ClientController implements Observer {
 
 	@Override
 	public void update(Observable o, Object arg) {
+		if (arg == null) {
+			System.err.println("CLIENTCONTROLLER, update, arg is null?");
+			return;
+		}
 		System.out.println("ClientControl update:"+arg.getClass().toString());
 		if (arg instanceof HashMap) {
 			HashMap<String, Group> hm = (HashMap) arg;
@@ -215,7 +220,7 @@ public class ClientController implements Observer {
 
 					if (result.isPresent()) {
 						Group g = hm.get(result.get());
-						groupManager.addGroup(g.getGroupName(), g);
+						groupManager.addGroup( g);
 						Tab tab = addNewGroupTab(g.getGroupName(), g.getGroupName());
 						GroupClientTab gct = new GroupClientTab(g, groupManager.getSelf(), tab);
 						tabChat.add(gct);
@@ -264,7 +269,7 @@ public class ClientController implements Observer {
 	public void isNameServer(ActionEvent actionEvent) {
 		if (isNameServer.isSelected()) {
 			Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Initialize NameServer"));
-			groupManager.create_group("init", MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
+			groupManager.createGroup("init", MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
 		} else {
 			groupManager.remove_group("init");
 			Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Closing down NameServer"));
