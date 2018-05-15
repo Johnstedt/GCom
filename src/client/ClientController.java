@@ -16,6 +16,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import message.Message;
 import utils.TimeFormat;
 
 import java.io.File;
@@ -96,9 +97,9 @@ public class ClientController implements Observer {
 		//System tab - TextList (text output)
 		systemPane.setCenter(systemTextList);
 		systemTab.closableProperty().setValue(false);
-		Platform.runLater(()->systemTab.setContent(systemPane));
-		Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Welcome "+Test.username+""));
-		Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Currently served at "+ ip+":"+String.valueOf(Test.port)+" ("+host+")"));
+		systemTab.setContent(systemPane);
+		setTextInChat(TimeFormat.getTimestamp(),"System","Welcome "+Test.username+"");
+		setTextInChat(TimeFormat.getTimestamp(),"System","Currently served at "+ ip+":"+String.valueOf(Test.port)+" ("+host+")");
 
 		isNameServer(null);
 
@@ -111,7 +112,7 @@ public class ClientController implements Observer {
 
 
 
-	private synchronized void setTextInChat(ListView<Node> pane, String timestamp, String user, String msg) {
+	private synchronized void setTextInChat(String timestamp, String user, String msg) {
 		msg = msg.trim();
 		if (msg.length() == 0)
 			return;
@@ -132,9 +133,9 @@ public class ClientController implements Observer {
 
 
 		FlowPane field = new FlowPane();
-		field.setPrefWrapLength(pane.getWidth());
+		field.setPrefWrapLength(systemTextList.getWidth());
 		field.getChildren().addAll(text1, text2, text3);
-		pane.getItems().addAll(field);
+		Platform.runLater(()->systemTextList.getItems().addAll(field));
 
 
 	}
@@ -166,7 +167,7 @@ public class ClientController implements Observer {
 		boolean valid = cgd.show("Connect to NameServer", "Connect to NameServer", "IP-address", "Port");
 		if (valid) {
 			//TODO: get groupname.
-			Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Connecting to NameServer "+cgd.val1+":"+cgd.val2));
+			Platform.runLater(()->setTextInChat(TimeFormat.getTimestamp(),"System","Connecting to NameServer "+cgd.val1+":"+cgd.val2));
 			groupManager.askForGroups(cgd.val1, Integer.parseInt(cgd.val2));
 
 		}
@@ -196,37 +197,56 @@ public class ClientController implements Observer {
 			return;
 		}
 		System.out.println("ClientControl update:"+arg.getClass().toString());
-		if (arg instanceof HashMap) {
-			HashMap<String, Group> hm = (HashMap) arg;
-			List<String> dialogData = new ArrayList<>();
-			Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"NameServer","Returned with "+(hm.size()-1)+" groups."));
-			for (String s : hm.keySet()) {
-				if (!s.equals("init")) {
-					Group g = hm.get(s);
-					if (!groupManager.alreadyInGroup(s))  {
-						dialogData.add(s);
-					}
+		if (arg instanceof Message) {
+			Message msg = (Message) arg;
+			switch (msg.getType()) {
+				case SEND_GROUPS:
+					nameServerDialog((HashMap<String, Group>) msg.getMsg());
+					break;
+				case ASK_GROUPS:
+					setTextInChat(TimeFormat.getTimestamp(), "NameServer", String.valueOf(msg.getFrom())+ " is asking for groups");
+				case TEXT:
+					//setTextInChat(TimeFormat.getTimestamp(), String.valueOf(msg.getFrom()), (String) msg.getMsg());
+					break;
+				default:
+					setTextInChat(TimeFormat.getTimestamp(), String.valueOf(msg.getFrom()), msg.getType() +":"+(String) msg.getMsg());
+					break;
+			}
+
+
+
+		}
+	}
+
+	private void nameServerDialog(HashMap<String, Group> hm) {
+		List<String> dialogData = new ArrayList<>();
+		Platform.runLater(()->setTextInChat(TimeFormat.getTimestamp(),"NameServer","Returned with "+(hm.size()-1)+" groups."));
+		for (String s : hm.keySet()) {
+			if (!s.equals("init")) {
+				Group g = hm.get(s);
+				if (!groupManager.alreadyInGroup(s))  {
+					dialogData.add(s);
 				}
 			}
-			if (dialogData.size()>0) {
-				Platform.runLater(()-> {
-					ChoiceDialog dialog = new ChoiceDialog(dialogData.get(0), dialogData);
-					dialog.setTitle("Select group");
-					dialog.setHeaderText("Select your choice");
-					dialog.setWidth(400);
-					dialog.setHeight(400);
+		}
+		if (dialogData.size()>0) {
+			Platform.runLater(()-> {
+				ChoiceDialog dialog = new ChoiceDialog(dialogData.get(0), dialogData);
+				dialog.setTitle("Select group");
+				dialog.setHeaderText("Select your choice");
+				dialog.setWidth(400);
+				dialog.setHeight(400);
 
-					Optional<String> result = dialog.showAndWait();
+				Optional<String> result = dialog.showAndWait();
 
-					if (result.isPresent()) {
-						Group g = hm.get(result.get());
-						groupManager.addGroup( g);
-						Tab tab = addNewGroupTab(g.getGroupName(), g.getGroupName());
-						GroupClientTab gct = new GroupClientTab(g, groupManager.getSelf(), tab);
-						tabChat.add(gct);
-					}
-				});
-			}
+				if (result.isPresent()) {
+					Group g = hm.get(result.get());
+					groupManager.addGroup(g);
+					Tab tab = addNewGroupTab(g.getGroupName(), g.getGroupName());
+					GroupClientTab gct = new GroupClientTab(g, groupManager.getSelf(), tab);
+					tabChat.add(gct);
+				}
+			});
 		}
 	}
 
@@ -268,11 +288,11 @@ public class ClientController implements Observer {
 
 	public void isNameServer(ActionEvent actionEvent) {
 		if (isNameServer.isSelected()) {
-			Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Initialize NameServer"));
+			setTextInChat(TimeFormat.getTimestamp(),"System","Initialize NameServer");
 			groupManager.createGroup("init", MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
 		} else {
 			groupManager.remove_group("init");
-			Platform.runLater(()->setTextInChat(systemTextList, TimeFormat.getTimestamp(),"System","Closing down NameServer"));
+			setTextInChat(TimeFormat.getTimestamp(),"System","Closing down NameServer");
 		}
 	}
 }

@@ -75,18 +75,26 @@ public class GroupManager extends Observable implements Observer {
 					break;
 				case SEND_GROUPS:
 					System.err.println("GM update SEND_GROUPS!");
+					this.setChanged();
+					this.notifyObservers(msg);
 					break;
 				case TEXT:
 					this.setChanged();
-					this.notifyObservers(msg.getMsg());
+					this.notifyObservers(msg);
 					break;
 				case JOIN:
 					addUserToGroup(msg.getGroupName(), msg.getFrom());
+					this.setChanged();
+					this.notifyObservers(msg);
 					break;
 				case LEAVE:
 					//TODO
+					this.setChanged();
+					this.notifyObservers(msg);
 					break;
 				case INTERNAL_SET_NEW_RECEIVER:
+					this.setChanged();
+					this.notifyObservers(msg);
 					break;
 				default:
 					System.err.println("Groupmanager.update() switch default why?"+msg.getType());
