@@ -19,9 +19,7 @@ public class Receiver extends Observable implements Serializable {
 		super();
 		this.port = port;
 		this.communicationLayer = new HashMap<>();
-		System.err.println("Start Reciever thread ERROR");
 		new Thread(this::run).start();
-		System.err.println("done start Reciever thread (remove this output, it works IGNORE ABOVE)!");
 	}
 
 	public void addOrder(Observer no, String groupName){

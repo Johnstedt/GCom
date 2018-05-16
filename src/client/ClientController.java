@@ -1,5 +1,6 @@
 package client;
 
+import debugger.DebuggerController;
 import group_management.*;
 import javafx.application.Platform;
 import javafx.event.ActionEvent;
@@ -45,7 +46,6 @@ public class ClientController implements Observer {
 
 	//Other
 	private LinkedList<GroupClientTab> tabChat = new LinkedList<>();
-	private DebuggerController debugger = null;
 	private int textSize = 12;
 	private User user;
 	private GroupManager groupManager;
@@ -100,15 +100,25 @@ public class ClientController implements Observer {
 		systemTab.setContent(systemPane);
 		setTextInChat(TimeFormat.getTimestamp(),"System","Welcome "+Test.username+"");
 		setTextInChat(TimeFormat.getTimestamp(),"System","Currently served at "+ ip+":"+String.valueOf(Test.port)+" ("+host+")");
-
 		isNameServer(null);
 
 	}
 
 
 	public ClientController() {
-
+		System.out.println("Create debugger");
+		Parent root;
+		try {
+			root = FXMLLoader.load(new File("src/debugger/debugger.fxml").toURL());
+			Stage stage = new Stage();
+			DebuggerController.getDebugger().start(stage);
+			stage.setTitle("My New Stage Title");
+			stage.setScene(new Scene(root, 450, 450));
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
+
+	}
 
 
 
@@ -261,29 +271,13 @@ public class ClientController implements Observer {
 	public void debugOn(ActionEvent actionEvent) {
 		offDebuggerBtn.setSelected(false);
 		debuggerOnBtn.setSelected(true);
-		if (debugger == null) {
-			debugger = new DebuggerController();
-			System.err.println("Do it");
-			Parent root;
-			try {
-				root = FXMLLoader.load( new File("src/client/debugger.fxml").toURL());
-				Stage stage = new Stage();
-				stage.setTitle("My New Stage Title");
-				stage.setScene(new Scene(root, 450, 450));
-				stage.show();
-				// Hide this current window (if this is what you want)
-			}
-			catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
+		DebuggerController.getDebugger().show();
 	}
 
 	public void debugOff(ActionEvent actionEvent) {
 		offDebuggerBtn.setSelected(true);
 		debuggerOnBtn.setSelected(false);
-		debugger.terminate();
-		debugger = null;
+		DebuggerController.getDebugger().hide();
 	}
 
 	public void isNameServer(ActionEvent actionEvent) {
