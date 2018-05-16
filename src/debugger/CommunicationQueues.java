@@ -1,5 +1,7 @@
 package debugger;
 
+import javafx.collections.FXCollections;
+import javafx.scene.control.ListView;
 import message.Message;
 
 import java.util.LinkedList;
@@ -17,6 +19,8 @@ public class CommunicationQueues {
 
 	protected AtomicBoolean holdToSender = new AtomicBoolean(false);
 	protected AtomicBoolean holdFromReceiver = new AtomicBoolean(false);
+	private ListView<Message> sendMsgList;
+	private ListView<Message> recMsgList;
 
 
 	CommunicationQueues(BlockingQueue<Message> fromReceiverBeforeDebugger, BlockingQueue<Message> fromReceiverAfterDebugger, BlockingQueue<Message> toSenderBeforeDebugger, BlockingQueue<Message> toSenderAfterDebugger) {
@@ -31,14 +35,18 @@ public class CommunicationQueues {
 	}
 
 	private void runToSender() {
-		while (Thread.interrupted()) {
+		System.out.println("DEBUGGER - RUNTOSENDER START");
+		while (!Thread.interrupted()) {
 			try {
 				Message msg = toSenderBeforeDebugger.take();
 				System.err.println("CQ.runToSender: Got msg: "+msg.toString());
 				if (!holdToSender.get()) {
+					System.out.println("no debugging");
 					toSenderAfterDebugger.put(msg);
 				} else {
+					System.out.println("do debugging");
 					toSenderInDebugger.add(msg);
+					sendMsgList.setItems(FXCollections.observableList(toSenderInDebugger));
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -46,7 +54,7 @@ public class CommunicationQueues {
 		}
 	}
 	private void runFromReceiver() {
-		while(Thread.interrupted()) {
+		while(!Thread.interrupted()) {
 			try {
 				Message msg = fromReceiverBeforeDebugger.take();
 				System.err.println("CQ.runToReceiver: Got msg: "+msg.toString());
@@ -55,10 +63,26 @@ public class CommunicationQueues {
 					fromReceiverInDebugger.add(msg);
 				} else {
 					fromReceiverInDebugger.add(msg);
+					sendMsgList.setItems(FXCollections.observableList(fromReceiverInDebugger));
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
 		}
+	}
+
+
+	void setHoldToSender(boolean holdToSender) {
+		System.err.println("Change holdToSender"+holdToSender);
+		this.holdToSender.set(holdToSender);
+	}
+
+	void setHoldFromReceiver(Boolean holdFromReceiver) {
+		this.holdFromReceiver.set(holdFromReceiver);
+	}
+
+	public void setMsgLists(ListView<Message> recMsgList, ListView<Message> sendMsgList) {
+		this.recMsgList = recMsgList;
+		this.sendMsgList = sendMsgList;
 	}
 }

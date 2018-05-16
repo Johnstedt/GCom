@@ -2,14 +2,30 @@ package communication;
 
 import group_management.User;
 import message.Message;
-import message.TMessage;
-import rmi.Sender;
 
 import java.io.Serializable;
-import java.util.*;
+import java.util.Observer;
 
 public class TreeMulticast extends Multicast implements Serializable, Observer {
+	public TreeMulticast(User u) {
+		super(u);
+	}
 
+	@Override
+	public void send(Message msg) {
+
+	}
+
+	@Override
+	void receiveFromReceiver(Message msg) {
+
+	}
+
+	@Override
+	void sendToSender(Message msg) {
+
+	}
+/*
 	private User self;
 
 	public TreeMulticast(User u){
@@ -96,4 +112,5 @@ public class TreeMulticast extends Multicast implements Serializable, Observer {
 		int result = x % y;
 		return result < 0? result + y : result;
 	}
+	*/
 }

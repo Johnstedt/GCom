@@ -3,12 +3,13 @@ package communication;
 import debugger.DebuggerController;
 import group_management.User;
 import message.Message;
-import message.MessageType;
 import rmi.Sender;
 
 import java.io.Serializable;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.LinkedBlockingQueue;
 
 public abstract class Multicast extends Observable implements Observer, Serializable {
 
@@ -17,7 +18,7 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 	private BlockingQueue<Message> fromReceiverAfterDebugger;
 	private BlockingQueue<Message> toSenderBeforeDebugger;
 	private BlockingQueue<Message> toSenderAfterDebugger;
-	private Thread fdfr, fdts;
+	//private Thread fdfr, fdts;
 
 	Multicast(User u) {
 		this.sender = new Sender(u);
@@ -26,6 +27,7 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 		toSenderBeforeDebugger = new LinkedBlockingQueue<>();
 		toSenderAfterDebugger = new LinkedBlockingQueue<>();
 		DebuggerController.getDebugger().setQueues(fromReceiverBeforeDebugger, fromReceiverAfterDebugger, toSenderBeforeDebugger, toSenderAfterDebugger);
+		Thread fdfr, fdts;
 		fdfr = new Thread(this::fromDebuggerFromReceiver);
 		fdts = new Thread(this::fromDebuggerToSender);
 		fdfr.start();
@@ -33,21 +35,26 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 	}
 
 	private void fromDebuggerFromReceiver() {
-		try {
-			Message msg = fromReceiverAfterDebugger.take();
-			receiveFromReceiver(msg);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		while (!Thread.interrupted()) {
+			try {
+				Message msg = fromReceiverAfterDebugger.take();
+				receiveFromReceiver(msg);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
-
 	}
 
 	private void fromDebuggerToSender() {
-		try {
-			Message msg = toSenderAfterDebugger.take();
-			sender.send(msg);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		System.out.println("FROM DEBUGGER TO SENDER THREAD");
+		while (!Thread.interrupted()) {
+			try {
+				Message msg = toSenderAfterDebugger.take();
+				System.out.println("FROM DEBUGGER TO SENDER THREAD - got msg:" + msg.toString());
+				sender.send(msg);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 
 	}
@@ -80,17 +87,7 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 	 * Message from MessageOrdering/the Client.
 	 * @param msg
 	 */
-	public final void send(Message msg) {
-		if (msg.getType().equals(MessageType.INTERNAL_SET_NEW_RECEIVER)) {
-			System.err.println("Multicast, setting new internal receiver.");
-			//TODO: REMOVE THIS ALL THE WAY UP SINCE GOING AROUND JAVA OBSABLE IMPL.
-			//setObservableReceiver((Observable) msg.getMsg());
-			//Resetting.
-			//msg = new Message(MessageType.INTERNAL_SET_NEW_RECEIVER, msg.getGroupName(), msg.getFrom(), msg.getSendTo(), this);
-		} else {
-			sendToSender(msg);
-		}
-	}
+	public abstract void send(Message msg);
 
 
 	/**
@@ -110,6 +107,7 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 
 
 	protected final void toSender(Message msg) {
+		System.out.println("Multicast - add msg to toSenderBeforeDebugger"+msg.toString());
 		toSenderBeforeDebugger.add(msg);
 	}
 

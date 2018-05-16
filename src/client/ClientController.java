@@ -219,7 +219,7 @@ public class ClientController implements Observer {
 					//setTextInChat(TimeFormat.getTimestamp(), String.valueOf(msg.getFrom()), (String) msg.getMsg());
 					break;
 				default:
-					setTextInChat(TimeFormat.getTimestamp(), String.valueOf(msg.getFrom()), msg.getType() +":"+(String) msg.getMsg());
+					setTextInChat(TimeFormat.getTimestamp(), String.valueOf(msg.getFrom()), msg.getType() +":"+msg.getMsg().getClass().toString());
 					break;
 			}
 

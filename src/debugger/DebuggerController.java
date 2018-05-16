@@ -1,7 +1,6 @@
 package debugger;
 
 import javafx.application.Application;
-import javafx.collections.FXCollections;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -64,6 +63,10 @@ public class DebuggerController extends Application{
 		chatSplitPane.getItems().add(p);
 
 		GridPane gp = (GridPane) p.lookup("#gridPane");
+		ListView<Message> recMsgList = (ListView<Message>) gp.lookup("#receiverAtDebug");
+		ListView<Message> sendMsgList = (ListView<Message>) gp.lookup("#senderAtDebug");
+		cq.setMsgLists(recMsgList, sendMsgList);
+
 		FlowPane recFlowPane = (FlowPane) gp.lookup("#recFlowPane");
 		Button recBtn = (Button) recFlowPane.lookup("#receiverBtn");
 		Button recFlushBtn = (Button) recFlowPane.lookup("#recFlush");
@@ -73,12 +76,12 @@ public class DebuggerController extends Application{
 			switch (currentText){
 				case "Auto":
 					recBtn.setText("Man");
-					cq.holdFromReceiver.set(true);
+					cq.setHoldFromReceiver(true);
 					recFlushBtn.setDisable(false);
 					break;
 				default:
 					recBtn.setText("Auto");
-					cq.holdFromReceiver.set(false);
+					cq.setHoldFromReceiver(false);
 					recFlushBtn.setDisable(true);
 					break;
 			}
@@ -96,12 +99,12 @@ public class DebuggerController extends Application{
 			switch (currentText){
 				case "Auto":
 					senderBtn.setText("Man");
-					cq.holdToSender.set(false);
+					cq.setHoldToSender(true);
 					senderFlushBtn.setDisable(false);
 					break;
 				default:
 					senderBtn.setText("Auto");
-					cq.holdToSender.set(true);
+					cq.setHoldToSender(false);
 					senderFlushBtn.setDisable(true);
 					break;
 			}
@@ -112,11 +115,6 @@ public class DebuggerController extends Application{
 			cq.toSenderAfterDebugger.addAll(cq.toSenderInDebugger);
 		});
 
-		ListView<Message> recMsgList = (ListView<Message>) gp.lookup("#receiverAtDebug");
-		recMsgList.setItems(FXCollections.observableList(cq.fromReceiverInDebugger));
-
-		ListView<Message> sendMsgList = (ListView<Message>) gp.lookup("#senderAtDebug");
-		sendMsgList.setItems(FXCollections.observableList(cq.toSenderInDebugger ));
 
 
 	}
