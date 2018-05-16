@@ -25,6 +25,7 @@ public class Receiver extends Observable implements Serializable {
 	public void addOrder(Observer no, String groupName){
 		System.out.println("THIS WILL NOTIFY ");
 		if (this.communicationLayer.containsKey(groupName)) {
+			System.out.println("DOES IT");
 			this.communicationLayer.remove(groupName);
 		}
 		this.communicationLayer.put(groupName, no);

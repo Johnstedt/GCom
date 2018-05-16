@@ -36,6 +36,9 @@ public class Group extends Observable implements Observer, Serializable {
 			Message msg = (Message) o;
 			System.out.println("Group got message:"+msg.getType());
 			messages.add(msg);
+			if(msg.getType().equals(MessageType.JOIN)){
+				this.users.add(msg.getFrom());
+			}
 			System.out.println(msg.getFrom().getNickname() + ": "+ msg.getMsg());
 		}
 		else if (o instanceof HashMap){
@@ -78,9 +81,9 @@ public class Group extends Observable implements Observer, Serializable {
 	}
 
 	public void join(User u) {
-
-		//TODO: is this when a user has joined or want to join?
-		// this.order.join(groupName, this.users, u);
+		order.addObserver(this);
+		Message msg = new Message(MessageType.JOIN, groupName, u, users,null);
+		this.order.send(msg);
 		this.users.add(u);
 	}
 

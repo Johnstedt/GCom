@@ -40,6 +40,9 @@ public abstract class Order extends Observable implements Serializable, Observer
 
 	public abstract void removeStubs();
 
+	public void removeObs(){
+		this.deleteObservers();
+	}
 
 	@Override
 	public void update(Observable observable, Object o) {

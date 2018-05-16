@@ -9,8 +9,6 @@ import rmi.Sender;
 import java.io.Serializable;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.concurrent.BlockingQueue;
-import java.util.concurrent.LinkedBlockingQueue;
 
 public abstract class Multicast extends Observable implements Observer, Serializable {
 
@@ -85,7 +83,8 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 	public final void send(Message msg) {
 		if (msg.getType().equals(MessageType.INTERNAL_SET_NEW_RECEIVER)) {
 			System.err.println("Multicast, setting new internal receiver.");
-			setObservableReceiver((Observable) msg.getMsg());
+			//TODO: REMOVE THIS ALL THE WAY UP SINCE GOING AROUND JAVA OBSABLE IMPL.
+			//setObservableReceiver((Observable) msg.getMsg());
 			//Resetting.
 			//msg = new Message(MessageType.INTERNAL_SET_NEW_RECEIVER, msg.getGroupName(), msg.getFrom(), msg.getSendTo(), this);
 		} else {

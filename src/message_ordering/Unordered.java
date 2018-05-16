@@ -37,6 +37,8 @@ public class Unordered extends Order {
 	@Override
 	public void update(Observable observable, Object o) {
 
+		System.out.println("ORDER: RECEIVED AND UPDATE");
+
 		if(o instanceof Message) {
 			Message m = (Message) o;
 			this.vectorClock.incrementEveryone((Vector) m.getClock());

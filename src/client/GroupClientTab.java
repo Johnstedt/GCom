@@ -17,6 +17,7 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import message.Message;
+import message.MessageType;
 import utils.TimeFormat;
 
 import java.util.Observable;
@@ -117,7 +118,11 @@ public class GroupClientTab implements Observer{
 		if (o instanceof Message) {
 			Message msg = (Message) o;
 			String msgText = (String) msg.getMsg();
-			setTextInChat(TimeFormat.getTimestamp(), msg.getFrom().getNickname(), msgText);
+			if(msg.getType().equals(MessageType.TEXT)){
+				setTextInChat(TimeFormat.getTimestamp(), msg.getFrom().getNickname(), msgText);
+			} else {
+				System.out.println("NOT TEXT IN UPDATE: GroupClientTab 124");
+			}
 			if (!tab.isSelected()) {
 				tab.setText("!"+group.getGroupName());
 			}
