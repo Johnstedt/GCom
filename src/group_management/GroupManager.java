@@ -58,8 +58,6 @@ public class GroupManager extends Observable implements Observer {
 		return g;
 	}
 
-
-
 	@Override
 	public void update(Observable observable, Object o) {
 		System.out.println("GroupManager update:"+o.getClass().toString());
