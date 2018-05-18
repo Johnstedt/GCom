@@ -40,7 +40,7 @@ public class Group extends Observable implements Observer, Serializable {
 			System.out.println("Group got message:"+msg.getType());
 			messages.add(msg);
 			if(msg.getType().equals(MessageType.JOIN)){
-				this.users.add(msg.getFrom());
+				this.addUser((User) msg.getMsg());
 			}
 			System.out.println(msg.getFrom().getNickname() + ": "+ msg.getMsg());
 		}
@@ -50,9 +50,7 @@ public class Group extends Observable implements Observer, Serializable {
 		} else if(o instanceof Group) {
 			System.out.println("I RECEIVED ASK FOR GROUP IN GROUP");
 		}
-		else if(o instanceof User) {
-			this.users.add((User)o);
-		}
+
 		setChanged();
 		notifyObservers(o);
 	}
@@ -74,8 +72,10 @@ public class Group extends Observable implements Observer, Serializable {
 		System.out.println("I WILL SEND GROUPS IN GROUP");
 	}
 
-	void addUser(User u) {
-		this.users.add(u);
+	public void addUser(User newUser) {
+		if (!users.contains(newUser)) {
+			users.add(newUser);
+		}
 	}
 
 	public void askGroups(User self, List<User> to) {
@@ -85,8 +85,7 @@ public class Group extends Observable implements Observer, Serializable {
 
 	public void join(User u) {
 		order.addObserver(this);
-		Message msg = new Message(MessageType.JOIN, groupName, u, users,null);
-		System.out.println("SENDING JOIN");
+		Message msg = new Message(MessageType.JOIN, groupName, u, users, self);
 		this.order.send(msg);
 		this.users.add(u);
 	}

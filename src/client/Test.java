@@ -25,7 +25,7 @@ public class Test extends Application {
 			System.out.println("What is your username");
 			username = reader.nextLine();
 			reader.close();*/
-			username = "Jw";
+
 			try {
 				ServerSocket s = new ServerSocket(0);
 				port = s.getLocalPort();
@@ -38,6 +38,7 @@ public class Test extends Application {
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
+			username = "TheUser:"+ipaddress+":"+port;
 		}
 		launch(args);
 	}

@@ -17,7 +17,6 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import message.Message;
-import message.MessageType;
 import utils.TimeFormat;
 
 import java.util.Observable;
@@ -85,7 +84,7 @@ public class GroupClientTab implements Observer{
 		field.getChildren().addAll(text1, text2, text3);
 
 		Platform.runLater(()->chatOutputField.getItems().addAll(field));
-		Platform.runLater( () ->chatOutputField.scrollTo(chatOutputField.getItems().size()-1) );
+		Platform.runLater(()->chatOutputField.scrollTo(chatOutputField.getItems().size()-1) );
 
 	}
 
@@ -117,17 +116,24 @@ public class GroupClientTab implements Observer{
 	public void update(Observable observable, Object o) {
 		if (o instanceof Message) {
 			Message msg = (Message) o;
-			String msgText = (String) msg.getMsg();
-			if(msg.getType().equals(MessageType.TEXT)){
+
+			switch (msg.getType()){
+			case TEXT:
+				String msgText = (String) msg.getMsg();
 				setTextInChat(TimeFormat.getTimestamp(), msg.getFrom().getNickname(), msgText);
-			} else {
-				System.out.println("NOT TEXT IN UPDATE: GroupClientTab 124");
+				break;
+			case JOIN:
+				group.addUser((User) msg.getMsg());
+				setTextInChat(TimeFormat.getTimestamp(), "System", msg.getMsg()+ " joined the group.");
+				Platform.runLater(()->userList.setItems(FXCollections.observableArrayList(group.getUsers())));
+				break;
+			default:
+				System.err.println("GroupClientTab - UNHANDLED msg type:"+msg.getType());
+				break;
 			}
 			if (!tab.isSelected()) {
 				tab.setText("!"+group.getGroupName());
 			}
-		} else if (o instanceof User) {
-			userList.setItems(FXCollections.observableArrayList(group.getUsers()));
 		} else {
 			System.err.println("Dont know!" + o.getClass());
 		}

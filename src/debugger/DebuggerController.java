@@ -88,7 +88,8 @@ public class DebuggerController extends Application{
 		});
 
 		recFlushBtn.setOnMouseClicked(mouseEvent -> {
-			cq.toSenderAfterDebugger.addAll(cq.fromReceiverAfterDebugger);
+			cq.fromReceiverAfterDebugger.addAll(cq.fromReceiverInDebugger);
+			cq.fromReceiverInDebugger.clear();
 		});
 
 		FlowPane sendFlowPane = (FlowPane) gp.lookup("#sendFlowPane");
@@ -113,6 +114,7 @@ public class DebuggerController extends Application{
 
 		senderFlushBtn.setOnMouseClicked(mouseEvent -> {
 			cq.toSenderAfterDebugger.addAll(cq.toSenderInDebugger);
+			cq.toSenderInDebugger.clear();
 		});
 
 

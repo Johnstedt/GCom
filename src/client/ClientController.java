@@ -218,8 +218,11 @@ public class ClientController implements Observer {
 				case TEXT:
 					//setTextInChat(TimeFormat.getTimestamp(), String.valueOf(msg.getFrom()), (String) msg.getMsg());
 					break;
+				case JOIN:
+					setTextInChat(TimeFormat.getTimestamp(), "System", "User "+msg.getFrom().getNickname() + " joined.");
+					System.err.println("WEO");
 				default:
-					setTextInChat(TimeFormat.getTimestamp(), String.valueOf(msg.getFrom()), msg.getType() +":"+msg.getMsg().getClass().toString());
+					System.err.println("ClientControl UPDATE - Got "+msg);
 					break;
 			}
 

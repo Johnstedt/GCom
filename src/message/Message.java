@@ -5,6 +5,7 @@ import clock.Vector;
 import group_management.User;
 
 import java.io.Serializable;
+import java.util.LinkedList;
 import java.util.List;
 
 public class Message implements Serializable {
@@ -15,6 +16,31 @@ public class Message implements Serializable {
 	private Object msg;
 	private List<User> sendTo;
 
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		List<User> sendToList = new LinkedList<>();
+		for (User u : sendTo) {
+			if (u != null)
+				sendToList.add((User) u.clone());
+		}
+		Message m2 = new Message(this.type, this.groupName, (User) this.from.clone(), sendToList, msg);
+		m2.setClock(this.clock);
+		return m2;
+	}
+
+	@Override
+	public String toString() {
+		String msg = "Message{" +
+					"type=" + type +
+					", groupName='" + groupName + '\'' +
+					", clock=" + clock +
+					", from=" + from +
+					", to-size="+sendTo.size();
+		if (type.equals(MessageType.TEXT))
+			msg += ", msg='"+msg+"'";
+		msg +='}';
+		return msg;
+	}
 
 	public Message(MessageType type,
 	               String groupName,

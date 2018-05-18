@@ -32,7 +32,7 @@ public class Receiver extends Observable implements Serializable {
 	}
 
 	public void notifyObservers(Message msg) {
-		System.out.println("RECEIVER IS SENDING: "+ msg.getGroupName());
+		System.out.println("RECEIVER received: "+ msg.getGroupName()+" "+msg.getType()+" from "+msg.getFrom().getNickname()+":"+msg.getFrom().getIp()+":"+msg.getFrom().getPort());
 		if (msg.getType().equals(MessageType.INTERNAL_SET_NEW_RECEIVER)) {
 			System.err.println("Receiver got internal message");
 		}

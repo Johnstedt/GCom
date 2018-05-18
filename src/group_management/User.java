@@ -17,6 +17,10 @@ public class User implements Serializable, Comparable{
 
 	}
 
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		return new User(this.nickname, this.ip, this.port);
+	}
 
 	public String getNickname() {
 		return nickname;

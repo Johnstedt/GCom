@@ -3,6 +3,7 @@ package communication;
 import debugger.DebuggerController;
 import group_management.User;
 import message.Message;
+import message.MessageType;
 import rmi.Sender;
 
 import java.io.Serializable;
@@ -26,18 +27,14 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 		fromReceiverAfterDebugger = new LinkedBlockingQueue<>();
 		toSenderBeforeDebugger = new LinkedBlockingQueue<>();
 		toSenderAfterDebugger = new LinkedBlockingQueue<>();
-		DebuggerController.getDebugger().setQueues(fromReceiverBeforeDebugger, fromReceiverAfterDebugger, toSenderBeforeDebugger, toSenderAfterDebugger);
-		Thread fdfr, fdts;
-		fdfr = new Thread(this::fromDebuggerFromReceiver);
-		fdts = new Thread(this::fromDebuggerToSender);
-		fdfr.start();
-		fdts.start();
 	}
 
 	private void fromDebuggerFromReceiver() {
+		System.out.println("FROM DEBUGGER TO RECEIVER THREAD");
 		while (!Thread.interrupted()) {
 			try {
 				Message msg = fromReceiverAfterDebugger.take();
+				System.out.println("multicast.fromDebuggerFromReceiver - got msg:"+msg.toString());
 				receiveFromReceiver(msg);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -107,6 +104,15 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 
 
 	protected final void toSender(Message msg) {
+		if (msg.getType().equals(MessageType.INTERNAL_SET_NEW_RECEIVER)) {
+			System.err.println("TO SENDER SET CQ");
+			DebuggerController.getDebugger().setQueues(fromReceiverBeforeDebugger, fromReceiverAfterDebugger, toSenderBeforeDebugger, toSenderAfterDebugger);
+			Thread fdfr, fdts;
+			fdfr = new Thread(this::fromDebuggerFromReceiver);
+			fdts = new Thread(this::fromDebuggerToSender);
+			fdfr.start();
+			fdts.start();
+		}
 		System.out.println("Multicast - add msg to toSenderBeforeDebugger"+msg.toString());
 		toSenderBeforeDebugger.add(msg);
 	}
