@@ -2,8 +2,12 @@ package communication;
 
 import group_management.User;
 import message.Message;
+import message.TMessage;
 
 import java.io.Serializable;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Observable;
 import java.util.Observer;
 
 public class TreeMulticast extends Multicast implements Serializable, Observer {
@@ -13,7 +17,7 @@ public class TreeMulticast extends Multicast implements Serializable, Observer {
 
 	@Override
 	public void send(Message msg) {
-
+		//shoudl do sumthing
 	}
 
 	@Override
@@ -25,14 +29,11 @@ public class TreeMulticast extends Multicast implements Serializable, Observer {
 	void sendToSender(Message msg) {
 
 	}
-/*
+
 	private User self;
 
-	public TreeMulticast(User u){
-		super(u);
-		this.self = u;
-	}
 
+	/*@Override
 	public void send(Message msg) {
 		TMessage tMsg = (TMessage)msg;
 
@@ -58,7 +59,7 @@ public class TreeMulticast extends Multicast implements Serializable, Observer {
 		}
 		this.setChanged();
 		this.notifyObservers(o);
-	}
+	}*/
 
 	private List<User> whoSend(TMessage tMsg){
 
@@ -112,5 +113,5 @@ public class TreeMulticast extends Multicast implements Serializable, Observer {
 		int result = x % y;
 		return result < 0? result + y : result;
 	}
-	*/
+
 }
