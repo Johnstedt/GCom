@@ -86,4 +86,15 @@ public class testVectorClock {
 		Assert.assertTrue(v2.equalsQ(v1));
 		Assert.assertTrue(v1.equalsQ(v2));
 	}
+
+	@Test
+	public void testNextInLine(){
+		v2.increment(user2);
+		Assert.assertTrue(v1.nextInLine(user2, v2));
+
+		v1.incrementEveryone(v2);
+		v1.increment(user1);
+		Assert.assertTrue(v2.nextInLine(user1, v1));
+	}
+
 }

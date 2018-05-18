@@ -1,5 +1,9 @@
 package group_management;
 
+import communication.Multicast;
+import communication.ReliableMultiCast;
+import communication.TreeMulticast;
+import communication.Unreliable_Multicast;
 import message.Message;
 import message_ordering.*;
 import rmi.Receiver;
@@ -25,30 +29,44 @@ public class GroupManager extends Observable implements Observer {
 	}
 	public Group createGroup(User u, String name, MessageOrderingType sort_order, CommunicationType ct) {
 
+		Multicast multicast;
+		switch (ct) {
+			case UNRELIABLE_MULTICAST:
+				multicast = new Unreliable_Multicast(u);
+				break;
+			case RELIABLE_MULTICAST:
+				multicast = new ReliableMultiCast(u);
+				break;
+			case TREE_MULTICAST:
+				multicast = new TreeMulticast(u);
+				break;
+			default:
+				multicast = new Unreliable_Multicast(u);
+		}
+
 		Order order;
 		switch (sort_order) {
 			case UNORDERED:
-				order = new Unordered(u, ct);
+				order = new Unordered(u, multicast);
 				break;
 			case TOTAL:
-				order = new Total(u, ct);
+				order = new Total(u, multicast);
 				break;
 			case CAUSAL:
-				order = new Causal(u, ct);
+				order = new Causal(u, multicast);
 				break;
 			case FIFO:
-				order = new Fifo(u, ct);
+				order = new Fifo(u, multicast);
 				break;
 			case TOTALCAUSAL:
-				order = new TotalCausal(u, ct);
+				order = new TotalCausal(u, multicast);
 				break;
 			default:
-				order = new TotalCausal(u, ct);
+				order = new TotalCausal(u, multicast);
 				break;
 		}
 
-
-		Group g = new Group(order, name, self);
+		Group g = new Group(order, multicast, name, self);
 		g.addObserver(this);
 		//TODO: Below is retarded, should do by constructor?
 		g.addUser(self);
@@ -102,7 +120,7 @@ public class GroupManager extends Observable implements Observer {
 	}
 
 	private void updateReceiverToGroup(Group g) {
-		receiver.addOrder(g.getOrder(), g.getGroupName());
+		receiver.addOrder(g.getComm(), g.getGroupName());
 		g.setNewReceiver(self, receiver);
 	}
 

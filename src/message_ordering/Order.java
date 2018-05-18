@@ -18,21 +18,10 @@ public abstract class Order extends Observable implements Serializable, Observer
 	protected LinkedBlockingQueue<Message> queue;
 	protected Multicast communicator;
 
-	Order(User u, CommunicationType communicationType) {
+	Order(User u, Multicast com) {
 		this.queue = new LinkedBlockingQueue<>();
 
-		switch (communicationType) {
-			case UNRELIABLE_MULTICAST:
-				this.communicator = new Unreliable_Multicast(u);
-				break;
-			case RELIABLE_MULTICAST:
-				this.communicator = new ReliableMultiCast(u);
-				break;
-			case TREE_MULTICAST:
-
-				this.communicator = new TreeMulticast(u);
-				break;
-		}
+		this.communicator = com;
 		this.communicator.addObserver(this);
 	}
 

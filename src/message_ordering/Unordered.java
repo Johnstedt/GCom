@@ -1,6 +1,7 @@
 package message_ordering;
 
 import clock.Vector;
+import communication.Multicast;
 import group_management.CommunicationType;
 import group_management.User;
 import message.Message;
@@ -12,8 +13,8 @@ public class Unordered extends Order {
 
 	private Vector vectorClock;
 
-	public Unordered(User u, CommunicationType ct){
-		super(u, ct);
+	public Unordered(User u, Multicast m){
+		super(u, m);
 		this.vectorClock = new Vector();
 	}
 

@@ -1,13 +1,14 @@
 package message_ordering;
 
+import communication.Multicast;
 import group_management.CommunicationType;
 import group_management.User;
 import message.Message;
 
 public class Causal extends Order {
 
-	public Causal(User u, CommunicationType communicationType) {
-		super(u, communicationType);
+	public Causal(User u, Multicast comm) {
+		super(u, comm);
 	}
 
 	@Override

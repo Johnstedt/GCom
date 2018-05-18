@@ -1,5 +1,6 @@
 package group_management;
 
+import communication.Multicast;
 import message.Message;
 import message.MessageType;
 import message_ordering.Order;
@@ -18,14 +19,16 @@ public class Group extends Observable implements Observer, Serializable {
 	private List<User> users;
 	private String groupName;
 	private Order order;
+	private Observer comm;
 
-	Group(Order o, String groupName, User self){
+	Group(Order o, Multicast m, String groupName, User self) {
 		this.self = self;
 		this.order = o;
 		this.order.addObserver(this);
 		this.groupName = groupName;
 		this.messages = new LinkedList<>();
 		this.users = new LinkedList<>();
+		this.comm = m;
 	}
 
 
@@ -83,6 +86,7 @@ public class Group extends Observable implements Observer, Serializable {
 	public void join(User u) {
 		order.addObserver(this);
 		Message msg = new Message(MessageType.JOIN, groupName, u, users,null);
+		System.out.println("SENDING JOIN");
 		this.order.send(msg);
 		this.users.add(u);
 	}
@@ -112,5 +116,9 @@ public class Group extends Observable implements Observer, Serializable {
 		to.add(self);
 		Message msg = new Message(INTERNAL_SET_NEW_RECEIVER, groupName, self, to, newReceiver);
 		send(msg);
+	}
+
+	public Observer getComm() {
+		return comm;
 	}
 }
