@@ -66,7 +66,7 @@ public class GroupManager extends Observable implements Observer {
 				break;
 		}
 
-		Group g = new Group(order, multicast, name, self);
+		Group g = new Group(order, multicast, name);
 		g.addObserver(this);
 		//TODO: Below is retarded, should do by constructor?
 		g.addUser(self);
@@ -109,7 +109,7 @@ public class GroupManager extends Observable implements Observer {
 					this.setChanged();
 					this.notifyObservers(msg);
 					break;
-				case INTERNAL_SET_NEW_RECEIVER:
+				case INTERNAL:
 					this.setChanged();
 					this.notifyObservers(msg);
 					break;

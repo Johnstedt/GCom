@@ -6,10 +6,12 @@ import message.Message;
 import java.io.Serializable;
 import java.util.Observer;
 
+import static group_management.CommunicationType.UNRELIABLE_MULTICAST;
+
 public class Unreliable_Multicast extends Multicast implements Serializable, Observer {
 
 	public Unreliable_Multicast(User u){
-		super(u);
+		super(u, UNRELIABLE_MULTICAST);
 	}
 
 	@Override

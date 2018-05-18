@@ -1,39 +1,56 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
 <?import javafx.scene.layout.GridPane?>
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
-<GridPane fx:id="gridPane" hgap="10.0" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="600.0" prefWidth="400.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
-  <columnConstraints>
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-    <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
-  </columnConstraints>
-  <rowConstraints>
-    <RowConstraints maxHeight="193.0" minHeight="10.0" prefHeight="158.0" vgrow="SOMETIMES" />
-    <RowConstraints maxHeight="312.0" minHeight="10.0" prefHeight="312.0" vgrow="SOMETIMES" />
-    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-  </rowConstraints>
-   <children>
-      <ListView fx:id="senderAtDebug" prefHeight="200.0" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-      <FlowPane fx:id="sendFlowPane" alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefWrapLength="0.0" GridPane.columnIndex="1">
+<BorderPane fx:id="borderPane" prefHeight="616.0" prefWidth="491.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
+   <center>
+      <GridPane fx:id="gridPane" hgap="10.0" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" prefHeight="600.0" prefWidth="472.0">
+        <columnConstraints>
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="230.0" minWidth="10.0" prefWidth="196.0" />
+          <ColumnConstraints hgrow="SOMETIMES" maxWidth="251.0" minWidth="10.0" prefWidth="194.0" />
+        </columnConstraints>
+        <rowConstraints>
+          <RowConstraints maxHeight="193.0" minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="529.0" minHeight="10.0" prefHeight="451.0" vgrow="SOMETIMES" />
+        </rowConstraints>
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sender" />
-            <Button fx:id="senderBtn" mnemonicParsing="false" text="Auto" />
-            <Button fx:id="sendFlush" disable="true" mnemonicParsing="false" text="sendFlush" />
+            <ListView fx:id="senderAtDebug" minHeight="200.0" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+            <FlowPane fx:id="sendFlowPane" alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="60.0" prefWidth="251.0" prefWrapLength="0.0" GridPane.columnIndex="1">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sender" />
+                  <Button fx:id="senderBtn" mnemonicParsing="false" text="Auto" />
+                  <Button fx:id="sendFlush" disable="true" mnemonicParsing="false" text="sendFlush" />
+               </children>
+            </FlowPane>
+            <FlowPane fx:id="recFlowPane" alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL">
+               <children>
+                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver" />
+                  <Button fx:id="receiverBtn" mnemonicParsing="false" text="Auto" />
+                  <Button fx:id="recFlush" disable="true" mnemonicParsing="false" text="recFlush" />
+               </children>
+            </FlowPane>
+            <ListView fx:id="receiverAtDebug" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="200.0" minWidth="200.0" GridPane.rowIndex="1" />
          </children>
-      </FlowPane>
-      <FlowPane fx:id="recFlowPane" alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL">
+      </GridPane>
+   </center>
+   <top>
+      <FlowPane fx:id="topFields" alignment="TOP_CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefWrapLength="75.0">
          <children>
-            <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver" />
-            <Button fx:id="receiverBtn" mnemonicParsing="false" text="Auto" />
-            <Button fx:id="recFlush" disable="true" mnemonicParsing="false" text="recFlush" />
+            <Text fx:id="groupNameTxtField" strokeType="OUTSIDE" strokeWidth="0.0" text="Group Name" />
+            <Text fx:id="orderTypeTxtField" strokeType="OUTSIDE" strokeWidth="0.0" text="Ordering Type" />
+            <Text fx:id="comTypeTxtField" strokeType="OUTSIDE" strokeWidth="0.0" text="Communication Type" />
          </children>
+         <BorderPane.margin>
+            <Insets bottom="10.0" />
+         </BorderPane.margin>
       </FlowPane>
-      <ListView fx:id="receiverAtDebug" prefHeight="200.0" prefWidth="200.0" GridPane.rowIndex="1" />
-   </children>
-</GridPane>
+   </top>
+</BorderPane>

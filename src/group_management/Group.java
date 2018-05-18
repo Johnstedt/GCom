@@ -1,6 +1,7 @@
 package group_management;
 
 import communication.Multicast;
+import message.InternalMessage;
 import message.Message;
 import message.MessageType;
 import message_ordering.Order;
@@ -8,21 +9,17 @@ import message_ordering.Order;
 import java.io.Serializable;
 import java.util.*;
 
-import static message.MessageType.INTERNAL_SET_NEW_RECEIVER;
+import static message.MessageType.INTERNAL;
 import static message.MessageType.TEXT;
 
 public class Group extends Observable implements Observer, Serializable {
-
-	private User self;
 	private List<Message> messages;
-
 	private List<User> users;
 	private String groupName;
 	private Order order;
 	private Multicast comm;
 
-	Group(Order o, Multicast m, String groupName, User self) {
-		this.self = self;
+	Group(Order o, Multicast m, String groupName) {
 		this.order = o;
 		this.order.addObserver(this);
 		this.groupName = groupName;
@@ -55,7 +52,7 @@ public class Group extends Observable implements Observer, Serializable {
 		notifyObservers(o);
 	}
 
-	public void send(String msgTxt) {
+	public void send(String msgTxt, User self) {
 		Message msg = new Message(TEXT, groupName, self, users, msgTxt);
 		send(msg);
 	}
@@ -85,7 +82,7 @@ public class Group extends Observable implements Observer, Serializable {
 
 	public void join(User u) {
 		order.addObserver(this);
-		Message msg = new Message(MessageType.JOIN, groupName, u, users, self);
+		Message msg = new Message(MessageType.JOIN, groupName, u, users, u);
 		this.order.send(msg);
 		this.users.add(u);
 	}
@@ -113,7 +110,8 @@ public class Group extends Observable implements Observer, Serializable {
 	public void setNewReceiver(User self, Observable newReceiver) {
 		List<User> to = new LinkedList<>();
 		to.add(self);
-		Message msg = new Message(INTERNAL_SET_NEW_RECEIVER, groupName, self, to, newReceiver);
+		InternalMessage im = new InternalMessage(newReceiver, order.orderType, comm.comType);
+		Message msg = new Message(INTERNAL, groupName, self, to, im);
 		send(msg);
 	}
 

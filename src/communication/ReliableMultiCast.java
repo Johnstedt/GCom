@@ -1,6 +1,7 @@
 package communication;
 
 import clock.Vector;
+import group_management.CommunicationType;
 import group_management.User;
 import message.Message;
 
@@ -15,7 +16,7 @@ public class ReliableMultiCast extends Multicast implements Serializable, Observ
 	private List<Vector> haveDelivered;
 
 	public ReliableMultiCast(User u){
-		super(u);
+		super(u, CommunicationType.RELIABLE_MULTICAST);
 		this.clocks = new LinkedList<>();
 		this.haveDelivered = new LinkedList<>();
 	}
