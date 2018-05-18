@@ -5,5 +5,6 @@ public enum MessageOrderingType {
 	FIFO,
 	TOTAL,
 	TOTALCAUSAL,
-	UNORDERED
+	UNORDERED;
+
 }

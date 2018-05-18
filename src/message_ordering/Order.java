@@ -1,12 +1,8 @@
 package message_ordering;
 
-import clock.Clock;
 import clock.Vector;
 import communication.Multicast;
-import communication.ReliableMultiCast;
-import communication.TreeMulticast;
-import communication.Unreliable_Multicast;
-import group_management.CommunicationType;
+import group_management.MessageOrderingType;
 import group_management.User;
 import message.Message;
 
@@ -16,14 +12,14 @@ import java.util.Observer;
 import java.util.concurrent.LinkedBlockingQueue;
 
 public abstract class Order extends Observable implements Serializable, Observer{
-
+	public MessageOrderingType orderType;
 	protected LinkedBlockingQueue<Message> queue;
 	protected Multicast communicator;
 	protected Vector vectorClock;
 
-	Order(User u, Multicast com) {
+	Order(User u, Multicast com, MessageOrderingType orderType) {
 		this.queue = new LinkedBlockingQueue<>();
-
+		this.orderType = orderType;
 		this.communicator = com;
 		this.communicator.addObserver(this);
 		this.vectorClock = new Vector();

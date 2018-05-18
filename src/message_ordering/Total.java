@@ -1,14 +1,14 @@
 package message_ordering;
 
 import communication.Multicast;
-import group_management.CommunicationType;
+import group_management.MessageOrderingType;
 import group_management.User;
 import message.Message;
 
 public class Total extends Order{
 
 	public Total(User u, Multicast com) {
-		super(u, com);
+		super(u, com, MessageOrderingType.TOTAL);
 	}
 
 	@Override

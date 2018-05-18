@@ -1,14 +1,14 @@
 package debugger;
 
 import javafx.application.Application;
-import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.*;
-import javafx.scene.layout.AnchorPane;
-import javafx.scene.layout.FlowPane;
-import javafx.scene.layout.GridPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.control.Button;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SplitPane;
+import javafx.scene.layout.*;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
+import message.InternalMessage;
 import message.Message;
 
 import java.io.File;
@@ -48,7 +48,7 @@ public class DebuggerController extends Application{
 		classStage.hide();
 	}
 
-	public void setQueues(String groupName, BlockingQueue<Message> fromReceiverBeforeDebugger, BlockingQueue<Message> fromReceiverAfterDebugger, BlockingQueue<Message> toSenderBeforeDebugger, BlockingQueue<Message> toSenderAfterDebugger) {
+	public void setQueues(InternalMessage msg, String groupName, BlockingQueue<Message> fromReceiverBeforeDebugger, BlockingQueue<Message> fromReceiverAfterDebugger, BlockingQueue<Message> toSenderBeforeDebugger, BlockingQueue<Message> toSenderAfterDebugger) {
 		CommunicationQueues cq = new CommunicationQueues(fromReceiverBeforeDebugger, fromReceiverAfterDebugger, toSenderBeforeDebugger, toSenderAfterDebugger);
 		if (groupName.equals("init")) {
 			return;
@@ -64,7 +64,20 @@ public class DebuggerController extends Application{
 		SplitPane chatSplitPane = (SplitPane) aPane.lookup("#vboxPane").lookup("#chatSplitPane");
 		chatSplitPane.getItems().add(p);
 
-		GridPane gp = (GridPane) p.lookup("#gridPane");
+		BorderPane bp = (BorderPane) p.lookup("#borderPane");
+		FlowPane topFields = (FlowPane) bp.lookup("#topFields");
+
+		Text groupNameTextField = (Text) topFields.lookup("#groupNameTxtField");
+		groupNameTextField.setText(groupName);
+
+		Text orderTextField = (Text) topFields.lookup("#orderTypeTxtField");
+		orderTextField.setText(msg.ot.toString());
+
+		Text comTextField = (Text) topFields.lookup("#comTypeTxtField");
+		comTextField.setText(msg.ct.toString());
+
+
+		GridPane gp = (GridPane) bp.lookup("#gridPane");
 		ListView<Message> recMsgList = (ListView<Message>) gp.lookup("#receiverAtDebug");
 		ListView<Message> sendMsgList = (ListView<Message>) gp.lookup("#senderAtDebug");
 		cq.setMsgLists(recMsgList, sendMsgList);
@@ -90,8 +103,7 @@ public class DebuggerController extends Application{
 		});
 
 		recFlushBtn.setOnMouseClicked(mouseEvent -> {
-			cq.fromReceiverAfterDebugger.addAll(cq.fromReceiverInDebugger);
-			cq.fromReceiverInDebugger.clear();
+			cq.flushToReceiver();
 		});
 
 		FlowPane sendFlowPane = (FlowPane) gp.lookup("#sendFlowPane");
@@ -113,37 +125,8 @@ public class DebuggerController extends Application{
 			}
 		});
 		senderFlushBtn.setOnMouseClicked(mouseEvent -> {
-			cq.toSenderAfterDebugger.addAll(cq.toSenderInDebugger);
-			cq.toSenderInDebugger.clear();
+			cq.flushToSender();
 		});
-
-		sendMsgList.setCellFactory((ListView<Message> lv) -> {
-			ListCell<Message> cell = new ListCell<>();
-			ContextMenu contextMenu = new ContextMenu();
-			MenuItem editItem = new MenuItem();
-			editItem.textProperty().bind(Bindings.format("Edit"));
-			editItem.setOnAction(event -> {
-				Message item = cell.getItem();
-				cq.deleteToSenderInDebug(item);
-			});
-			MenuItem deleteItem = new MenuItem();
-			deleteItem.textProperty().bind(Bindings.format("Delete"));
-			deleteItem.setOnAction(event -> recMsgList.getItems().remove(cell.getItem()));
-			contextMenu.getItems().addAll(editItem, deleteItem);
-
-			cell.textProperty().bind(Bindings.format("%s", cell.getItem().toString()));
-
-			cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
-				if (isNowEmpty) {
-					cell.setContextMenu(null);
-				} else {
-					cell.setContextMenu(contextMenu);
-				}
-			});
-			return cell ;
-		});
-
-
 
 	}
 

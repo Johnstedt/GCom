@@ -2,16 +2,15 @@ package message_ordering;
 
 import clock.Vector;
 import communication.Multicast;
-import group_management.CommunicationType;
 import group_management.User;
 import message.Message;
 
-import java.util.Observable;
+import static group_management.MessageOrderingType.UNORDERED;
 
 public class Unordered extends Order {
 
 	public Unordered(User u, Multicast m){
-		super(u, m);
+		super(u, m, UNORDERED);
 
 	}
 

@@ -1,5 +1,6 @@
 package debugger;
 
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.control.ListView;
 import message.Message;
@@ -46,7 +47,7 @@ public class CommunicationQueues {
 				} else {
 					System.out.println("do debugging");
 					toSenderInDebugger.add(msg);
-					sendMsgList.setItems(FXCollections.observableList(toSenderInDebugger));
+					Platform.runLater(()->sendMsgList.setItems(FXCollections.observableArrayList(toSenderInDebugger)));
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -61,10 +62,9 @@ public class CommunicationQueues {
 				System.out.println("CQ.runToReceiver: Got msg: "+msg.toString());
 				if (!holdFromReceiver.get()) {
 					fromReceiverAfterDebugger.put(msg);
-					fromReceiverInDebugger.add(msg);
 				} else {
 					fromReceiverInDebugger.add(msg);
-					recMsgList.setItems(FXCollections.observableList(fromReceiverInDebugger));
+					Platform.runLater(()->recMsgList.setItems(FXCollections.observableArrayList(fromReceiverInDebugger)));
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -86,6 +86,10 @@ public class CommunicationQueues {
 	public void setMsgLists(ListView<Message> recMsgList, ListView<Message> sendMsgList) {
 		this.recMsgList = recMsgList;
 		this.sendMsgList = sendMsgList;
+		Platform.runLater(()->recMsgList.setItems(FXCollections.observableArrayList(fromReceiverInDebugger)));
+		Platform.runLater(()->sendMsgList.setItems(FXCollections.observableArrayList(toSenderInDebugger)));
+		//this.recMsgList.refresh();
+		//this.sendMsgList.refresh();
 	}
 
 	public void deleteToSenderInDebug(Message item) {
@@ -93,4 +97,15 @@ public class CommunicationQueues {
 	}
 
 
+	public void flushToSender() {
+		toSenderAfterDebugger.addAll(toSenderInDebugger);
+		toSenderInDebugger.clear();
+		Platform.runLater(()->sendMsgList.setItems(FXCollections.observableArrayList(toSenderInDebugger)));
+	}
+
+	public void flushToReceiver() {
+		fromReceiverAfterDebugger.addAll(fromReceiverInDebugger);
+		fromReceiverInDebugger.clear();
+		Platform.runLater(()->recMsgList.setItems(FXCollections.observableArrayList(fromReceiverInDebugger)));
+	}
 }

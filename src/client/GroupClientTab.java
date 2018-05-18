@@ -90,7 +90,7 @@ public class GroupClientTab implements Observer{
 
 
 	private void onSendMessage(String msg) {
-		group.send(msg);
+		group.send(msg, self);
 	}
 
 	private void onSendButton(ActionEvent actionEvent) {

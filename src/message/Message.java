@@ -30,15 +30,11 @@ public class Message implements Serializable {
 
 	@Override
 	public String toString() {
-		String msg = "Message{" +
-					"type=" + type +
-					", groupName='" + groupName + '\'' +
-					", clock=" + clock +
-					", from=" + from +
-					", to-size="+sendTo.size();
-		if (type.equals(MessageType.TEXT))
-			msg += ", msg='"+msg+"'";
-		msg +='}';
+		String msg = "["+clock+"] "+type.toShortString(type) +
+					", " + from + ", ("+sendTo.size()+")";
+		if (type.equals(MessageType.TEXT)) {
+			msg += ", msg='" + this.msg + "'";
+		}
 		return msg;
 	}
 

@@ -142,4 +142,15 @@ public class Vector implements Clock, Serializable, Cloneable{
 	}
 
 
+	@Override
+	public String toString() {
+		StringBuilder tot = new StringBuilder();
+		for (Long l : clock.values()) {
+			if (tot.length()>0) {
+				tot.append(",");
+			}
+			tot.append(l.toString());
+		}
+		return tot.toString();
+	}
 }

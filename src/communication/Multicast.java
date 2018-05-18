@@ -1,7 +1,9 @@
 package communication;
 
 import debugger.DebuggerController;
+import group_management.CommunicationType;
 import group_management.User;
+import message.InternalMessage;
 import message.Message;
 import message.MessageType;
 import rmi.Sender;
@@ -19,10 +21,12 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 	private BlockingQueue<Message> fromReceiverAfterDebugger;
 	private BlockingQueue<Message> toSenderBeforeDebugger;
 	private BlockingQueue<Message> toSenderAfterDebugger;
+	public CommunicationType comType;
 	//private Thread fdfr, fdts;
 
-	Multicast(User u) {
+	Multicast(User u, CommunicationType comType) {
 		this.sender = new Sender(u);
+		this.comType = comType;
 		fromReceiverBeforeDebugger = new LinkedBlockingQueue<>();
 		fromReceiverAfterDebugger = new LinkedBlockingQueue<>();
 		toSenderBeforeDebugger = new LinkedBlockingQueue<>();
@@ -104,9 +108,9 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 
 
 	protected final void toSender(Message msg) {
-		if (msg.getType().equals(MessageType.INTERNAL_SET_NEW_RECEIVER)) {
+		if (msg.getType().equals(MessageType.INTERNAL)) {
 			System.err.println("TO SENDER SET CQ");
-			DebuggerController.getDebugger().setQueues(msg.getGroupName(), fromReceiverBeforeDebugger, fromReceiverAfterDebugger, toSenderBeforeDebugger, toSenderAfterDebugger);
+			DebuggerController.getDebugger().setQueues((InternalMessage) msg.getMsg(), msg.getGroupName(), fromReceiverBeforeDebugger, fromReceiverAfterDebugger, toSenderBeforeDebugger, toSenderAfterDebugger);
 			Thread fdfr, fdts;
 			fdfr = new Thread(this::fromDebuggerFromReceiver);
 			fdts = new Thread(this::fromDebuggerToSender);

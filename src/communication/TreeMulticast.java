@@ -6,9 +6,11 @@ import message.Message;
 import java.io.Serializable;
 import java.util.Observer;
 
+import static group_management.CommunicationType.TREE_MULTICAST;
+
 public class TreeMulticast extends Multicast implements Serializable, Observer {
 	public TreeMulticast(User u) {
-		super(u);
+		super(u, TREE_MULTICAST);
 	}
 
 	@Override
