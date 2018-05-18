@@ -64,7 +64,7 @@ public class CommunicationQueues {
 					fromReceiverInDebugger.add(msg);
 				} else {
 					fromReceiverInDebugger.add(msg);
-					sendMsgList.setItems(FXCollections.observableList(fromReceiverInDebugger));
+					recMsgList.setItems(FXCollections.observableList(fromReceiverInDebugger));
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -87,4 +87,10 @@ public class CommunicationQueues {
 		this.recMsgList = recMsgList;
 		this.sendMsgList = sendMsgList;
 	}
+
+	public void deleteToSenderInDebug(Message item) {
+		toSenderInDebugger.remove(item);
+	}
+
+
 }

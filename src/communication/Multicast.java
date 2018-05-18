@@ -106,7 +106,7 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 	protected final void toSender(Message msg) {
 		if (msg.getType().equals(MessageType.INTERNAL_SET_NEW_RECEIVER)) {
 			System.err.println("TO SENDER SET CQ");
-			DebuggerController.getDebugger().setQueues(fromReceiverBeforeDebugger, fromReceiverAfterDebugger, toSenderBeforeDebugger, toSenderAfterDebugger);
+			DebuggerController.getDebugger().setQueues(msg.getGroupName(), fromReceiverBeforeDebugger, fromReceiverAfterDebugger, toSenderBeforeDebugger, toSenderAfterDebugger);
 			Thread fdfr, fdts;
 			fdfr = new Thread(this::fromDebuggerFromReceiver);
 			fdts = new Thread(this::fromDebuggerToSender);

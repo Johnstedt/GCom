@@ -1,10 +1,9 @@
 package debugger;
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.FlowPane;
 import javafx.scene.layout.GridPane;
@@ -49,8 +48,11 @@ public class DebuggerController extends Application{
 		classStage.hide();
 	}
 
-	public void setQueues(BlockingQueue<Message> fromReceiverBeforeDebugger, BlockingQueue<Message> fromReceiverAfterDebugger, BlockingQueue<Message> toSenderBeforeDebugger, BlockingQueue<Message> toSenderAfterDebugger) {
+	public void setQueues(String groupName, BlockingQueue<Message> fromReceiverBeforeDebugger, BlockingQueue<Message> fromReceiverAfterDebugger, BlockingQueue<Message> toSenderBeforeDebugger, BlockingQueue<Message> toSenderAfterDebugger) {
 		CommunicationQueues cq = new CommunicationQueues(fromReceiverBeforeDebugger, fromReceiverAfterDebugger, toSenderBeforeDebugger, toSenderAfterDebugger);
+		if (groupName.equals("init")) {
+			return;
+		}
 		Pane p = new Pane();
 		try {
 			p.getChildren().add(FXMLLoader.load(new File("src/debugger/oneChat.fxml").toURL()));
@@ -110,11 +112,35 @@ public class DebuggerController extends Application{
 					break;
 			}
 		});
-
-
 		senderFlushBtn.setOnMouseClicked(mouseEvent -> {
 			cq.toSenderAfterDebugger.addAll(cq.toSenderInDebugger);
 			cq.toSenderInDebugger.clear();
+		});
+
+		sendMsgList.setCellFactory((ListView<Message> lv) -> {
+			ListCell<Message> cell = new ListCell<>();
+			ContextMenu contextMenu = new ContextMenu();
+			MenuItem editItem = new MenuItem();
+			editItem.textProperty().bind(Bindings.format("Edit"));
+			editItem.setOnAction(event -> {
+				Message item = cell.getItem();
+				cq.deleteToSenderInDebug(item);
+			});
+			MenuItem deleteItem = new MenuItem();
+			deleteItem.textProperty().bind(Bindings.format("Delete"));
+			deleteItem.setOnAction(event -> recMsgList.getItems().remove(cell.getItem()));
+			contextMenu.getItems().addAll(editItem, deleteItem);
+
+			cell.textProperty().bind(Bindings.format("%s", cell.getItem().toString()));
+
+			cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
+				if (isNowEmpty) {
+					cell.setContextMenu(null);
+				} else {
+					cell.setContextMenu(contextMenu);
+				}
+			});
+			return cell ;
 		});
 
 
