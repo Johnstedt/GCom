@@ -39,7 +39,7 @@ public class Test extends Application {
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
-			username = "TheUser:"+ipaddress+":"+port;
+			username = "U:"+ipaddress.getHostAddress()+":"+port;
 		}
 		launch(args);
 	}
