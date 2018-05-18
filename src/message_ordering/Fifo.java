@@ -20,4 +20,10 @@ public class Fifo extends Order {
 	public void removeStubs() {
 
 	}
+
+	@Override
+	public void queueAdd(Message m) {
+
+
+	}
 }

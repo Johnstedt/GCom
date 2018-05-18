@@ -19,7 +19,7 @@ public class Group extends Observable implements Observer, Serializable {
 	private List<User> users;
 	private String groupName;
 	private Order order;
-	private Observer comm;
+	private Multicast comm;
 
 	Group(Order o, Multicast m, String groupName, User self) {
 		this.self = self;
@@ -118,6 +118,7 @@ public class Group extends Observable implements Observer, Serializable {
 	}
 
 	public Observer getComm() {
+		comm.addObserver(this.order);
 		return comm;
 	}
 }

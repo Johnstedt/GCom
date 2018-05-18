@@ -20,4 +20,9 @@ public class Causal extends Order {
 	public void removeStubs() {
 
 	}
+
+	@Override
+	public void queueAdd(Message m) {
+
+	}
 }

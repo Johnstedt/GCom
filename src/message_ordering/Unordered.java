@@ -10,12 +10,9 @@ import java.util.Observable;
 
 public class Unordered extends Order {
 
-
-	private Vector vectorClock;
-
 	public Unordered(User u, Multicast m){
 		super(u, m);
-		this.vectorClock = new Vector();
+
 	}
 
 	@Override
@@ -35,19 +32,7 @@ public class Unordered extends Order {
 		communicator.send(msg);
 	}
 
-	@Override
-	public void update(Observable observable, Object o) {
-
-		System.out.println("ORDER: RECEIVED AND UPDATE");
-
-		if(o instanceof Message) {
-			Message m = (Message) o;
-			this.vectorClock.incrementEveryone((Vector) m.getClock());
-			queueAdd(m);
-		}
-	}
-
-	private void queueAdd(Message m){
+	 public void queueAdd(Message m){
 		this.setChanged();
 		queue.add(m);
 		notifyObservers(queue.remove());

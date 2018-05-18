@@ -125,7 +125,6 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 	protected final void toGroupManagement(Message msg) {
 		this.setChanged();
 		this.notifyObservers(msg);
-
 	}
 
 

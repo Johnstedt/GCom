@@ -20,4 +20,9 @@ public class Total extends Order{
 	public void removeStubs() {
 
 	}
+
+	@Override
+	public void queueAdd(Message m) {
+
+	}
 }
