@@ -63,6 +63,7 @@ public class GroupManager extends Observable implements Observer {
 		System.out.println("GroupManager update:"+o.getClass().toString());
 		if(o instanceof Message) {
 			Message msg = (Message) o;
+			System.out.println("GroupManager update:"+msg);
 			switch (msg.getType()) {
 				case ASK_GROUPS:
 					System.out.println("I WILL SEND GROUPS IN GROUPMANAGER");
@@ -107,6 +108,7 @@ public class GroupManager extends Observable implements Observer {
 	}
 
 	private void addUserToGroup(String groupName, User u){
+
 		groups.get(groupName).addUser(u);
 	}
 
@@ -128,10 +130,15 @@ public class GroupManager extends Observable implements Observer {
 	}
 
 	public void addGroup(Group g) {
-		g.removeStubs();
-		updateReceiverToGroup(g);
-		g.addObserver(this);
-		g.join(this.self);
+		if (!groups.containsKey(g.getGroupName())) {
+			groups.put(g.getGroupName(), g);
+			g.removeStubs();
+			updateReceiverToGroup(g);
+			g.addObserver(this);
+			g.join(this.self);
+		} else {
+			System.err.println("GM - addgroup - already in group:"+g.getGroupName());
+		}
 
 	}
 

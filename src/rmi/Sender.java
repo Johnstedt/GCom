@@ -45,7 +45,13 @@ public class Sender implements Serializable{
 
 	public void send(Message msg){
 		try {
+			msg = (Message) msg.clone();
+		} catch (CloneNotSupportedException e) {
+			e.printStackTrace();
+		}
+		try {
 	    	for (User user : msg.getSendTo()){
+			    System.out.println("Sender.send(msg): Sending "+msg);//.toString()+" "+msg.getType()+" to "+user.toString()+":"+user.getIp()+":"+user.getPort());
 
 			    if(!this.stub.containsKey(user.getIp()+Integer.toString(user.getPort()))) {
 	    		    addToGroup(user.getIp()+Integer.toString(user.getPort()), user);
@@ -53,6 +59,11 @@ public class Sender implements Serializable{
 			    RemoteObject ro = this.stub.get(user.getIp()+Integer.toString(user.getPort()));
 			    if (ro == null) {
 				    System.err.println("Sender: ro is null?");
+			    }
+			    try {
+				    msg = (Message) msg.clone();
+			    } catch (CloneNotSupportedException e) {
+				    e.printStackTrace();
 			    }
 	    		ro.transferMessage(msg);
 		    }

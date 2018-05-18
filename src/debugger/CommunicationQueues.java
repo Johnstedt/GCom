@@ -39,7 +39,7 @@ public class CommunicationQueues {
 		while (!Thread.interrupted()) {
 			try {
 				Message msg = toSenderBeforeDebugger.take();
-				System.err.println("CQ.runToSender: Got msg: "+msg.toString());
+				System.out.println("CQ.runToSender: Got msg: "+msg.toString());
 				if (!holdToSender.get()) {
 					System.out.println("no debugging");
 					toSenderAfterDebugger.put(msg);
@@ -52,12 +52,13 @@ public class CommunicationQueues {
 				e.printStackTrace();
 			}
 		}
+		System.err.println("DID EXIT CQ.runToSender");
 	}
 	private void runFromReceiver() {
 		while(!Thread.interrupted()) {
 			try {
 				Message msg = fromReceiverBeforeDebugger.take();
-				System.err.println("CQ.runToReceiver: Got msg: "+msg.toString());
+				System.out.println("CQ.runToReceiver: Got msg: "+msg.toString());
 				if (!holdFromReceiver.get()) {
 					fromReceiverAfterDebugger.put(msg);
 					fromReceiverInDebugger.add(msg);
@@ -69,6 +70,7 @@ public class CommunicationQueues {
 				e.printStackTrace();
 			}
 		}
+		System.err.println("DID EXIT CQ.runFromReceiver");
 	}
 
 
