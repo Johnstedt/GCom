@@ -25,20 +25,21 @@ public class Test extends Application {
 			System.out.println("What is your username");
 			username = reader.nextLine();
 			reader.close();*/
-
-			try {
-				ServerSocket s = new ServerSocket(0);
-				port = s.getLocalPort();
-				s.close();
-			} catch (IOException e) {
-				e.printStackTrace();
+			int tmpport = 1337;
+			while (port == 0) {
+				try {
+					ServerSocket s = new ServerSocket(tmpport);
+					port = s.getLocalPort();
+					s.close();
+				} catch (IOException e) {}
+				tmpport++;
 			}
 			try {
 				ipaddress = InetAddress.getLocalHost();
 			} catch (UnknownHostException e) {
 				e.printStackTrace();
 			}
-			username = "TheUser:"+ipaddress+":"+port;
+			username = "U:"+ipaddress.getHostAddress()+":"+port;
 		}
 		launch(args);
 	}
