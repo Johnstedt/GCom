@@ -42,7 +42,6 @@ public abstract class Order extends Observable implements Serializable, Observer
 
 		if(o instanceof Message) {
 			Message m = (Message) o;
-			this.vectorClock.incrementEveryone((Vector) m.getClock());
 			queueAdd(m);
 		}
 	}

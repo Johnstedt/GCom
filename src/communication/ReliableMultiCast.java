@@ -34,7 +34,6 @@ public class ReliableMultiCast extends Multicast implements Serializable, Observ
 		System.out.println("MESSAGE IS: "+msg.getMsg());
 
 		for (Vector c : this.clocks) {
-
 			if (c.equalsQ(((Vector) msg.getClock()))) {
 				shouldSend = false;
 			}
@@ -52,7 +51,7 @@ public class ReliableMultiCast extends Multicast implements Serializable, Observ
 			if(shouldDeliver){
 				System.out.println("WILL DELIVER");
 				this.haveDelivered.add(((Vector) msg.getClock()));
-				sendToSender(msg);
+				toGroupManagement(msg);
 			} else {
 				System.out.println("WILL NOT DELIVER");
 			}

@@ -32,6 +32,7 @@ public class Unordered extends Order {
 	}
 
 	 public void queueAdd(Message m){
+		this.vectorClock.incrementEveryone((Vector) m.getClock());
 		this.setChanged();
 		queue.add(m);
 		notifyObservers(queue.remove());

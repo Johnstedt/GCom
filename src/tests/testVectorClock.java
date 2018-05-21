@@ -95,6 +95,13 @@ public class testVectorClock {
 		v1.incrementEveryone(v2);
 		v1.increment(user1);
 		Assert.assertTrue(v2.nextInLine(user1, v1));
+
+		v1.increment(user1);
+		Assert.assertFalse(v2.nextInLine(user1, v1));
+
+		v2.increment(user1);
+		Assert.assertTrue(v2.nextInLine(user1, v1));
+
 	}
 
 }
