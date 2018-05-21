@@ -1,5 +1,6 @@
 package communication;
 
+import clock.Vector;
 import group_management.User;
 import message.Message;
 import message.TMessage;
@@ -7,7 +8,6 @@ import message.TMessage;
 import java.io.Serializable;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Observable;
 import java.util.Observer;
 
 import static group_management.CommunicationType.TREE_MULTICAST;
@@ -15,57 +15,45 @@ import static group_management.CommunicationType.TREE_MULTICAST;
 public class TreeMulticast extends Multicast implements Serializable, Observer {
 	public TreeMulticast(User u) {
 		super(u, TREE_MULTICAST);
-	}
-
-	@Override
-	public void send(Message msg) {
-		//shoudl do sumthing
-	}
-
-	@Override
-	void receiveFromReceiver(Message msg) {
 
 	}
 
 	@Override
 	void sendToSender(Message msg) {
-
-	}
-
-	private User self;
-
-
-	/*@Override
-	public void send(Message msg) {
-		TMessage tMsg = (TMessage)msg;
-
-		List<User> listWithMe = new LinkedList<>();
-		listWithMe.add(self);
-		tMsg.setUserList(listWithMe);
-		super.sender.send(tMsg);
-	}
-
-	public void removeStubs() {
-		super.sender.remove();
+		toSender(msg);
 	}
 
 	@Override
-	public void update(Observable observable, Object o) {
+	public void send(Message msg) {
 
-		if(o instanceof TMessage) {
-			if(whoSend((TMessage) o).size() > 0) {
-				TMessage tMsg = (TMessage) o;
+		TMessage tMsg = new TMessage(msg.getType(), msg.getGroupName(), (Vector) msg.getClock(), msg.getFrom(), msg.getSendTo(), msg.getMsg());
+		List<User> listWithMe = new LinkedList<>();
+		listWithMe.add(msg.getFrom());
+		tMsg.setUserList(listWithMe);
+		super.toSender(tMsg);
+	}
+
+
+	@Override
+	void receiveFromReceiver(Message msg) {
+		System.out.println("NEVER HERE!");
+		if(msg instanceof TMessage) {
+			System.out.println("ALWAYS HERE!");
+			TMessage tMsg = (TMessage) msg;
+			if(whoSend(tMsg).size() > 0) {
+				System.out.println("longer than 0");
 				tMsg.setUserList(whoSend(tMsg));
-				super.sender.send(tMsg);
+				super.toSender(tMsg);
 			}
 		}
-		this.setChanged();
-		this.notifyObservers(o);
-	}*/
+
+		toGroupManagement(msg);
+	}
+
 
 	private List<User> whoSend(TMessage tMsg){
-
-		int me = tMsg.getIndexOfUser(self);
+		int me = tMsg.getIndexOfUser(super.self);
+		System.out.println(me);
 		int from = tMsg.getIndexOfOrigin();
 		int len = tMsg.getLength();
 
@@ -107,7 +95,6 @@ public class TreeMulticast extends Multicast implements Serializable, Observer {
 	}
 
 	private static int log2(double num) {
-		//why log2 not java native??
 		return (int)Math.floor((Math.log(num)/Math.log(2)));
 	}
 

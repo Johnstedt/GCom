@@ -14,7 +14,7 @@ public class Message implements Serializable {
 	private Vector clock;
 	private User from;
 	private Object msg;
-	private List<User> sendTo;
+	protected List<User> sendTo;
 
 	@Override
 	public Object clone() throws CloneNotSupportedException {

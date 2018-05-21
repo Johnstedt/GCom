@@ -84,6 +84,7 @@ public class Group extends Observable implements Observer, Serializable {
 		order.addObserver(this);
 		Message msg = new Message(MessageType.JOIN, groupName, u, users, u);
 		this.order.send(msg);
+		this.order.setSelf(u);
 		this.users.add(u);
 	}
 
