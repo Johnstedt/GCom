@@ -22,11 +22,13 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 	private BlockingQueue<Message> toSenderBeforeDebugger;
 	private BlockingQueue<Message> toSenderAfterDebugger;
 	public CommunicationType comType;
+	protected User self;
 	//private Thread fdfr, fdts;
 
 	Multicast(User u, CommunicationType comType) {
 		this.sender = new Sender(u);
 		this.comType = comType;
+		this.self = u;
 		fromReceiverBeforeDebugger = new LinkedBlockingQueue<>();
 		fromReceiverAfterDebugger = new LinkedBlockingQueue<>();
 		toSenderBeforeDebugger = new LinkedBlockingQueue<>();
@@ -132,4 +134,7 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 	}
 
 
+	public void setSelf(User self) {
+		this.self = self;
+	}
 }

@@ -45,4 +45,8 @@ public abstract class Order extends Observable implements Serializable, Observer
 			queueAdd(m);
 		}
 	}
+
+	public void setSelf(User self) {
+		this.communicator.setSelf(self);
+	}
 }

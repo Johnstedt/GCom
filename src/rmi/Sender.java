@@ -2,6 +2,7 @@ package rmi;
 
 import group_management.User;
 import message.Message;
+import message.TMessage;
 
 import java.io.Serializable;
 import java.rmi.NotBoundException;
@@ -45,7 +46,12 @@ public class Sender implements Serializable{
 
 	public void send(Message msg){
 		try {
-			msg = (Message) msg.clone();
+			if(msg instanceof TMessage){
+				System.out.println("hola");
+				msg = (TMessage) msg.clone();
+			} else {
+				msg = (Message) msg.clone();
+			}
 		} catch (CloneNotSupportedException e) {
 			e.printStackTrace();
 		}
