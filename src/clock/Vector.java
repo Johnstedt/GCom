@@ -22,7 +22,11 @@ public class Vector implements Clock, Serializable, Cloneable{
 	}
 
 	public Vector getClone() throws CloneNotSupportedException {
-		return (Vector) super.clone();
+
+		Vector v = new Vector();
+		v.incrementEveryone(this);
+
+		return v;
 	}
 
 	public void increment(User self) {
@@ -31,19 +35,6 @@ public class Vector implements Clock, Serializable, Cloneable{
 		}else {
 			this.clock.put(self.getIp()+self.getPort(), 1L);
 		}
-	}
-
-	public Long getLampert(){
-
-		Long l = 0L;
-
-		for (Object o1 : this.clock.entrySet()) {
-			HashMap.Entry pair = (HashMap.Entry) o1;
-
-				l += (Long) pair.getValue();
-
-		}
-		return l;
 	}
 
 	public HashMap<String, Long> getClock(){

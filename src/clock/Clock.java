@@ -14,8 +14,6 @@ public interface Clock extends Cloneable {
 
 	public void increment(User self);
 
-	public Long getLampert();
-
 	public HashMap<String, Long> getClock();
 
 	public void incrementEveryone(Vector cl);

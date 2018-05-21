@@ -165,7 +165,7 @@ public class ClientController implements Observer {
 		if (valid) {
 
 			//TODO: Description?
-			Group g = groupManager.createGroup(user, cgd.val1, MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
+			Group g = groupManager.createGroup(user, cgd.val1, MessageOrderingType.UNORDERED, CommunicationType.RELIABLE_MULTICAST);
 			Tab tab = addNewGroupTab(cgd.val1, cgd.val1);
 			GroupClientTab gct = new GroupClientTab(g, groupManager.getSelf(), tab);
 			tabChat.add(gct);
