@@ -160,13 +160,13 @@ public class ClientController implements Observer {
 
 	public void createGroup(ActionEvent actionEvent) {
 		TwoFieldDialog cgd = new TwoFieldDialog();
-		boolean valid = cgd.show("Create group", "Create group", "Name", "Description");
+		HashMap<String, String> result = cgd.newGroup();
 		//TODO: select communication, ordering etc.
-		if (valid) {
-
+		if (result != null) {
 			//TODO: Description?
-			Group g = groupManager.createGroup(user, cgd.val1, MessageOrderingType.UNORDERED, CommunicationType.RELIABLE_MULTICAST);
-			Tab tab = addNewGroupTab(cgd.val1, cgd.val1);
+			String name = result.get("Name");
+			Group g = groupManager.createGroup(user, name, MessageOrderingType.valueOf(result.get("Message Ordering")), CommunicationType.valueOf(result.get("Ordering Type")));
+			Tab tab = addNewGroupTab(name);
 			GroupClientTab gct = new GroupClientTab(g, groupManager.getSelf(), tab);
 			tabChat.add(gct);
 		}
@@ -183,10 +183,10 @@ public class ClientController implements Observer {
 		}
 	}
 
-	private Tab addNewGroupTab(String name, String id) {
+	private Tab addNewGroupTab(String name) {
 		Tab newGroup = new Tab();
 		newGroup.setText(name);
-		newGroup.setId(id);
+		newGroup.setId(name);
 		try {
 			newGroup.setContent(FXMLLoader.load(new File("src/client/chattab.fxml").toURL()));
 		} catch (IOException e) {
@@ -255,7 +255,7 @@ public class ClientController implements Observer {
 				if (result.isPresent()) {
 					Group g = hm.get(result.get());
 					groupManager.addGroup(g);
-					Tab tab = addNewGroupTab(g.getGroupName(), g.getGroupName());
+					Tab tab = addNewGroupTab(g.getGroupName());
 					GroupClientTab gct = new GroupClientTab(g, groupManager.getSelf(), tab);
 					tabChat.add(gct);
 				}
