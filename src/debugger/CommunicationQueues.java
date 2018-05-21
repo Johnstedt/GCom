@@ -9,19 +9,21 @@ import java.util.LinkedList;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicBoolean;
 
+import static javafx.collections.FXCollections.observableList;
+
 public class CommunicationQueues {
 	protected BlockingQueue<Message> fromReceiverBeforeDebugger;
 	protected BlockingQueue<Message> fromReceiverAfterDebugger;
 	protected BlockingQueue<Message> toSenderBeforeDebugger;
 	protected BlockingQueue<Message> toSenderAfterDebugger;
-	protected LinkedList<Message> fromReceiverInDebugger = new LinkedList<>();
-	protected LinkedList<Message> toSenderInDebugger = new LinkedList<>();
+	protected LinkedList<MessageDebug> fromReceiverInDebugger = new LinkedList<>();
+	protected LinkedList<MessageDebug> toSenderInDebugger = new LinkedList<>();
 	protected Thread sendRunner, receiverRunner;
 
 	protected AtomicBoolean holdToSender = new AtomicBoolean(false);
 	protected AtomicBoolean holdFromReceiver = new AtomicBoolean(false);
-	private ListView<Message> sendMsgList;
-	private ListView<Message> recMsgList;
+	private ListView<MessageDebug> sendMsgList;
+	private ListView<MessageDebug> recMsgList;
 
 
 	CommunicationQueues(BlockingQueue<Message> fromReceiverBeforeDebugger, BlockingQueue<Message> fromReceiverAfterDebugger, BlockingQueue<Message> toSenderBeforeDebugger, BlockingQueue<Message> toSenderAfterDebugger) {
@@ -46,8 +48,8 @@ public class CommunicationQueues {
 					toSenderAfterDebugger.put(msg);
 				} else {
 					System.out.println("do debugging");
-					toSenderInDebugger.add(msg);
-					Platform.runLater(()->sendMsgList.setItems(FXCollections.observableArrayList(toSenderInDebugger)));
+					toSenderInDebugger.add(new MessageDebug(msg));
+					Platform.runLater(()->sendMsgList.setItems(observableList(toSenderInDebugger)));
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -63,8 +65,8 @@ public class CommunicationQueues {
 				if (!holdFromReceiver.get()) {
 					fromReceiverAfterDebugger.put(msg);
 				} else {
-					fromReceiverInDebugger.add(msg);
-					Platform.runLater(()->recMsgList.setItems(FXCollections.observableArrayList(fromReceiverInDebugger)));
+					fromReceiverInDebugger.add(new MessageDebug(msg));
+					Platform.runLater(()->recMsgList.setItems(observableList(fromReceiverInDebugger)));
 				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
@@ -83,7 +85,7 @@ public class CommunicationQueues {
 		this.holdFromReceiver.set(holdFromReceiver);
 	}
 
-	public void setMsgLists(ListView<Message> recMsgList, ListView<Message> sendMsgList) {
+	public void setMsgLists(ListView<MessageDebug> recMsgList, ListView<MessageDebug> sendMsgList) {
 		this.recMsgList = recMsgList;
 		this.sendMsgList = sendMsgList;
 		Platform.runLater(()->recMsgList.setItems(FXCollections.observableArrayList(fromReceiverInDebugger)));
@@ -98,14 +100,49 @@ public class CommunicationQueues {
 
 
 	public void flushToSender() {
-		toSenderAfterDebugger.addAll(toSenderInDebugger);
-		toSenderInDebugger.clear();
+		LinkedList<MessageDebug> rem = new LinkedList<>();
+		for (MessageDebug md : toSenderInDebugger) {
+			if (!md.isHold) {
+				toSenderAfterDebugger.add(md.msg);
+				rem.add(md);
+			}
+		}
+		toSenderInDebugger.removeAll(rem);
+
 		Platform.runLater(()->sendMsgList.setItems(FXCollections.observableArrayList(toSenderInDebugger)));
 	}
 
 	public void flushToReceiver() {
-		fromReceiverAfterDebugger.addAll(fromReceiverInDebugger);
-		fromReceiverInDebugger.clear();
+		LinkedList<MessageDebug> rem = new LinkedList<>();
+		for (MessageDebug md : fromReceiverInDebugger) {
+			if (!md.isHold) {
+				fromReceiverAfterDebugger.add(md.msg);
+				rem.add(md);
+			}
+		}
+		fromReceiverInDebugger.removeAll(rem);
+		Platform.runLater(()->recMsgList.setItems(FXCollections.observableArrayList(fromReceiverInDebugger)));
+	}
+
+	public void removeFromSendDebugger(MessageDebug item) {
+		toSenderInDebugger.remove(item);
+		Platform.runLater(()->sendMsgList.setItems(FXCollections.observableArrayList(toSenderInDebugger)));
+	}
+
+	public void removeFromReceiverDebugger(MessageDebug item) {
+		fromReceiverInDebugger.remove(item);
+		Platform.runLater(()->recMsgList.setItems(FXCollections.observableArrayList(fromReceiverInDebugger)));
+	}
+
+	public void sendManuallyMessage(MessageDebug item) {
+		toSenderAfterDebugger.add(item.msg);
+		toSenderInDebugger.remove(item);
+		Platform.runLater(()->sendMsgList.setItems(FXCollections.observableArrayList(toSenderInDebugger)));
+	}
+
+	public void receiveManuallyMessage(MessageDebug item) {
+		fromReceiverAfterDebugger.add(item.msg);
+		fromReceiverInDebugger.remove(item);
 		Platform.runLater(()->recMsgList.setItems(FXCollections.observableArrayList(fromReceiverInDebugger)));
 	}
 }

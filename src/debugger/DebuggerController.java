@@ -1,10 +1,9 @@
 package debugger;
 
 import javafx.application.Application;
+import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.control.Button;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SplitPane;
+import javafx.scene.control.*;
 import javafx.scene.layout.*;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
@@ -78,8 +77,8 @@ public class DebuggerController extends Application{
 
 
 		GridPane gp = (GridPane) bp.lookup("#gridPane");
-		ListView<Message> recMsgList = (ListView<Message>) gp.lookup("#receiverAtDebug");
-		ListView<Message> sendMsgList = (ListView<Message>) gp.lookup("#senderAtDebug");
+		ListView<MessageDebug> recMsgList = (ListView<MessageDebug>) gp.lookup("#receiverAtDebug");
+		ListView<MessageDebug> sendMsgList = (ListView<MessageDebug>) gp.lookup("#senderAtDebug");
 		cq.setMsgLists(recMsgList, sendMsgList);
 
 		FlowPane recFlowPane = (FlowPane) gp.lookup("#recFlowPane");
@@ -126,6 +125,98 @@ public class DebuggerController extends Application{
 		});
 		senderFlushBtn.setOnMouseClicked(mouseEvent -> {
 			cq.flushToSender();
+		});
+
+
+		recMsgList.setCellFactory((ListView<MessageDebug> lv) -> {
+		ListCell<MessageDebug> cell = new ListCell<>();
+		ContextMenu contextMenu = new ContextMenu();
+		MenuItem holdItem = new MenuItem();
+		holdItem.textProperty().bind(Bindings.format("Hold/Un-hold"));
+		holdItem.setOnAction(event -> {
+			MessageDebug item = cell.getItem();
+			item.isHold = !item.isHold;
+			if (item.isHold)
+				cell.setStyle("-fx-background: #FF9999;");
+			else
+				cell.setStyle("-fx-background: #FFFFFF;");
+		});
+
+
+		MenuItem sendItem = new MenuItem();
+		sendItem.textProperty().bind(Bindings.format("Receive manually"));
+		sendItem.setOnAction(event -> {
+			MessageDebug item = cell.getItem();
+			cq.receiveManuallyMessage(item);
+		});
+
+		MenuItem deleteItem = new MenuItem();
+		deleteItem.textProperty().bind(Bindings.format("Delete"));
+		deleteItem.setOnAction(event -> cq.removeFromReceiverDebugger(cell.getItem()));
+		contextMenu.getItems().addAll(holdItem, sendItem, deleteItem);
+
+		cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
+			if (isNowEmpty) {
+				cell.setContextMenu(null);
+				cell.setText("REMOVED");
+				cell.setStyle("-fx-background: #FFFFFF;");
+			} else {
+				cell.setContextMenu(contextMenu);
+				cell.setText(cell.getItem().toString());
+				MessageDebug item = cell.getItem();
+				if (item.isHold)
+					cell.setStyle("-fx-background: #FF9999;");
+				else
+					cell.setStyle("-fx-background: #FFFFFF;");
+			}
+		});
+			return cell;
+		});
+
+
+		sendMsgList.setCellFactory((ListView<MessageDebug> lv) -> {
+			ListCell<MessageDebug> cell = new ListCell<>();
+			ContextMenu contextMenu = new ContextMenu();
+			MenuItem holdItem = new MenuItem();
+			holdItem.textProperty().bind(Bindings.format("Hold/Unhold"));
+			holdItem.setOnAction(event -> {
+				MessageDebug item = cell.getItem();
+				item.isHold = !item.isHold;
+				if (item.isHold)
+					cell.setStyle("-fx-background: #FF9999;");
+				else
+					cell.setStyle("-fx-background: #FFFFFF;");
+			});
+
+			MenuItem sendItem = new MenuItem();
+			sendItem.textProperty().bind(Bindings.format("Send manually"));
+			sendItem.setOnAction(event -> {
+				MessageDebug item = cell.getItem();
+				cq.sendManuallyMessage(item);
+			});
+
+
+			MenuItem deleteItem = new MenuItem();
+			deleteItem.textProperty().bind(Bindings.format("Delete"));
+			deleteItem.setOnAction(event -> cq.removeFromSendDebugger(cell.getItem()));
+			contextMenu.getItems().addAll(holdItem, sendItem, deleteItem);
+
+			cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
+				if (isNowEmpty) {
+					cell.setContextMenu(null);
+					cell.setText("REMOVED");
+					cell.setStyle("-fx-background: #FFFFFF;");
+				} else {
+					cell.setContextMenu(contextMenu);
+					cell.setText(cell.getItem().toString());
+					MessageDebug item = cell.getItem();
+					if (item.isHold)
+						cell.setStyle("-fx-background: #FF9999;");
+					else
+						cell.setStyle("-fx-background: #FFFFFF;");
+				}
+			});
+			return cell;
 		});
 
 	}
