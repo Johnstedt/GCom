@@ -3,8 +3,11 @@ package debugger;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
 import javafx.scene.control.*;
-import javafx.scene.layout.*;
+import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.FlowPane;
 import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import message.InternalMessage;
@@ -62,13 +65,17 @@ public class DebuggerController extends Application{
 
 		AnchorPane aPane = (AnchorPane) classStage.getScene().lookup("#anchorPane");
 		TabPane chatSplitPane = (TabPane) aPane.lookup("#vboxPane").lookup("#chatSplitPane");
+
 		Tab t = new Tab();
+
 		t.setContent(p);
+
 
 		t.setText(groupName);
 		chatSplitPane.getTabs().add(t);
 
 		BorderPane bp = (BorderPane) p.lookup("#borderPane");
+
 		FlowPane topFields = (FlowPane) bp.lookup("#topFields");
 
 		Text groupNameTextField = (Text) topFields.lookup("#groupNameTxtField");
@@ -81,14 +88,31 @@ public class DebuggerController extends Application{
 		comTextField.setText(msg.ct.toString());
 
 
-		GridPane gp = (GridPane) bp.lookup("#gridPane");
-		ListView<MessageDebug> recMsgList = (ListView<MessageDebug>) gp.lookup("#receiverAtDebug");
-		ListView<MessageDebug> sendMsgList = (ListView<MessageDebug>) gp.lookup("#senderAtDebug");
-		cq.setMsgLists(recMsgList, sendMsgList);
+		SplitPane splitPane = (SplitPane) bp.lookup("#splitVertical");
+		splitPane.applyCss();
+		AnchorPane messageCount = (AnchorPane) splitPane.lookup("#messageCount");
+		ListView<MessageCounter.Counts> msgCount = (ListView<MessageCounter.Counts>) messageCount.lookup("#messageListCount");
+		AnchorPane splitAnchorInDebug = (AnchorPane) splitPane.lookup("#said");
+		SplitPane splitAnchorSplitPane = (SplitPane) splitAnchorInDebug.lookup("#splitAnchorSplitInDebug");
 
-		FlowPane recFlowPane = (FlowPane) gp.lookup("#recFlowPane");
+		AnchorPane sendAnchorPane = (AnchorPane) splitAnchorSplitPane.lookup("#sendAnchorPane");
+		AnchorPane recAnchorPane = (AnchorPane) splitAnchorSplitPane.lookup("#recAnchorPane");
+
+		FlowPane sendFlowPane = (FlowPane) sendAnchorPane.lookup("#sendFlowPane");
+		FlowPane recFlowPane = (FlowPane) recAnchorPane.lookup("#recFlowPane");
+		sendFlowPane.applyCss();
+		recFlowPane.applyCss();
+		for (Node n : recFlowPane.getChildren()) {
+			System.err.println("recFlowPane -> "+n.getId());
+		}
+
+		ListView<MessageDebug> recMsgList = (ListView<MessageDebug>) recFlowPane.lookup("#recListAtDebug");
+		ListView<MessageDebug> sendMsgList = (ListView<MessageDebug>) sendFlowPane.lookup("#sendListAtDebug");
+		cq.setMsgLists(recMsgList, sendMsgList, msgCount);
+
 		Button recBtn = (Button) recFlowPane.lookup("#receiverBtn");
 		Button recFlushBtn = (Button) recFlowPane.lookup("#recFlush");
+
 
 		recBtn.setOnMouseClicked(mouseEvent -> {
 			String currentText = recBtn.getText();
@@ -110,7 +134,7 @@ public class DebuggerController extends Application{
 			cq.flushToReceiver();
 		});
 
-		FlowPane sendFlowPane = (FlowPane) gp.lookup("#sendFlowPane");
+
 		Button senderBtn = (Button) sendFlowPane.lookup("#senderBtn");
 		Button senderFlushBtn = (Button) sendFlowPane.lookup("#sendFlush");
 		senderBtn.setOnMouseClicked(mouseEvent -> {

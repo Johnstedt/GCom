@@ -2,6 +2,7 @@ package rmi;
 
 import group_management.User;
 import message.Message;
+import message.MessageType;
 import message.TMessage;
 
 import java.io.Serializable;
@@ -45,6 +46,8 @@ public class Sender implements Serializable{
     }
 
 	public void send(Message msg){
+		if (msg.getType().equals(MessageType.INTERNAL))
+			return;
 		try {
 			if(msg instanceof TMessage){
 				System.out.println("hola");

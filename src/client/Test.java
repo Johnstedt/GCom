@@ -21,10 +21,6 @@ public class Test extends Application {
 
 	public static void main(String[] args) {
 		if (args.length == 0) {
-			/*Scanner reader = new Scanner(System.in);
-			System.out.println("What is your username");
-			username = reader.nextLine();
-			reader.closeAllTabs();*/
 			int tmpport = 1337;
 			while (port == 0) {
 				try {
@@ -47,7 +43,6 @@ public class Test extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			//URL url = new File("src/client/client.fxml").toURL();
 			FXMLLoader loader = new FXMLLoader(new File("src/client/client.fxml").toURL());
 			Parent root = loader.load();
 			Scene scene = new Scene(root, 750, 700);

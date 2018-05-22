@@ -30,7 +30,7 @@
                 </Menu>
               </menus>
             </MenuBar>
-            <TabPane fx:id="chatSplitPane" prefHeight="384.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" />
+            <TabPane fx:id="chatSplitPane" prefHeight="537.0" prefWidth="600.0" tabClosingPolicy="UNAVAILABLE" VBox.vgrow="ALWAYS" />
          </children>
       </VBox>
    </children>

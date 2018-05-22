@@ -170,7 +170,6 @@ public class GroupManager extends Observable implements Observer {
 	 */
 	public void remove_group(String groupname) {
 		if (groups.containsKey(groupname)) {
-			//TODO: disjoin all users.
 			groups.remove(groupname);
 		}
 

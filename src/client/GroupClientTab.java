@@ -138,9 +138,6 @@ public class GroupClientTab implements Observer{
 				System.err.println("GroupClientTab - UNHANDLED msg type:"+msg.getType());
 				break;
 			}
-			if (!tab.isSelected()) {
-				tab.setText("!"+group.getGroupName());
-			}
 		} else {
 			System.err.println("Dont know!" + o.getClass());
 		}

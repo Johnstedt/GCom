@@ -3,49 +3,15 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.FlowPane?>
-<?import javafx.scene.layout.GridPane?>
-<?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.text.Text?>
 
-<BorderPane fx:id="borderPane" minHeight="-Infinity" minWidth="-Infinity" prefWidth="450.0" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
-   <center>
-      <GridPane fx:id="gridPane" hgap="10.0" minHeight="-Infinity" minWidth="-Infinity">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="230.0" minWidth="10.0" prefWidth="196.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="251.0" minWidth="10.0" prefWidth="194.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints maxHeight="193.0" minHeight="10.0" prefHeight="80.0" vgrow="SOMETIMES" />
-          <RowConstraints maxHeight="529.0" minHeight="10.0" prefHeight="451.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <ListView fx:id="senderAtDebug" minHeight="200.0" minWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="1" />
-            <FlowPane fx:id="sendFlowPane" alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="60.0" prefWidth="251.0" prefWrapLength="0.0" GridPane.columnIndex="1">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sender" />
-                  <Button fx:id="senderBtn" mnemonicParsing="false" text="Auto" />
-                  <Button fx:id="sendFlush" disable="true" mnemonicParsing="false" text="sendFlush" />
-               </children>
-            </FlowPane>
-            <FlowPane fx:id="recFlowPane" alignment="CENTER" columnHalignment="CENTER" orientation="VERTICAL">
-               <children>
-                  <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver" />
-                  <Button fx:id="receiverBtn" mnemonicParsing="false" text="Auto" />
-                  <Button fx:id="recFlush" disable="true" mnemonicParsing="false" text="recFlush" />
-               </children>
-            </FlowPane>
-            <ListView fx:id="receiverAtDebug" minHeight="200.0" minWidth="200.0" GridPane.rowIndex="1" />
-         </children>
-         <BorderPane.margin>
-            <Insets bottom="10.0" left="10.0" right="10.0" />
-         </BorderPane.margin>
-      </GridPane>
-   </center>
+<BorderPane fx:id="borderPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" xmlns="http://javafx.com/javafx/9" xmlns:fx="http://javafx.com/fxml/1">
    <top>
-      <FlowPane fx:id="topFields" alignment="TOP_CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefWrapLength="75.0">
+      <FlowPane fx:id="topFields" alignment="TOP_CENTER" columnHalignment="CENTER" orientation="VERTICAL" prefHeight="65.0" prefWidth="450.0" prefWrapLength="75.0">
          <children>
             <Text fx:id="groupNameTxtField" strokeType="OUTSIDE" strokeWidth="0.0" text="Group Name" />
             <Text fx:id="orderTypeTxtField" strokeType="OUTSIDE" strokeWidth="0.0" text="Ordering Type" />
@@ -56,4 +22,47 @@
          </BorderPane.margin>
       </FlowPane>
    </top>
+   <center>
+      <SplitPane fx:id="splitVertical" dividerPositions="0.9748283752860412" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" BorderPane.alignment="CENTER">
+        <items>
+            <AnchorPane fx:id="said">
+               <children>
+                  <SplitPane fx:id="splitAnchorSplitInDebug" dividerPositions="0.3837920489296636">
+                     <items>
+                        <AnchorPane fx:id="sendAnchorPane">
+                           <children>
+                              <FlowPane fx:id="sendFlowPane" alignment="CENTER" columnHalignment="CENTER" prefWrapLength="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sender" />
+                                    <Button fx:id="senderBtn" mnemonicParsing="false" text="Auto" />
+                                    <Button fx:id="sendFlush" disable="true" mnemonicParsing="false" text="sendFlush" />
+                                    <ListView fx:id="sendListAtDebug" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                                 </children>
+                              </FlowPane>
+                           </children>
+                        </AnchorPane>
+                        <AnchorPane fx:id="recAnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
+                           <children>
+                              <FlowPane fx:id="recFlowPane" alignment="CENTER" columnHalignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+                                 <children>
+                                    <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver" />
+                                    <Button fx:id="receiverBtn" mnemonicParsing="false" text="Auto" />
+                                    <Button fx:id="recFlush" disable="true" mnemonicParsing="false" text="recFlush" />
+                                    <ListView fx:id="recListAtDebug" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                                 </children>
+                              </FlowPane>
+                           </children>
+                        </AnchorPane>
+                     </items>
+                  </SplitPane>
+               </children>
+            </AnchorPane>
+            <AnchorPane fx:id="messageCount">
+               <children>
+                  <ListView fx:id="messageListCount" prefHeight="200.0" prefWidth="200.0" style="-fx-border-color: green;" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" />
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </center>
 </BorderPane>
