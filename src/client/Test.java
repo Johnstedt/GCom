@@ -2,6 +2,7 @@ package client;
 
 
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -11,7 +12,6 @@ import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.ServerSocket;
-import java.net.URL;
 import java.net.UnknownHostException;
 
 public class Test extends Application {
@@ -24,7 +24,7 @@ public class Test extends Application {
 			/*Scanner reader = new Scanner(System.in);
 			System.out.println("What is your username");
 			username = reader.nextLine();
-			reader.close();*/
+			reader.closeAllTabs();*/
 			int tmpport = 1337;
 			while (port == 0) {
 				try {
@@ -47,8 +47,9 @@ public class Test extends Application {
 	@Override
 	public void start(Stage primaryStage) {
 		try {
-			URL url = new File("src/client/client.fxml").toURL();
-			Parent root = FXMLLoader.load(url);
+			//URL url = new File("src/client/client.fxml").toURL();
+			FXMLLoader loader = new FXMLLoader(getClass().getResource("client.fxml"));
+			Parent root = loader.load();
 			Scene scene = new Scene(root, 750, 700);
 			scene.getStylesheets().add(new File("src/client/style.css").toURL().toExternalForm());
 			primaryStage.setScene(scene);
@@ -61,6 +62,9 @@ public class Test extends Application {
 			primaryStage.setFullScreen(false);
 			primaryStage.setResizable(true);
 			primaryStage.sizeToScene();
+			ClientController controller = loader.getController();
+			primaryStage.setOnCloseRequest(e -> {controller.closeAllTabs(); Platform.exit();System.exit(0);});
+
 			primaryStage.show();
 		} catch (IOException e) {
 			e.printStackTrace();

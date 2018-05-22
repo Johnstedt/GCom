@@ -72,6 +72,9 @@ public class ClientController implements Observer {
 		fileMenuConnectToNameServer.setAccelerator(
 					KeyCombination.keyCombination("ALT+c")
 		);
+
+		fileMenuCloseItem.setOnAction(e -> {
+			closeAllTabs(); Platform.exit();});
 		//Platform.runLater(()-> chatInputField.requestFocus());
 		tabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
 			if (newValue != null) {
@@ -96,6 +99,7 @@ public class ClientController implements Observer {
 		serverTree.setRoot(dummyRoot);
 		serverTree.setShowRoot(false);
 		systemPane.setRight(serverTree);
+
 		//System tab - TextList (text output)
 		systemPane.setCenter(systemTextList);
 		systemTab.closableProperty().setValue(false);
@@ -116,8 +120,8 @@ public class ClientController implements Observer {
 			Platform.runLater(()->setTextInChat(TimeFormat.getTimestamp(),"System","Connecting to NameServer "+nsHost+":"+nsPort));
 			groupManager.askForGroups(nsHost, Integer.parseInt(nsPort));
 		}
-
 	}
+
 
 
 	public ClientController() {
@@ -170,7 +174,9 @@ public class ClientController implements Observer {
 	}
 
 	public void terminateProgram() {
-		//TODO: gracefully close the connections etc.
+		//TODO: gracefully closeAllTabs the connections etc.
+		closeAllTabs();
+		Platform.exit();
 		System.exit(0);
 	}
 
@@ -309,6 +315,12 @@ public class ClientController implements Observer {
 		} else {
 			groupManager.remove_group("init");
 			setTextInChat(TimeFormat.getTimestamp(),"System","Closing down NameServer");
+		}
+	}
+
+	public void closeAllTabs() {
+		for (GroupClientTab gct : tabChat) {
+			gct.onClose(null);
 		}
 	}
 }
