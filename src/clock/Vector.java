@@ -82,23 +82,34 @@ public class Vector implements Clock, Serializable, Cloneable{
 	}
 
 	public boolean nextInLine(User from, Vector comparison){
+
 		for (Object o1 : comparison.getClock().entrySet()) {
 			HashMap.Entry pair = (HashMap.Entry) o1;
 
 			if(this.clock.containsKey(pair.getKey())){
-				/*System.out.println("thisiskey: "+ (pair.getKey().equals(from.getIp()+from.getPort()) ? 1L : 0L));
-				System.out.println("this is pair value: "+ pair.getValue());
-				System.out.println("this is my value : "+ this.clock.get(pair.getKey()));
-				System.out.println("this is the sum: " + Long.toString(this.clock.get(pair.getKey()) + (pair.getKey().equals(from.getIp()+from.getPort()) ? 1L : 0L) ));
-				System.out.println("is 2 the same as 2: " + pair.getValue().equals(   (this.clock.get(pair.getKey()) + (pair.getKey().equals(from.getIp()+from.getPort()) ? 1L : 0L) )                  )  );*/
-				if(!pair.getValue().equals(   (this.clock.get(pair.getKey()) + (pair.getKey().equals(from.getIp()+from.getPort()) ? 1L : 0L) )                  )){
-				//	System.out.println("IM AINT SUPPOSE TO FAIL FIRST");
-					return false;
+
+				Long reVal = (Long)pair.getValue();
+
+				Long myVal = this.clock.get(pair.getKey());
+
+				String userKey = (String)pair.getKey();
+
+				String userFrom = from.getIp()+from.getPort();
+				System.out.println("reval: "+ reVal);
+				System.out.println("myval "+ myVal);
+				System.out.println("mapKey "+ userKey);
+				System.out.println("gotKey " + userFrom);
+
+				if(!(userKey.equals(userFrom) && reVal.equals(myVal+1L)) ) {
+					if(! (!userKey.equals(userFrom) &&  0 <= myVal.compareTo(reVal) ) ){
+						return false;
+					}
 				}
+
 			}else {
-			//	System.out.println("I AINT GOT NONE");
+
 				if(!pair.getValue().equals(1L)) {
-					System.out.println("in here?");
+
 					return false;
 				}
 			}
@@ -108,17 +119,17 @@ public class Vector implements Clock, Serializable, Cloneable{
 
 			if(comparison.getClock().containsKey(pair.getKey())){
 
-			/*	System.out.println("__THIS IS IN SECOND__");
-				System.out.println("thisiskey: "+ (pair.getKey().equals(from.getIp()+from.getPort()) ? 1L : 0L));
-				System.out.println("this is pair value: "+ pair.getValue());
-				System.out.println("this is my value : "+ comparison.getClock().get(pair.getKey()));
-				System.out.println("this is the sum: " + Long.toString(comparison.getClock().get(pair.getKey()) + (pair.getKey().equals(from.getIp()+from.getPort()) ? 1L : 0L) ));
-				System.out.println("is 3 the same as 3: " + comparison.getClock().get(pair.getKey()).equals(   ((Long)pair.getValue() + (pair.getKey().equals(from.getIp()+from.getPort()) ? 1L : 0L) )                  )  );*/
+				Long myVal = (Long)pair.getValue();
+				Long reVal = comparison.getClock().get(pair.getKey());
+				String userKey = (String)pair.getKey();
+				String userFrom = from.getIp()+from.getPort();
 
-				if(!comparison.getClock().get(pair.getKey()).equals(   ((Long)pair.getValue() + (pair.getKey().equals(from.getIp()+from.getPort()) ? 1L : 0L) )                  )){
-				//	System.out.println("IM AINT SUPPOSE TO FAIL TWO");
-					return false;
+				if(!(userKey.equals(userFrom) && reVal.equals(myVal + 1L)) ) {
+					if(! (!userKey.equals(userFrom) && 0 <= myVal.compareTo(reVal) ) ){
+						return false;
+					}
 				}
+
 			}
 		}
 		return true;

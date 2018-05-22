@@ -12,10 +12,12 @@ import java.util.Queue;
 public class Causal extends Order {
 
 	private Vector receiveClock;
+	private User u;
 
-	public Causal(Multicast comm) {
+	public Causal(User u,Multicast comm) {
 		super(comm, MessageOrderingType.CAUSAL);
 		this.receiveClock = new Vector();
+		this.u = u;
 	}
 
 	@Override
@@ -23,11 +25,12 @@ public class Causal extends Order {
 
 		if(msg.getType().equals(MessageType.INTERNAL)){
 			System.out.println("IAM YOUR INTERNAL FATHER");
+			this.u = msg.getFrom();
 		}
 		else {
 			System.out.println("SENDING JOIN, I HAVE CLOCK BEFORE CLONE!: " + this.vectorClock.toString());
-			this.vectorClock.increment(msg.getFrom());
-			Vector v = this.vectorClock.getClone();
+			this.receiveClock.increment(msg.getFrom());
+			Vector v = this.receiveClock.getClone();
 			System.out.println("SENDING JOIN, I HAVE CLOCK AFTER CLONE!: " + this.vectorClock.toString());
 
 			msg.setClock(v);
@@ -43,21 +46,18 @@ public class Causal extends Order {
 	@Override
 	public void queueAdd(Message m) {
 		if(!m.getType().equals(MessageType.INTERNAL)) {
-
-			if (m.getType() == MessageType.JOIN) {
-				System.out.println("I GOT JOIN IN CAUSAL");
-				System.out.println("RECEIVED JOIN: " + this.receiveClock.toString());
-			}
-
-			if (this.receiveClock.nextInLine(m.getFrom(), (Vector) m.getClock())) {
-				this.receiveClock.incrementEveryone((Vector) m.getClock());
-				super.vectorClock.incrementEveryone((Vector) m.getClock());
-				this.setChanged();
-				notifyObservers(m);
-				loopThroughQueue();
-			} else {
-				queue.add(m);
-				System.out.println("NOT NEXT MESSAGE");
+			
+				if (super.vectorClock.nextInLine(m.getFrom(), (Vector) m.getClock())) {
+					super.vectorClock.increment(m.getFrom());
+					this.receiveClock.incrementEveryone(super.vectorClock);
+					this.setChanged();
+					notifyObservers(m);
+					loopThroughQueue();
+				} else {
+					queue.add(m);
+					System.out.println("NOT NEXT MESSAGE");
+					System.out.println("MY-CLOCK: "+ super.vectorClock.toString());
+					System.out.println("GOT-CLOCK: "+ m.getClock().toString());
 			}
 		}
 	}
@@ -65,9 +65,9 @@ public class Causal extends Order {
 	private void loopThroughQueue() {
 
 		for (Message m : queue){
-			if(this.receiveClock.nextInLine(m.getFrom(),(Vector)m.getClock())){
-				super.vectorClock.incrementEveryone((Vector) m.getClock());
-				this.receiveClock.incrementEveryone((Vector) m.getClock());
+			if(super.vectorClock.nextInLine(m.getFrom(),(Vector) m.getClock())){
+				super.vectorClock.increment(m.getFrom());
+				this.receiveClock.incrementEveryone(super.vectorClock);
 				queue.remove(m);
 				this.setChanged();
 				notifyObservers(m);

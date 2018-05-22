@@ -53,7 +53,7 @@ public class GroupManager extends Observable implements Observer {
 				order = new Total(multicast);
 				break;
 			case CAUSAL:
-				order = new Causal(multicast);
+				order = new Causal(u, multicast);
 				break;
 			case FIFO:
 				order = new Fifo(multicast);
