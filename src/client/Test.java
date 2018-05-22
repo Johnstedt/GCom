@@ -48,7 +48,7 @@ public class Test extends Application {
 	public void start(Stage primaryStage) {
 		try {
 			//URL url = new File("src/client/client.fxml").toURL();
-			FXMLLoader loader = new FXMLLoader(getClass().getResource("client.fxml"));
+			FXMLLoader loader = new FXMLLoader(new File("src/client/client.fxml").toURL());
 			Parent root = loader.load();
 			Scene scene = new Scene(root, 750, 700);
 			scene.getStylesheets().add(new File("src/client/style.css").toURL().toExternalForm());
