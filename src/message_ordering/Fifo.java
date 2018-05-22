@@ -8,8 +8,8 @@ import static group_management.MessageOrderingType.FIFO;
 
 public class Fifo extends Order {
 
-	public Fifo(User u, Multicast com) {
-		super(u, com, FIFO);
+	public Fifo(Multicast com) {
+		super(com, FIFO);
 	}
 
 	@Override

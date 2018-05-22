@@ -47,22 +47,22 @@ public class GroupManager extends Observable implements Observer {
 		Order order;
 		switch (sort_order) {
 			case UNORDERED:
-				order = new Unordered(u, multicast);
+				order = new Unordered(multicast);
 				break;
 			case TOTAL:
-				order = new Total(u, multicast);
+				order = new Total(multicast);
 				break;
 			case CAUSAL:
-				order = new Causal(u, multicast);
+				order = new Causal(multicast);
 				break;
 			case FIFO:
-				order = new Fifo(u, multicast);
+				order = new Fifo(multicast);
 				break;
 			case TOTALCAUSAL:
-				order = new TotalCausal(u, multicast);
+				order = new TotalCausal(multicast);
 				break;
 			default:
-				order = new TotalCausal(u, multicast);
+				order = new TotalCausal(multicast);
 				break;
 		}
 

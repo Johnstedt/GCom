@@ -82,10 +82,20 @@ public class Group extends Observable implements Observer, Serializable {
 
 	public void join(User u) {
 		order.addObserver(this);
-		Message msg = new Message(MessageType.JOIN, groupName, u, users, u);
+
+		List<User> newUserList = new LinkedList<>();
+		for (User user : users) {
+			if (user != null)
+				try {
+					newUserList.add((User) user.clone());
+				} catch (CloneNotSupportedException e) {
+					e.printStackTrace();
+				}
+		}
+		newUserList.add(u);
+		Message msg = new Message(MessageType.JOIN, groupName, u, newUserList, u);
 		this.order.send(msg);
 		this.order.setSelf(u);
-		this.users.add(u);
 	}
 
 	public List<Message> getMessages() {

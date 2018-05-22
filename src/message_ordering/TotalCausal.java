@@ -7,8 +7,8 @@ import message.Message;
 
 public class TotalCausal extends Order {
 
-	public TotalCausal(User u, Multicast com) {
-		super(u, com, MessageOrderingType.TOTALCAUSAL);
+	public TotalCausal(Multicast com) {
+		super(com, MessageOrderingType.TOTALCAUSAL);
 	}
 
 	@Override

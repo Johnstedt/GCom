@@ -9,8 +9,8 @@ import static group_management.MessageOrderingType.UNORDERED;
 
 public class Unordered extends Order {
 
-	public Unordered(User u, Multicast m){
-		super(u, m, UNORDERED);
+	public Unordered(Multicast m){
+		super( m, UNORDERED);
 
 	}
 
@@ -19,7 +19,6 @@ public class Unordered extends Order {
 
 		Vector v = null;
 		try {
-			//TODO: Will always be from "above/client", therefore msg.getFrom() is self?
 			this.vectorClock.increment(msg.getFrom());
 			v = (Vector) this.vectorClock.getClone();
 		} catch (CloneNotSupportedException e) {

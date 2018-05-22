@@ -7,8 +7,8 @@ import message.Message;
 
 public class Total extends Order{
 
-	public Total(User u, Multicast com) {
-		super(u, com, MessageOrderingType.TOTAL);
+	public Total(Multicast com) {
+		super(com, MessageOrderingType.TOTAL);
 	}
 
 	@Override
