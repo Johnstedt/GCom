@@ -17,7 +17,7 @@ public abstract class Order extends Observable implements Serializable, Observer
 	protected Multicast communicator;
 	protected Vector vectorClock;
 
-	Order(User u, Multicast com, MessageOrderingType orderType) {
+	Order(Multicast com, MessageOrderingType orderType) {
 		this.queue = new LinkedBlockingQueue<>();
 		this.orderType = orderType;
 		this.communicator = com;
