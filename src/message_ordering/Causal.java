@@ -24,15 +24,12 @@ public class Causal extends Order {
 	public void send(Message msg) {
 
 		if(msg.getType().equals(MessageType.INTERNAL)){
-			System.out.println("IAM YOUR INTERNAL FATHER");
 			this.u = msg.getFrom();
 		}
 		else {
-			System.out.println("SENDING JOIN, I HAVE CLOCK BEFORE CLONE!: " + this.vectorClock.toString());
+
 			this.receiveClock.increment(msg.getFrom());
 			Vector v = this.receiveClock.getClone();
-			System.out.println("SENDING JOIN, I HAVE CLOCK AFTER CLONE!: " + this.vectorClock.toString());
-
 			msg.setClock(v);
 		}
 		communicator.send(msg);
@@ -46,7 +43,7 @@ public class Causal extends Order {
 	@Override
 	public void queueAdd(Message m) {
 		if(!m.getType().equals(MessageType.INTERNAL)) {
-			
+
 				if (super.vectorClock.nextInLine(m.getFrom(), (Vector) m.getClock())) {
 					super.vectorClock.increment(m.getFrom());
 					this.receiveClock.incrementEveryone(super.vectorClock);

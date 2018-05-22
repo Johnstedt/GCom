@@ -17,7 +17,7 @@ import java.util.concurrent.LinkedBlockingQueue;
 public abstract class Multicast extends Observable implements Observer, Serializable {
 
 	private Sender sender;
-	private BlockingQueue<Message> fromReceiverBeforeDebugger;
+	protected BlockingQueue<Message> fromReceiverBeforeDebugger;
 	private BlockingQueue<Message> fromReceiverAfterDebugger;
 	private BlockingQueue<Message> toSenderBeforeDebugger;
 	private BlockingQueue<Message> toSenderAfterDebugger;
@@ -77,7 +77,7 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 	 * @param o
 	 */
 	@Override
-	public final void update(Observable observable, Object o) {
+	public void update(Observable observable, Object o) {
 		if (o instanceof Message) {
 			Message msg = (Message) o;
 			fromReceiverBeforeDebugger.add(msg);
