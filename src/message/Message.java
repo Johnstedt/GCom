@@ -78,6 +78,10 @@ public class Message implements Serializable {
 		return sendTo;
 	}
 
+	public void setSendTo(List<User> users) {
+		this.sendTo = users;
+	}
+
 	public void setClock(Vector clock) {
 		this.clock = clock;
 	}
