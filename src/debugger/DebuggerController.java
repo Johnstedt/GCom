@@ -52,7 +52,8 @@ public class DebuggerController extends Application{
 		if (groupName.equals("init")) {
 			return;
 		}
-		Pane p = new Pane();
+		AnchorPane p = new AnchorPane();
+
 		try {
 			p.getChildren().add(FXMLLoader.load(new File("src/debugger/oneChat.fxml").toURL()));
 		} catch (IOException e) {
@@ -60,8 +61,12 @@ public class DebuggerController extends Application{
 		}
 
 		AnchorPane aPane = (AnchorPane) classStage.getScene().lookup("#anchorPane");
-		SplitPane chatSplitPane = (SplitPane) aPane.lookup("#vboxPane").lookup("#chatSplitPane");
-		chatSplitPane.getItems().add(p);
+		TabPane chatSplitPane = (TabPane) aPane.lookup("#vboxPane").lookup("#chatSplitPane");
+		Tab t = new Tab();
+		t.setContent(p);
+
+		t.setText(groupName);
+		chatSplitPane.getTabs().add(t);
 
 		BorderPane bp = (BorderPane) p.lookup("#borderPane");
 		FlowPane topFields = (FlowPane) bp.lookup("#topFields");
@@ -158,7 +163,7 @@ public class DebuggerController extends Application{
 		cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
 			if (isNowEmpty) {
 				cell.setContextMenu(null);
-				cell.setText("REMOVED");
+				cell.setText("");
 				cell.setStyle("-fx-background: #FFFFFF;");
 			} else {
 				cell.setContextMenu(contextMenu);

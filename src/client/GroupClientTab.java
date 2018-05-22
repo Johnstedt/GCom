@@ -52,14 +52,11 @@ public class GroupClientTab implements Observer{
 		chatInputField.setOnAction(this::onEnter);
 		group.addObserver(this::update);
 		setTextInChat(TimeFormat.getTimestamp(), "System", "Joined group "+g.getGroupName());
+		setTextInChat(TimeFormat.getTimestamp(), "System", "Group uses communication type "+g.getComm().getClass().getSimpleName());
+		setTextInChat(TimeFormat.getTimestamp(), "System", "Group uses order type "+g.getOrder().getClass().getSimpleName());
 		userList.setItems(FXCollections.observableArrayList(group.getUsers()));
 		chatOutputField.autosize();
 		Platform.runLater(()->chatInputField.requestFocus());
-
-	}
-
-	private void userListChange(Object u) {
-
 	}
 
 
