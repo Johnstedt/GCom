@@ -7,21 +7,31 @@ import group_management.User;
 import message.Message;
 import message.MessageType;
 
+import java.util.Queue;
+
 public class Causal extends Order {
+
+	private Vector receiveClock;
 
 	public Causal(Multicast comm) {
 		super(comm, MessageOrderingType.CAUSAL);
+		this.receiveClock = new Vector();
 	}
 
 	@Override
 	public void send(Message msg) {
 
-		System.out.println(this.vectorClock.toString());
+		if(msg.getType().equals(MessageType.INTERNAL)){
+			System.out.println("IAM YOUR INTERNAL FATHER");
+		}
+		else {
+			System.out.println("SENDING JOIN, I HAVE CLOCK BEFORE CLONE!: " + this.vectorClock.toString());
+			this.vectorClock.increment(msg.getFrom());
+			Vector v = this.vectorClock.getClone();
+			System.out.println("SENDING JOIN, I HAVE CLOCK AFTER CLONE!: " + this.vectorClock.toString());
 
-		Vector v = this.vectorClock.getClone();
-		v.increment(msg.getFrom());
-
-		msg.setClock(v);
+			msg.setClock(v);
+		}
 		communicator.send(msg);
 	}
 
@@ -32,31 +42,40 @@ public class Causal extends Order {
 
 	@Override
 	public void queueAdd(Message m) {
+		if(!m.getType().equals(MessageType.INTERNAL)) {
 
-		this.setChanged();
-		queue.add(m);
+			if (m.getType() == MessageType.JOIN) {
+				System.out.println("I GOT JOIN IN CAUSAL");
+				System.out.println("RECEIVED JOIN: " + this.receiveClock.toString());
+			}
 
-		if(m.getType() == MessageType.JOIN){
-			System.out.println("I GOT JOIN IN CAUSAL");
-			System.out.println(this.vectorClock.toString());
-		}
-
-		if(super.vectorClock.nextInLine(m.getFrom(),(Vector)m.getClock())){
-			super.vectorClock.incrementEveryone((Vector) m.getClock());
-			notifyObservers(queue.remove());
-			loopThroughQueue();
+			if (this.receiveClock.nextInLine(m.getFrom(), (Vector) m.getClock())) {
+				this.receiveClock.incrementEveryone((Vector) m.getClock());
+				super.vectorClock.incrementEveryone((Vector) m.getClock());
+				this.setChanged();
+				notifyObservers(m);
+				loopThroughQueue();
+			} else {
+				queue.add(m);
+				System.out.println("NOT NEXT MESSAGE");
+			}
 		}
 	}
 
 	private void loopThroughQueue() {
 
 		for (Message m : queue){
-			if(super.vectorClock.nextInLine(m.getFrom(),(Vector)m.getClock())){
+			if(this.receiveClock.nextInLine(m.getFrom(),(Vector)m.getClock())){
 				super.vectorClock.incrementEveryone((Vector) m.getClock());
-				notifyObservers(queue.remove());
+				this.receiveClock.incrementEveryone((Vector) m.getClock());
+				queue.remove(m);
+				this.setChanged();
+				notifyObservers(m);
 				loopThroughQueue();
 				break;
 			}
 		}
 	}
+
+
 }
