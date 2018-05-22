@@ -127,7 +127,7 @@ public class ClientController implements Observer {
 			root = FXMLLoader.load(new File("src/debugger/debugger.fxml").toURL());
 			Stage stage = new Stage();
 			DebuggerController.getDebugger().start(stage);
-			stage.setTitle("My New Stage Title");
+			stage.setTitle(Test.ipaddress+":"+Test.port);
 			stage.setScene(new Scene(root, 450, 450));
 			Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
 			stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4);

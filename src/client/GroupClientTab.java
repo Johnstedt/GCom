@@ -5,6 +5,7 @@ import group_management.User;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ListView;
@@ -45,6 +46,7 @@ public class GroupClientTab implements Observer{
 		userList = (ListView) borderPane.lookup("#userList");
 		userList.setOnMouseClicked(this::clickOnUser);
 		Node lowerPane = borderPane.lookup("#lowerFlowPane");
+		tab.setOnCloseRequest(this::onClose);
 
 		sendButton = (Button) lowerPane.lookup("#sendButton");
 		sendButton.setOnAction(this::onSendButton);
@@ -57,6 +59,11 @@ public class GroupClientTab implements Observer{
 		userList.setItems(FXCollections.observableArrayList(group.getUsers()));
 		chatOutputField.autosize();
 		Platform.runLater(()->chatInputField.requestFocus());
+	}
+
+	private void onClose(Event event) {
+		group.leave(self);
+
 	}
 
 
@@ -124,6 +131,9 @@ public class GroupClientTab implements Observer{
 				group.addUser((User) msg.getMsg());
 				setTextInChat(TimeFormat.getTimestamp(), "System", msg.getMsg()+ " joined the group.");
 				Platform.runLater(()->userList.setItems(FXCollections.observableArrayList(group.getUsers())));
+				break;
+			case LEAVE:
+				setTextInChat(TimeFormat.getTimestamp(), "System", msg.getMsg()+ " left the group.");
 				break;
 			default:
 				System.err.println("GroupClientTab - UNHANDLED msg type:"+msg.getType());

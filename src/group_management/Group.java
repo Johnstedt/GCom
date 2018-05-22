@@ -3,14 +3,12 @@ package group_management;
 import communication.Multicast;
 import message.InternalMessage;
 import message.Message;
-import message.MessageType;
 import message_ordering.Order;
 
 import java.io.Serializable;
 import java.util.*;
 
-import static message.MessageType.INTERNAL;
-import static message.MessageType.TEXT;
+import static message.MessageType.*;
 
 public class Group extends Observable implements Observer, Serializable {
 	private List<Message> messages;
@@ -36,9 +34,16 @@ public class Group extends Observable implements Observer, Serializable {
 			Message msg = (Message) o;
 			System.out.println("Group got message:"+msg.getType());
 			messages.add(msg);
-			if(msg.getType().equals(MessageType.JOIN)){
-				this.addUser((User) msg.getMsg());
+			switch (msg.getType()){
+				case JOIN:
+					this.addUser((User) msg.getMsg());
+					break;
+				case LEAVE:
+					users.remove((User)msg.getMsg());
+					break;
 			}
+
+
 			System.out.println(msg.getFrom().getNickname() + ": "+ msg.getMsg());
 		}
 		else if (o instanceof HashMap){
@@ -64,7 +69,7 @@ public class Group extends Observable implements Observer, Serializable {
 	}
 
 	public void sendGroups(HashMap<String, Group> hm, User self, List<User> from){
-		Message msg = new Message(MessageType.SEND_GROUPS, groupName, self, from, hm);
+		Message msg = new Message(SEND_GROUPS, groupName, self, from, hm);
 		this.order.send(msg);
 		System.out.println("I WILL SEND GROUPS IN GROUP");
 	}
@@ -76,7 +81,7 @@ public class Group extends Observable implements Observer, Serializable {
 	}
 
 	public void askGroups(User self, List<User> to) {
-		Message msg = new Message(MessageType.ASK_GROUPS, groupName, self, to, null);
+		Message msg = new Message(ASK_GROUPS, groupName, self, to, null);
 		this.order.send(msg);
 	}
 
@@ -93,7 +98,7 @@ public class Group extends Observable implements Observer, Serializable {
 				}
 		}
 		newUserList.add(u);
-		Message msg = new Message(MessageType.JOIN, groupName, u, newUserList, u);
+		Message msg = new Message(JOIN, groupName, u, newUserList, u);
 		this.order.send(msg);
 		this.order.setSelf(u);
 	}
@@ -129,5 +134,11 @@ public class Group extends Observable implements Observer, Serializable {
 	public Observer getComm() {
 		comm.addObserver(this.order);
 		return comm;
+	}
+
+	public void leave(User self) {
+		Message msg = new Message(LEAVE, groupName, self, getUsers(), self);
+		send(msg);
+		getUsers().remove(self);
 	}
 }

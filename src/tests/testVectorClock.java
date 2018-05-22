@@ -60,13 +60,9 @@ public class testVectorClock {
 		v1.increment(user1);
 		v2.increment(user2);
 		Vector v3 = null;
-		try {
-			v3 = v1.getClone();
-			v3.increment(user2);
-			v1.increment(user2);
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-		}
+		v3 = v1.getClone();
+		v3.increment(user2);
+		v1.increment(user2);
 		Assert.assertFalse(v3.equalsQ(v2));
 		Assert.assertTrue(v1.equalsQ(v3));
 	}

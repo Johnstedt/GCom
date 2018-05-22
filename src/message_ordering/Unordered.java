@@ -2,7 +2,6 @@ package message_ordering;
 
 import clock.Vector;
 import communication.Multicast;
-import group_management.User;
 import message.Message;
 
 import static group_management.MessageOrderingType.UNORDERED;
@@ -18,13 +17,8 @@ public class Unordered extends Order {
 	public void send(Message msg) {
 
 		Vector v = null;
-		try {
-			this.vectorClock.increment(msg.getFrom());
-			v = (Vector) this.vectorClock.getClone();
-		} catch (CloneNotSupportedException e) {
-			e.printStackTrace();
-			System.out.println("WHY U NOT CLONE!?");
-		}
+		this.vectorClock.increment(msg.getFrom());
+		v = (Vector) this.vectorClock.getClone();
 
 		msg.setClock(v);
 		communicator.send(msg);
