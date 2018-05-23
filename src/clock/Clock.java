@@ -6,17 +6,16 @@ import java.util.HashMap;
 
 public interface Clock extends Cloneable {
 
-	HashMap<String, Long> IncrementAndGet();
+	Clock getClone() throws CloneNotSupportedException;
 
-	void receive(HashMap<String, Long> givenClock);
+	void increment(User self);
 
-	public Clock getClone() throws CloneNotSupportedException;
+	HashMap<User, Long> getClock();
 
-	public void increment(User self);
+	void incrementEveryone(Vector cl);
 
-	public HashMap<String, Long> getClock();
+	boolean equalsQ(Vector comparison);
 
-	public void incrementEveryone(Vector cl);
+	public boolean isNextMessage(User from, Vector comparison);
 
-	public boolean equalsQ(Vector comparison);
 }

@@ -12,6 +12,11 @@ import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+/**
+ * Implements Reliable Multicast.
+ * Multicast received messages first time it's received.
+ * Delivers the second time it receives the message and ignores after.
+ */
 public class ReliableMultiCast extends Multicast implements Serializable, Observer {
 
 	private List<Vector> clocks;
@@ -40,15 +45,12 @@ public class ReliableMultiCast extends Multicast implements Serializable, Observ
 		Boolean shouldSend = true;
 		Boolean shouldDeliver = true;
 
-		System.out.println("MESSAGE IS: "+msg.getMsg());
-
 		for (Vector c : this.clocks) {
 			if (c.equalsQ(((Vector) msg.getClock()))) {
 				shouldSend = false;
 			}
 		}
 		if(shouldSend){
-			System.out.println("Add clock, length: "+this.clocks.size());
 			this.clocks.add((Vector) msg.getClock());
 			sendToSender(msg);
 		}else {
@@ -58,11 +60,8 @@ public class ReliableMultiCast extends Multicast implements Serializable, Observ
 				}
 			}
 			if(shouldDeliver){
-				System.out.println("WILL DELIVER");
 				this.haveDelivered.add(((Vector) msg.getClock()));
 				toGroupManagement(msg);
-			} else {
-				System.out.println("WILL NOT DELIVER");
 			}
 		}
 	}
@@ -87,5 +86,4 @@ public class ReliableMultiCast extends Multicast implements Serializable, Observ
 			System.err.println("Got some update in communication: "+o.getClass());
 		}
 	}
-
 }

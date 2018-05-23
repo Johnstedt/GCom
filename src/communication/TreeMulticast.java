@@ -12,6 +12,12 @@ import java.util.Observer;
 
 import static group_management.CommunicationType.TREE_MULTICAST;
 
+/**
+ * Implements tree based multicast.
+ *
+ * Uses a source tree, not a group-shared tree.
+ * See pfd report in repo for further info: https://github.com/Johnstedt/GCom
+ */
 public class TreeMulticast extends Multicast implements Serializable, Observer {
 	public TreeMulticast(User u) {
 		super(u, TREE_MULTICAST);
@@ -36,12 +42,10 @@ public class TreeMulticast extends Multicast implements Serializable, Observer {
 
 	@Override
 	void receiveFromReceiver(Message msg) {
-		System.out.println("NEVER HERE!");
+
 		if(msg instanceof TMessage) {
-			System.out.println("ALWAYS HERE!");
 			TMessage tMsg = (TMessage) msg;
 			if(whoSend(tMsg).size() > 0) {
-				System.out.println("longer than 0");
 				tMsg.setUserList(whoSend(tMsg));
 				super.toSender(tMsg);
 			}
@@ -50,7 +54,14 @@ public class TreeMulticast extends Multicast implements Serializable, Observer {
 		toGroupManagement(msg);
 	}
 
-
+	/**
+	 * Determines the source tree based on sender.
+	 * Determines own position in source tree.
+	 * Determines which users to send to next.
+	 *
+	 * @param tMsg Received message
+	 * @return Returns a list of users to send to next
+	 */
 	private List<User> whoSend(TMessage tMsg){
 		int me = tMsg.getIndexOfUser(super.self);
 		System.out.println(me);
@@ -82,25 +93,29 @@ public class TreeMulticast extends Multicast implements Serializable, Observer {
 		return ul;
 	}
 
+	// Map user position in list to user position in source tree
 	private int tree (int me, int from, int len){
 		return mod(me - from, len);
 	}
 
+	// Get first index of user to send to
 	private int first(int me, int from, int len){
 		return (tree(me, from, len) *2 + 1 + from) % len;
 	}
 
+	// Get second index of user to send to
 	private int second(int me, int from, int len){
 		return (tree(me, from, len) *2 + 2 + from) % len;
 	}
 
+	// Why not native one could wonder :/
 	private static int log2(double num) {
 		return (int)Math.floor((Math.log(num)/Math.log(2)));
 	}
 
+	// % operator is remainder in Java, this needs modulus. rem and mod differ on negative numbers.
 	private int mod(int x, int y) {
 		int result = x % y;
 		return result < 0? result + y : result;
 	}
-
 }

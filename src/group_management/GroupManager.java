@@ -3,7 +3,7 @@ package group_management;
 import communication.Multicast;
 import communication.ReliableMultiCast;
 import communication.TreeMulticast;
-import communication.Unreliable_Multicast;
+import communication.UnreliableMulticast;
 import message.Message;
 import message_ordering.*;
 import rmi.Receiver;
@@ -32,7 +32,7 @@ public class GroupManager extends Observable implements Observer {
 		Multicast multicast;
 		switch (ct) {
 			case UNRELIABLE_MULTICAST:
-				multicast = new Unreliable_Multicast(u);
+				multicast = new UnreliableMulticast(u);
 				break;
 			case RELIABLE_MULTICAST:
 				multicast = new ReliableMultiCast(u);
@@ -41,7 +41,7 @@ public class GroupManager extends Observable implements Observer {
 				multicast = new TreeMulticast(u);
 				break;
 			default:
-				multicast = new Unreliable_Multicast(u);
+				multicast = new UnreliableMulticast(u);
 		}
 
 		Order order;
@@ -49,26 +49,19 @@ public class GroupManager extends Observable implements Observer {
 			case UNORDERED:
 				order = new Unordered(multicast);
 				break;
-			case TOTAL:
-				order = new Total(multicast);
-				break;
 			case CAUSAL:
-				order = new Causal(u, multicast);
+				order = new Causal(multicast);
 				break;
 			case FIFO:
 				order = new Fifo(multicast);
 				break;
-			case TOTALCAUSAL:
-				order = new TotalCausal(multicast);
-				break;
 			default:
-				order = new TotalCausal(multicast);
+				order = new Causal(multicast);
 				break;
 		}
 
 		Group g = new Group(order, multicast, name);
 
-		//TODO: Below is retarded, should do by constructor?
 		g.addUser(self);
 		groups.put(name, g);
 		updateReceiverToGroup(g);
@@ -77,20 +70,18 @@ public class GroupManager extends Observable implements Observer {
 
 	@Override
 	public void update(Observable observable, Object o) {
-		System.out.println("GroupManager update:"+o.getClass().toString());
+
 		if(o instanceof Message) {
 			Message msg = (Message) o;
-			System.out.println("GroupManager update:"+msg);
+
 			switch (msg.getType()) {
 				case ASK_GROUPS:
-					System.out.println("I WILL SEND GROUPS IN GROUPMANAGER");
 					Group g = groups.get(msg.getGroupName());
 					List<User> sendTo = new LinkedList();
 					sendTo.add(msg.getFrom());
 					g.sendGroups(this.groups, self, sendTo);
 					break;
 				case SEND_GROUPS:
-					System.err.println("GM update SEND_GROUPS!");
 					this.setChanged();
 					this.notifyObservers(msg);
 					break;

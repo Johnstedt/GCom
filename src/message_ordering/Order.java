@@ -27,18 +27,14 @@ public abstract class Order extends Observable implements Serializable, Observer
 
 	public abstract void send(Message msg);
 
-	public abstract void removeStubs();
-
-	public void removeObs(){
-		this.deleteObservers();
+	public void removeStubs() {
+		this.communicator.removeStubs();
 	}
 
 	public abstract void queueAdd(Message m);
 
 	@Override
 	public void update(Observable observable, Object o) {
-
-		System.out.println("ORDER: RECEIVED AND UPDATE");
 
 		if(o instanceof Message) {
 			Message m = (Message) o;

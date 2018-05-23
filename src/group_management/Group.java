@@ -32,7 +32,6 @@ public class Group extends Observable implements Observer, Serializable {
 
 		if(o instanceof Message) {
 			Message msg = (Message) o;
-			System.out.println("Group got message:"+msg.getType());
 			messages.add(msg);
 			switch (msg.getType()){
 				case JOIN:
@@ -64,14 +63,12 @@ public class Group extends Observable implements Observer, Serializable {
 
 
 	public void send(Message msg) {
-		System.out.println("I WILL SEND MESSAGE IN GROUP, type:"+msg.getType());
 		this.order.send(msg);
 	}
 
 	public void sendGroups(HashMap<String, Group> hm, User self, List<User> from){
 		Message msg = new Message(SEND_GROUPS, groupName, self, from, hm);
 		this.order.send(msg);
-		System.out.println("I WILL SEND GROUPS IN GROUP");
 	}
 
 	public void addUser(User newUser) {

@@ -31,8 +31,5 @@ public class Unordered extends Order {
 		notifyObservers(queue.remove());
 	}
 
-	@Override
-	public void removeStubs() {
-		this.communicator.removeStubs();
-	}
+
 }

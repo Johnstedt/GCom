@@ -1,12 +1,17 @@
 package message;
 
-import clock.Clock;
 import clock.Vector;
 import group_management.User;
 
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Special message type to support Tree based multicast.
+ *
+ * Implements methods to return knowledge of positioning in sendList
+ * so a source tree can be determined.
+ */
 public class TMessage extends Message{
 
 	private List<User> userList;
