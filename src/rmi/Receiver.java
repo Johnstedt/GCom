@@ -28,26 +28,19 @@ public class Receiver extends Observable implements Serializable {
 	}
 
 	public void addOrder(Observer no, String groupName){
-		System.out.println("THIS WILL NOTIFY ");
+
 		if (this.communicationLayer.containsKey(groupName)) {
-			System.out.println("DOES IT");
 			this.communicationLayer.remove(groupName);
 		}
 		this.communicationLayer.put(groupName, no);
 	}
 
 	public void notifyObservers(Message msg) {
-		System.out.println("RECEIVER received: "+ msg.getGroupName()+" "+msg.getType()+" from "+msg.getFrom().getNickname()+":"+msg.getFrom().getIp()+":"+msg.getFrom().getPort());
-		if (msg.getType().equals(MessageType.INTERNAL)) {
-			System.err.println("Receiver got internal message");
-		}
+
 		if(this.communicationLayer.containsKey(msg.getGroupName())){
 			// Go around Java implemented observable to get specific observer.
 			Observer o = this.communicationLayer.get(msg.getGroupName());
 			o.update(this, msg);
-		} else {
-			System.err.println("Receiver.notifyObserver ELSE - This should not run! FIX!" + msg.getGroupName());
-			//this.communicationLayer.entrySet().iterator().next().getValue().changeAndNotifyObservers();
 		}
 	}
 

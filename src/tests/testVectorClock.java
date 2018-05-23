@@ -86,17 +86,17 @@ public class testVectorClock {
 	@Test
 	public void testNextInLine(){
 		v2.increment(user2);
-		Assert.assertTrue(v1.nextInLine(user2, v2));
+		Assert.assertTrue(v1.isNextMessage(user2, v2));
 
 		v1.incrementEveryone(v2);
 		v1.increment(user1);
-		Assert.assertTrue(v2.nextInLine(user1, v1));
+		Assert.assertTrue(v2.isNextMessage(user1, v1));
 
 		v1.increment(user1);
-		Assert.assertFalse(v2.nextInLine(user1, v1));
+		Assert.assertFalse(v2.isNextMessage(user1, v1));
 
 		v2.increment(user1);
-		Assert.assertTrue(v2.nextInLine(user1, v1));
+		Assert.assertTrue(v2.isNextMessage(user1, v1));
 
 	}
 

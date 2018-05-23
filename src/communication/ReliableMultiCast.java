@@ -7,11 +7,13 @@ import message.Message;
 import message.MessageType;
 
 import java.io.Serializable;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
+import java.util.*;
 
+/**
+ * Implements Reliable Multicast.
+ * Multicast received messages first time it's received.
+ * Delivers the second time it receives the message and ignores after.
+ */
 public class ReliableMultiCast extends Multicast implements Serializable, Observer {
 
 	private List<Vector> clocks;
@@ -40,15 +42,12 @@ public class ReliableMultiCast extends Multicast implements Serializable, Observ
 		Boolean shouldSend = true;
 		Boolean shouldDeliver = true;
 
-		System.out.println("MESSAGE IS: "+msg.getMsg());
-
 		for (Vector c : this.clocks) {
 			if (c.equalsQ(((Vector) msg.getClock()))) {
 				shouldSend = false;
 			}
 		}
 		if(shouldSend){
-			System.out.println("Add clock, length: "+this.clocks.size());
 			this.clocks.add((Vector) msg.getClock());
 			sendToSender(msg);
 		}else {
@@ -58,18 +57,15 @@ public class ReliableMultiCast extends Multicast implements Serializable, Observ
 				}
 			}
 			if(shouldDeliver){
-				System.out.println("WILL DELIVER");
 				this.haveDelivered.add(((Vector) msg.getClock()));
 				toGroupManagement(msg);
-			} else {
-				System.out.println("WILL NOT DELIVER");
 			}
 		}
 	}
 
 	@Override
 	void sendToSender(Message msg) {
-		msg.setSendTo(this.group);
+		msg.setSendTo(new ArrayList<>(this.group));
 		toSender(msg);
 	}
 
@@ -78,12 +74,13 @@ public class ReliableMultiCast extends Multicast implements Serializable, Observ
 		if (o instanceof Message) {
 			Message msg = (Message) o;
 			if(msg.getType().equals(MessageType.JOIN)){
-				this.group.add(msg.getFrom());
+				if(!this.group.contains(msg.getFrom())) {
+					this.group.add(msg.getFrom());
+				}
 			}
 			super.fromReceiverBeforeDebugger.add(msg);
 		} else {
 			System.err.println("Got some update in communication: "+o.getClass());
 		}
 	}
-
 }

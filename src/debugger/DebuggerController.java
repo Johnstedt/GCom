@@ -46,6 +46,7 @@ public class DebuggerController extends Application{
 	}
 
 	public void show() {
+
 		classStage.show();
 	}
 

@@ -19,7 +19,6 @@ public class Group extends Observable implements Observer, Serializable {
 
 	Group(Order o, Multicast m, String groupName) {
 		this.order = o;
-		this.order.addObserver(this);
 		this.groupName = groupName;
 		this.messages = new LinkedList<>();
 		this.users = new LinkedList<>();
@@ -32,7 +31,6 @@ public class Group extends Observable implements Observer, Serializable {
 
 		if(o instanceof Message) {
 			Message msg = (Message) o;
-			System.out.println("Group got message:"+msg.getType());
 			messages.add(msg);
 			switch (msg.getType()){
 				case JOIN:
@@ -55,14 +53,12 @@ public class Group extends Observable implements Observer, Serializable {
 
 
 	public void send(Message msg) {
-		System.out.println("I WILL SEND MESSAGE IN GROUP, type:"+msg.getType());
 		this.order.send(msg);
 	}
 
 	public void sendGroups(HashMap<String, Group> hm, User self, List<User> from){
 		Message msg = new Message(SEND_GROUPS, groupName, self, from, hm);
 		this.order.send(msg);
-		System.out.println("I WILL SEND GROUPS IN GROUP");
 	}
 
 	public void addUser(User newUser) {

@@ -56,7 +56,7 @@ public class Test extends Application {
 	public static void main(String[] args) {
 
 		if (args.length == 0 || args[0].equals("FIND")) {
-			int tmpport = 1337;
+			int tmpport = 1341;
 			while (port == 0) {
 				try {
 					receiver = new Receiver(tmpport);

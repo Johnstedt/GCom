@@ -8,15 +8,19 @@ import java.util.Observer;
 
 import static group_management.CommunicationType.UNRELIABLE_MULTICAST;
 
-public class Unreliable_Multicast extends Multicast implements Serializable, Observer {
+/**
+ * Implements unreliable multicast.
+ * Sends messages once and only once with no care in the world for
+ * any problems whatsoever.
+ */
+public class UnreliableMulticast extends Multicast implements Serializable, Observer {
 
-	public Unreliable_Multicast(User u){
+	public UnreliableMulticast(User u){
 		super(u, UNRELIABLE_MULTICAST);
 	}
 
 	@Override
 	public void send(Message msg) {
-		System.out.println("Unreliable got:"+msg.toString());
 		sendToSender(msg);
 	}
 
@@ -29,5 +33,4 @@ public class Unreliable_Multicast extends Multicast implements Serializable, Obs
 	void sendToSender(Message msg) {
 		toSender(msg);
 	}
-
 }
