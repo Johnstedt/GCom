@@ -4,6 +4,7 @@ import message.Message;
 import message.MessageType;
 
 import java.io.Serializable;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.HashMap;
@@ -15,11 +16,15 @@ public class Receiver extends Observable implements Serializable {
 	private Integer port;
 	private HashMap<String, Observer> communicationLayer;
 
-	public Receiver(Integer port){
+	public Receiver(Integer port) throws RemoteException {
 		super();
 		this.port = port;
 		this.communicationLayer = new HashMap<>();
-		new Thread(this::run).start();
+		RemoteObject impl = new RemoteObjectImpl();
+		impl.setOrderObservable(this);
+		Registry registry = LocateRegistry.createRegistry(port);
+		registry.rebind("MessageService", impl);
+
 	}
 
 	public void addOrder(Observer no, String groupName){
@@ -45,17 +50,5 @@ public class Receiver extends Observable implements Serializable {
 			//this.communicationLayer.entrySet().iterator().next().getValue().changeAndNotifyObservers();
 		}
 	}
-
-	private void run() {
-		try {
-			RemoteObject impl = new RemoteObjectImpl();
-			impl.setOrderObservable(this);
-			Registry registry = LocateRegistry.createRegistry(port);
-			registry.rebind("MessageService", impl);
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
-	}
-
 
 }

@@ -1,5 +1,6 @@
 package group_management;
 
+import client.Test;
 import communication.Multicast;
 import communication.ReliableMultiCast;
 import communication.TreeMulticast;
@@ -19,7 +20,7 @@ public class GroupManager extends Observable implements Observer {
 	public GroupManager(User u){
 		this.self = u;
 		this.groups = new HashMap<>();
-		this.receiver = new Receiver(u.getPort());
+		this.receiver = Test.receiver;
 		//We do this somewhere else?
 		//createGroup("init", MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
 	}

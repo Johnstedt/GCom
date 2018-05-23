@@ -58,7 +58,6 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 				e.printStackTrace();
 			}
 		}
-
 	}
 
 	private void setObservableReceiver(Observable observableReceiver) {

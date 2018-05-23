@@ -42,17 +42,8 @@ public class Group extends Observable implements Observer, Serializable {
 					users.remove((User)msg.getMsg());
 					break;
 			}
-
-
 			System.out.println(msg.getFrom().getNickname() + ": "+ msg.getMsg());
 		}
-		else if (o instanceof HashMap){
-
-
-		} else if(o instanceof Group) {
-			System.out.println("I RECEIVED ASK FOR GROUP IN GROUP");
-		}
-
 		setChanged();
 		notifyObservers(o);
 	}

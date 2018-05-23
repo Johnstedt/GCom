@@ -126,7 +126,6 @@ public class GroupClientTab implements Observer{
 				setTextInChat(TimeFormat.getTimestamp(), msg.getFrom().getNickname(), msgText);
 				break;
 			case JOIN:
-				group.addUser((User) msg.getMsg());
 				setTextInChat(TimeFormat.getTimestamp(), "System", msg.getMsg()+ " joined the group.");
 				Platform.runLater(()->userList.setItems(FXCollections.observableArrayList(group.getUsers())));
 				break;

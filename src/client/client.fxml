@@ -71,7 +71,7 @@
                      </children>
                   </HBox>
                   <ToggleButtonGroup selectionType="SINGLE" />
-                  <CheckBox fx:id="isNameServer" mnemonicParsing="false" onAction="#isNameServer" selected="true" text="Is Nameserver">
+                  <CheckBox fx:id="isNameServer" mnemonicParsing="false" onAction="#isNameServer" text="Is Nameserver">
                      <font>
                         <Font size="11.0" />
                      </font>

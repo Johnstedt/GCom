@@ -2,6 +2,7 @@ package debugger;
 
 import group_management.User;
 import javafx.application.Application;
+import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
@@ -54,6 +55,20 @@ public class DebuggerController extends Application{
 
 	public void setQueues(InternalMessage msg, String groupName, BlockingQueue<Message> fromReceiverBeforeDebugger, BlockingQueue<Message> fromReceiverAfterDebugger, BlockingQueue<Message> toSenderBeforeDebugger, BlockingQueue<Message> toSenderAfterDebugger) {
 		CommunicationQueues cq = new CommunicationQueues(fromReceiverBeforeDebugger, fromReceiverAfterDebugger, toSenderBeforeDebugger, toSenderAfterDebugger);
+		boolean wasShowing = true;
+		if (!classStage.isShowing()) {
+			Platform.runLater(()->classStage.show());
+			wasShowing = false;
+
+		}
+		Platform.runLater(()->createDebuggingWindowForGroup(cq, groupName, msg));
+
+		if (!wasShowing) {
+			Platform.runLater(()->classStage.hide());
+		}
+	}
+
+	private void createDebuggingWindowForGroup(CommunicationQueues cq, String groupName, InternalMessage msg) {
 		if (groupName.equals("init")) {
 			return;
 		}
@@ -93,7 +108,7 @@ public class DebuggerController extends Application{
 		SplitPane splitPane = (SplitPane) bp.lookup("#splitVertical");
 		splitPane.applyCss();
 		AnchorPane messageCount = (AnchorPane) splitPane.lookup("#messageCount");
-		ListView<MessageCounter.Counts> msgCount = (ListView<MessageCounter.Counts>) messageCount.lookup("#messageListCount");
+
 		AnchorPane splitAnchorInDebug = (AnchorPane) splitPane.lookup("#said");
 		SplitPane splitAnchorSplitPane = (SplitPane) splitAnchorInDebug.lookup("#splitAnchorSplitInDebug");
 
@@ -110,6 +125,7 @@ public class DebuggerController extends Application{
 
 		ListView<MessageDebug> recMsgList = (ListView<MessageDebug>) recFlowPane.lookup("#recListAtDebug");
 		ListView<MessageDebug> sendMsgList = (ListView<MessageDebug>) sendFlowPane.lookup("#sendListAtDebug");
+		ListView<MessageCounter.Counts> msgCount = (ListView<MessageCounter.Counts>) messageCount.lookup("#messageListCount");
 		cq.setMsgLists(recMsgList, sendMsgList, msgCount);
 
 		Button recBtn = (Button) recFlowPane.lookup("#receiverBtn");
@@ -160,50 +176,50 @@ public class DebuggerController extends Application{
 
 
 		recMsgList.setCellFactory((ListView<MessageDebug> lv) -> {
-		ListCell<MessageDebug> cell = new ListCell<>();
-		ContextMenu contextMenu = new ContextMenu();
-		MenuItem holdItem = new MenuItem();
-		holdItem.textProperty().bind(Bindings.format("Hold/Un-hold"));
-		holdItem.setOnAction(event -> {
-			MessageDebug item = cell.getItem();
-			item.isHold = !item.isHold;
-			if (item.isHold)
-				cell.setStyle("-fx-background: #FF9999;");
-			else
-				cell.setStyle("-fx-background: #FFFFFF;");
-		});
-
-
-		MenuItem sendItem = new MenuItem();
-		sendItem.textProperty().bind(Bindings.format("Receive manually"));
-		sendItem.setOnAction(event -> {
-			MessageDebug item = cell.getItem();
-			cq.receiveManuallyMessage(item);
-		});
-
-		MenuItem deleteItem = new MenuItem();
-		deleteItem.textProperty().bind(Bindings.format("Delete"));
-		deleteItem.setOnAction(event -> cq.removeFromReceiverDebugger(cell.getItem()));
-
-		//Menu subMenu_s1 = new Menu("Remove from 'sending-to-list'");
-
-		contextMenu.getItems().addAll(holdItem, sendItem, deleteItem);//, subMenu_s1);
-
-		cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
-			if (isNowEmpty) {
-				cell.setContextMenu(null);
-				cell.setText("");
-				cell.setStyle("-fx-background: #FFFFFF;");
-			} else {
-				cell.setContextMenu(contextMenu);
-				cell.setText(cell.getItem().toString());
+			ListCell<MessageDebug> cell = new ListCell<>();
+			ContextMenu contextMenu = new ContextMenu();
+			MenuItem holdItem = new MenuItem();
+			holdItem.textProperty().bind(Bindings.format("Hold/Un-hold"));
+			holdItem.setOnAction(event -> {
 				MessageDebug item = cell.getItem();
+				item.isHold = !item.isHold;
 				if (item.isHold)
 					cell.setStyle("-fx-background: #FF9999;");
 				else
 					cell.setStyle("-fx-background: #FFFFFF;");
-			}
-		});
+			});
+
+
+			MenuItem sendItem = new MenuItem();
+			sendItem.textProperty().bind(Bindings.format("Receive manually"));
+			sendItem.setOnAction(event -> {
+				MessageDebug item = cell.getItem();
+				cq.receiveManuallyMessage(item);
+			});
+
+			MenuItem deleteItem = new MenuItem();
+			deleteItem.textProperty().bind(Bindings.format("Delete"));
+			deleteItem.setOnAction(event -> cq.removeFromReceiverDebugger(cell.getItem()));
+
+			//Menu subMenu_s1 = new Menu("Remove from 'sending-to-list'");
+
+			contextMenu.getItems().addAll(holdItem, sendItem, deleteItem);//, subMenu_s1);
+
+			cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
+				if (isNowEmpty) {
+					cell.setContextMenu(null);
+					cell.setText("");
+					cell.setStyle("-fx-background: #FFFFFF;");
+				} else {
+					cell.setContextMenu(contextMenu);
+					cell.setText(cell.getItem().toString());
+					MessageDebug item = cell.getItem();
+					if (item.isHold)
+						cell.setStyle("-fx-background: #FF9999;");
+					else
+						cell.setStyle("-fx-background: #FFFFFF;");
+				}
+			});
 			return cell;
 		});
 
@@ -278,7 +294,6 @@ public class DebuggerController extends Application{
 			});
 			return cell;
 		});
-
 	}
 
 }
