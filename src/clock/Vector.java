@@ -95,10 +95,6 @@ public class Vector implements Clock, Serializable, Cloneable{
 				String userKey = (String)pair.getKey();
 
 				String userFrom = from.getIp()+from.getPort();
-				System.out.println("reval: "+ reVal);
-				System.out.println("myval "+ myVal);
-				System.out.println("mapKey "+ userKey);
-				System.out.println("gotKey " + userFrom);
 
 				if(!(userKey.equals(userFrom) && reVal.equals(myVal+1L)) ) {
 					if(! (!userKey.equals(userFrom) &&  0 <= myVal.compareTo(reVal) ) ){

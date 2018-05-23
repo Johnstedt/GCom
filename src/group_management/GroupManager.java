@@ -20,12 +20,12 @@ public class GroupManager extends Observable implements Observer {
 		this.self = u;
 		this.groups = new HashMap<>();
 		this.receiver = new Receiver(u.getPort());
-		//We do this somewhere else?
-		//createGroup("init", MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
 	}
 
 	public Group createGroup(String name, MessageOrderingType sort_order, CommunicationType ct) {
-		return createGroup(self, name, sort_order, ct);
+		Group g = createGroup(self, name, sort_order, ct);
+		g.addObserver(this);
+		return g;
 	}
 	public Group createGroup(User u, String name, MessageOrderingType sort_order, CommunicationType ct) {
 
@@ -67,11 +67,10 @@ public class GroupManager extends Observable implements Observer {
 		}
 
 		Group g = new Group(order, multicast, name);
-		g.addObserver(this);
+
 		//TODO: Below is retarded, should do by constructor?
 		g.addUser(self);
 		groups.put(name, g);
-		//g.addReceiver(this.receiver);
 		updateReceiverToGroup(g);
 		return g;
 	}
@@ -92,10 +91,6 @@ public class GroupManager extends Observable implements Observer {
 					break;
 				case SEND_GROUPS:
 					System.err.println("GM update SEND_GROUPS!");
-					this.setChanged();
-					this.notifyObservers(msg);
-					break;
-				case TEXT:
 					this.setChanged();
 					this.notifyObservers(msg);
 					break;
