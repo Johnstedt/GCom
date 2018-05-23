@@ -1,5 +1,6 @@
 package debugger;
 
+import group_management.User;
 import javafx.application.Application;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
@@ -182,7 +183,10 @@ public class DebuggerController extends Application{
 		MenuItem deleteItem = new MenuItem();
 		deleteItem.textProperty().bind(Bindings.format("Delete"));
 		deleteItem.setOnAction(event -> cq.removeFromReceiverDebugger(cell.getItem()));
-		contextMenu.getItems().addAll(holdItem, sendItem, deleteItem);
+
+		//Menu subMenu_s1 = new Menu("Remove from 'sending-to-list'");
+
+		contextMenu.getItems().addAll(holdItem, sendItem, deleteItem);//, subMenu_s1);
 
 		cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
 			if (isNowEmpty) {
@@ -228,12 +232,15 @@ public class DebuggerController extends Application{
 			MenuItem deleteItem = new MenuItem();
 			deleteItem.textProperty().bind(Bindings.format("Delete"));
 			deleteItem.setOnAction(event -> cq.removeFromSendDebugger(cell.getItem()));
-			contextMenu.getItems().addAll(holdItem, sendItem, deleteItem);
+
+			Menu subMenu_s1 = new Menu("Remove from 'sending-to-list'");
+			contextMenu.getItems().addAll(holdItem, sendItem, deleteItem, subMenu_s1);
+
 
 			cell.emptyProperty().addListener((obs, wasEmpty, isNowEmpty) -> {
 				if (isNowEmpty) {
 					cell.setContextMenu(null);
-					cell.setText("REMOVED");
+					cell.setText("");
 					cell.setStyle("-fx-background: #FFFFFF;");
 				} else {
 					cell.setContextMenu(contextMenu);
@@ -243,6 +250,17 @@ public class DebuggerController extends Application{
 						cell.setStyle("-fx-background: #FF9999;");
 					else
 						cell.setStyle("-fx-background: #FFFFFF;");
+					subMenu_s1.getItems().clear();
+					for (User su : cell.getItem().msg.getSendTo()) {
+						MenuItem subMenuItem1 = new MenuItem("Remove " + su.getNickname());
+						subMenu_s1.getItems().add(subMenuItem1);
+						subMenu_s1.setOnAction(actionEvent -> {
+							item.msg.getSendTo().remove(su);
+							subMenu_s1.getItems().remove(subMenuItem1);
+							cq.refreshLists();
+						});
+
+					}
 				}
 			});
 			return cell;

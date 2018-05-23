@@ -16,28 +16,6 @@ public class Message implements Serializable {
 	private Object msg;
 	protected List<User> sendTo;
 
-	@Override
-	public Object clone() throws CloneNotSupportedException {
-		List<User> sendToList = new LinkedList<>();
-		for (User u : sendTo) {
-			if (u != null)
-				sendToList.add((User) u.clone());
-		}
-		Message m2 = new Message(this.type, this.groupName, (User) this.from.clone(), sendToList, msg);
-		m2.setClock(this.clock);
-		return m2;
-	}
-
-	@Override
-	public String toString() {
-		String msg = "["+clock+"] "+type.toShortString(type) +
-					", " + from + ", ("+sendTo.size()+")";
-		if (type.equals(MessageType.TEXT)) {
-			msg += ", msg='" + this.msg + "'";
-		}
-		return msg;
-	}
-
 	public Message(MessageType type,
 	               String groupName,
 	               User from,
@@ -84,6 +62,29 @@ public class Message implements Serializable {
 
 	public void setClock(Vector clock) {
 		this.clock = clock;
+	}
+
+
+	@Override
+	public Object clone() throws CloneNotSupportedException {
+		List<User> sendToList = new LinkedList<>();
+		for (User u : sendTo) {
+			if (u != null)
+				sendToList.add((User) u.clone());
+		}
+		Message m2 = new Message(this.type, this.groupName, (User) this.from.clone(), sendToList, msg);
+		m2.setClock(this.clock);
+		return m2;
+	}
+
+	@Override
+	public String toString() {
+		String msg = "["+clock+"] "+type.toShortString(type) +
+					", " + from + ", ("+sendTo.size()+")";
+		if (type.equals(MessageType.TEXT)) {
+			msg += ", msg='" + this.msg + "'";
+		}
+		return msg;
 	}
 
 

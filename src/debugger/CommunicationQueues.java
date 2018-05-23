@@ -120,7 +120,7 @@ public class CommunicationQueues {
 
 	}
 
-	private void refreshLists() {
+	void refreshLists() {
 		if (sendMsgList != null) {
 			Platform.runLater(()->this.sendMsgList.setItems(FXCollections.observableArrayList(this.toSenderInDebugger)));
 			Platform.runLater(() -> sendMsgList.refresh());
@@ -170,4 +170,5 @@ public class CommunicationQueues {
 		fromReceiverInDebugger.remove(item);
 		refreshLists();
 	}
+
 }

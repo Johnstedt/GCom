@@ -27,7 +27,7 @@
         <items>
             <AnchorPane fx:id="said">
                <children>
-                  <SplitPane fx:id="splitAnchorSplitInDebug" dividerPositions="0.3837920489296636">
+                  <SplitPane fx:id="splitAnchorSplitInDebug" dividerPositions="0.5">
                      <items>
                         <AnchorPane fx:id="sendAnchorPane">
                            <children>
@@ -36,14 +36,14 @@
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Sender" />
                                     <Button fx:id="senderBtn" mnemonicParsing="false" text="Auto" />
                                     <Button fx:id="sendFlush" disable="true" mnemonicParsing="false" text="sendFlush" />
-                                    <ListView fx:id="sendListAtDebug" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" />
+                                    <ListView fx:id="sendListAtDebug" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" />
                                  </children>
                               </FlowPane>
                            </children>
                         </AnchorPane>
                         <AnchorPane fx:id="recAnchorPane" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308">
                            <children>
-                              <FlowPane fx:id="recFlowPane" alignment="CENTER" columnHalignment="CENTER" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
+                              <FlowPane fx:id="recFlowPane" alignment="CENTER" columnHalignment="CENTER" maxHeight="1.7976931348623157E308" maxWidth="1.7976931348623157E308" minHeight="-Infinity" minWidth="-Infinity" AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="0.0">
                                  <children>
                                     <Text strokeType="OUTSIDE" strokeWidth="0.0" text="Receiver" />
                                     <Button fx:id="receiverBtn" mnemonicParsing="false" text="Auto" />
