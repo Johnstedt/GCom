@@ -46,6 +46,9 @@ public class Fifo extends Order {
 	public void queueAdd(Message m) {
 		if(!m.getType().equals(MessageType.INTERNAL)) {
 
+			if (!super.vectorClock.getClock().containsKey(m.getFrom())) {
+				super.vectorClock.increment(m.getFrom());
+			}
 			if (super.vectorClock.getClock().get(m.getFrom()).equals(    m.getClock().getClock().get(m.getFrom()) + 1L    ) ) {
 				super.vectorClock.increment(m.getFrom());
 				this.receiveClock.incrementEveryone(super.vectorClock);

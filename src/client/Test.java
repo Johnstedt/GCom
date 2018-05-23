@@ -122,6 +122,7 @@ public class Test extends Application {
 					case "FIFO":
 						newGroupMO = MessageOrderingType.FIFO;
 					default:
+						System.err.println("Unknown Message Ordering Type "+args[5]);
 						System.exit(127);
 						break;
 				}
@@ -136,7 +137,7 @@ public class Test extends Application {
 						newGroupCO = CommunicationType.TREE_MULTICAST;
 						break;
 					default:
-						System.err.println("Got wrong CO for new group, "+args[5]);
+						System.err.println("Got wrong CO for new group, "+args[6]);
 						break;
 				}
 				if (newGroup.length() == 0 || newGroupCO == null || newGroupMO == null) {
@@ -145,6 +146,7 @@ public class Test extends Application {
 				}
 			}
 		}
+		System.err.println("All arguments read");
 		launch(args);
 	}
 
