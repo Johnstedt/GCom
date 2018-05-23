@@ -16,6 +16,7 @@ import message.Message;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.concurrent.BlockingQueue;
 
 public class DebuggerController extends Application{
@@ -228,12 +229,15 @@ public class DebuggerController extends Application{
 				cq.sendManuallyMessage(item);
 			});
 
+			Menu subMenu_s1 = new Menu("Remove from 'sending-to-list'");
+
+
 
 			MenuItem deleteItem = new MenuItem();
 			deleteItem.textProperty().bind(Bindings.format("Delete"));
 			deleteItem.setOnAction(event -> cq.removeFromSendDebugger(cell.getItem()));
 
-			Menu subMenu_s1 = new Menu("Remove from 'sending-to-list'");
+
 			contextMenu.getItems().addAll(holdItem, sendItem, deleteItem, subMenu_s1);
 
 
@@ -245,22 +249,31 @@ public class DebuggerController extends Application{
 				} else {
 					cell.setContextMenu(contextMenu);
 					cell.setText(cell.getItem().toString());
+
 					MessageDebug item = cell.getItem();
+					for (User su : cell.getItem().msg.getSendTo()) {
+						MenuItem subMenuItem1 = new MenuItem("Remove " + su.getNickname());
+						subMenu_s1.setOnAction(actionEvent -> {
+							//The following code sequence is stupid, but, 'su' will be
+							// incorrect ptr since su is not final.
+							String s = ((MenuItem) actionEvent.getTarget()).getText();
+							s = s.replace("Remove ", "");
+							for (Object u : new ArrayList(cell.getItem().msg.getSendTo())) {
+								User u2 = (User) u;
+								if (u2.getNickname().equals(s)) {
+									cell.getItem().msg.getSendTo().remove(u2);
+									subMenu_s1.getItems().remove(((MenuItem) actionEvent.getTarget()));
+									cq.refreshLists();
+								}
+							}
+						});
+						subMenu_s1.getItems().add(subMenuItem1);
+					}
+
 					if (item.isHold)
 						cell.setStyle("-fx-background: #FF9999;");
 					else
 						cell.setStyle("-fx-background: #FFFFFF;");
-					subMenu_s1.getItems().clear();
-					for (User su : cell.getItem().msg.getSendTo()) {
-						MenuItem subMenuItem1 = new MenuItem("Remove " + su.getNickname());
-						subMenu_s1.getItems().add(subMenuItem1);
-						subMenu_s1.setOnAction(actionEvent -> {
-							item.msg.getSendTo().remove(su);
-							subMenu_s1.getItems().remove(subMenuItem1);
-							cq.refreshLists();
-						});
-
-					}
 				}
 			});
 			return cell;
