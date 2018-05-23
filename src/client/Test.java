@@ -121,6 +121,7 @@ public class Test extends Application {
 						break;
 					case "FIFO":
 						newGroupMO = MessageOrderingType.FIFO;
+						break;
 					default:
 						System.err.println("Unknown Message Ordering Type "+args[5]);
 						System.exit(127);

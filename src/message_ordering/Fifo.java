@@ -47,7 +47,7 @@ public class Fifo extends Order {
 		if(!m.getType().equals(MessageType.INTERNAL)) {
 
 			if (!super.vectorClock.getClock().containsKey(m.getFrom())) {
-				super.vectorClock.increment(m.getFrom());
+				super.vectorClock.getClock().put(m.getFrom(), m.getClock().getClock().get(m.getFrom()) - 1L);
 			}
 			if (super.vectorClock.getClock().get(m.getFrom()).equals(    m.getClock().getClock().get(m.getFrom()) + 1L    ) ) {
 				super.vectorClock.increment(m.getFrom());
