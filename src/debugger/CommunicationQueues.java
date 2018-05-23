@@ -129,7 +129,6 @@ public class CommunicationQueues {
 			Platform.runLater(()->this.recMsgList.setItems(FXCollections.observableArrayList(this.fromReceiverInDebugger)));
 			Platform.runLater(() -> recMsgList.refresh());
 		}
-			System.err.println("RECMSGLIST is null");
 		if (msgCountList != null) {
 			Platform.runLater(()->this.msgCountList.setItems(FXCollections.observableList(this.counts.counts)));
 			Platform.runLater(() -> msgCountList.refresh());
@@ -170,5 +169,4 @@ public class CommunicationQueues {
 		fromReceiverInDebugger.remove(item);
 		refreshLists();
 	}
-
 }

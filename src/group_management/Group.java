@@ -58,7 +58,7 @@ public class Group extends Observable implements Observer, Serializable {
 	}
 
 	public void send(String msgTxt, User self) {
-		Message msg = new Message(TEXT, groupName, self, users, msgTxt);
+		Message msg = new Message(TEXT, groupName, self, getUsers(), msgTxt);
 		send(msg);
 	}
 
@@ -108,7 +108,7 @@ public class Group extends Observable implements Observer, Serializable {
 	}
 
 	public List<User> getUsers() {
-		return users;
+		return new ArrayList<>(users);
 	}
 
 	public String getGroupName() {
