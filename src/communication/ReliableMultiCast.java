@@ -78,7 +78,9 @@ public class ReliableMultiCast extends Multicast implements Serializable, Observ
 		if (o instanceof Message) {
 			Message msg = (Message) o;
 			if(msg.getType().equals(MessageType.JOIN)){
-				this.group.add(msg.getFrom());
+				if(this.group.contains(msg.getFrom())) {
+					this.group.add(msg.getFrom());
+				}
 			}
 			super.fromReceiverBeforeDebugger.add(msg);
 		} else {
