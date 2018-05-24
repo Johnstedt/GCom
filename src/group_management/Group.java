@@ -84,7 +84,9 @@ public class Group extends Observable implements Observer, Serializable {
 					e.printStackTrace();
 				}
 		}
-		newUserList.add(u);
+		if(!newUserList.contains(u)) {
+			newUserList.add(u);
+		}
 		Message msg = new Message(JOIN, groupName, u, newUserList, u);
 		this.order.send(msg);
 		this.order.setSelf(u);

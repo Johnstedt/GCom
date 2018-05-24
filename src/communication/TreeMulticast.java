@@ -3,6 +3,7 @@ package communication;
 import clock.Vector;
 import group_management.User;
 import message.Message;
+import message.MessageType;
 import message.TMessage;
 
 import java.io.Serializable;
@@ -44,11 +45,13 @@ public class TreeMulticast extends Multicast implements Serializable, Observer {
 	void receiveFromReceiver(Message msg) {
 
 		if(msg instanceof TMessage) {
-			TMessage tMsg = (TMessage) msg;
-			if(whoSend(tMsg).size() > 0) {
-				tMsg.setUserList(whoSend(tMsg));
-				super.toSender(tMsg);
-			}
+
+				TMessage tMsg = (TMessage) msg;
+				if (whoSend(tMsg).size() > 0) {
+					tMsg.setUserList(whoSend(tMsg));
+					super.toSender(tMsg);
+				}
+
 		}
 
 		toGroupManagement(msg);
@@ -64,10 +67,10 @@ public class TreeMulticast extends Multicast implements Serializable, Observer {
 	 */
 	private List<User> whoSend(TMessage tMsg){
 		int me = tMsg.getIndexOfUser(super.self);
-		System.out.println(me);
+		System.out.println("WHO AM I: "+me);
 		int from = tMsg.getIndexOfOrigin();
 		int len = tMsg.getLength();
-
+		System.out.println("HOW LONG: "+len);
 		LinkedList<User> ul = new LinkedList<>();
 
 		if( (tree(me, from, len)) >= Math.pow(log2(len), 2) ){
@@ -77,7 +80,7 @@ public class TreeMulticast extends Multicast implements Serializable, Observer {
 		if(tMsg.getUser(first(me, from, len)) != null && me != first(me,from,len) ){
 
 			if(tree(me, from, len) <  tree( first(me,from,len), from, len)) {
-
+				System.out.println("WHYYYY: "+first(me,from,len));
 				ul.add(tMsg.getUser(first(me, from, len)));
 			}
 		}
@@ -85,7 +88,7 @@ public class TreeMulticast extends Multicast implements Serializable, Observer {
 		if(tMsg.getUser(first(me, from, len)) != null && me != second(me,from,len) ){
 
 			if(tree(me, from, len) <  tree( second(me, from, len), from, len)) {
-
+				System.out.println("WHYYYY second : "+second(me,from,len));
 				ul.add(tMsg.getUser(second(me, from, len)));
 			}
 		}
