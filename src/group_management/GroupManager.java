@@ -97,7 +97,12 @@ public class GroupManager extends Observable implements Observer {
 					this.notifyObservers(msg);
 					break;
 				case LEAVE:
-					//TODO
+					System.err.println("Leave");
+					User u = (User) msg.getMsg();
+					if (u.equals(self)) {
+						System.err.println("Leave self!");
+						groups.remove(msg.getGroupName());
+					}
 					this.setChanged();
 					this.notifyObservers(msg);
 					break;
