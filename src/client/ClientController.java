@@ -114,7 +114,6 @@ public class ClientController implements Observer {
 			if (Test.autoCS.length() > 0) {
 				msg += " with auto join of group '"+Test.autoCS+"'";
 			}
-			System.out.println(msg);
 			setTextInChat(TimeFormat.getTimestamp(),"System",msg);
 			groupManager.askForGroups(Test.autoNSName, Test.autoNSPort);
 		}
@@ -125,7 +124,6 @@ public class ClientController implements Observer {
 	public ClientController() {
 	}
 	private void createDebugger() {
-		System.out.println("Create debugger");
 		Parent root;
 		try {
 			root = FXMLLoader.load(new File("src/debugger/debugger.fxml").toURL());
@@ -228,10 +226,8 @@ public class ClientController implements Observer {
 	@Override
 	public void update(Observable o, Object arg) {
 		if (arg == null) {
-			System.err.println("CLIENTCONTROLLER, update, arg is null?");
 			return;
 		}
-		System.out.println("ClientControl update:"+arg.getClass().toString());
 		if (arg instanceof Message) {
 			Message msg = (Message) arg;
 			switch (msg.getType()) {
@@ -246,7 +242,7 @@ public class ClientController implements Observer {
 				case JOIN:
 					setTextInChat(TimeFormat.getTimestamp(), "NameServer", "User "+msg.getFrom().getNickname() + " connected to "+msg.getGroupName());
 				default:
-					System.err.println("ClientControl UPDATE - Got "+msg);
+					//Prob INTERNAL
 					break;
 			}
 

@@ -69,17 +69,10 @@ public class MessageCounter {
 			case "RECEIVEAFTER":
 				current.receiveAfter += 1;
 				break;
-
 			default:
-				System.err.println("THIS SHOULD NEVER HAPPEN!");
 				break;
 		}
 
-
-
-
-
-		System.err.println("COUNTS current:"+counts.size());
 	}
 
 }

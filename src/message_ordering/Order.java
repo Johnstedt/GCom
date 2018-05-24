@@ -5,6 +5,7 @@ import communication.Multicast;
 import group_management.MessageOrderingType;
 import group_management.User;
 import message.Message;
+import message.MessageType;
 
 import java.io.Serializable;
 import java.util.Observable;
@@ -37,8 +38,13 @@ public abstract class Order extends Observable implements Serializable, Observer
 	public void update(Observable observable, Object o) {
 
 		if(o instanceof Message) {
-			Message m = (Message) o;
-			queueAdd(m);
+			if (!((Message)o).getType().equals(MessageType.INTERNAL)) {
+				Message m = (Message) o;
+				queueAdd(m);
+			} else {
+				this.setChanged();
+				this.notifyObservers(o);
+			}
 		}
 	}
 

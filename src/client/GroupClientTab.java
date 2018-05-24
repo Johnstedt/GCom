@@ -133,8 +133,16 @@ public class GroupClientTab implements Observer{
 				setTextInChat(TimeFormat.getTimestamp(), "System", msg.getMsg()+ " left the group.");
 				Platform.runLater(()->userList.setItems(FXCollections.observableArrayList(group.getUsers())));
 				break;
+			case INTERNAL:
+				if (msg.getMsg() instanceof User) {
+					if (userList.getItems().contains(msg.getMsg())) {
+						setTextInChat(TimeFormat.getTimestamp(), "System", msg.getMsg() + " left the group.");
+						Platform.runLater(()->userList.setItems(FXCollections.observableArrayList(group.getUsers())));
+					}
+
+				}
+				break;
 			default:
-				System.err.println("GroupClientTab - UNHANDLED msg type:"+msg.getType());
 				break;
 			}
 		} else {

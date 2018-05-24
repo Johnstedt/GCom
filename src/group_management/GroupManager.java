@@ -102,10 +102,8 @@ public class GroupManager extends Observable implements Observer {
 					this.notifyObservers(msg);
 					break;
 				case LEAVE:
-					System.err.println("Leave");
 					User u = (User) msg.getMsg();
 					if (u.equals(self)) {
-						System.err.println("Leave self!");
 						groups.remove(msg.getGroupName());
 					}
 					this.setChanged();
@@ -116,7 +114,7 @@ public class GroupManager extends Observable implements Observer {
 					this.notifyObservers(msg);
 					break;
 				default:
-					System.err.println("Groupmanager.update() switch default why?"+msg.getType());
+					//Prob TEXT
 					break;
 			}
 		}
@@ -156,10 +154,7 @@ public class GroupManager extends Observable implements Observer {
 			updateReceiverToGroup(g);
 			g.addObserver(this);
 			g.join(this.self);
-		} else {
-			System.err.println("GM - addgroup - already in group:"+g.getGroupName());
 		}
-
 	}
 
 	public boolean alreadyInGroup(String s) {

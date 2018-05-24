@@ -38,17 +38,14 @@ public class CommunicationQueues {
 	}
 
 	private void runToSender() {
-		System.out.println("DEBUGGER - RUNTOSENDER START");
 		while (!Thread.interrupted()) {
 			try {
 				MessageDebug msgDebug = new MessageDebug(toSenderBeforeDebugger.take());
 				counts.add(msgDebug, "SENDBEFORE");
 				msgDebug.toSenderIncrementBefore();
 				if (!holdToSender.get()) {
-					System.out.println("no debugging");
 					sendToSenderAfterDebug(msgDebug);
 				} else {
-					System.out.println("do debugging");
 					toSenderInDebugger.add(msgDebug);
 				}
 				refreshLists();
@@ -92,7 +89,6 @@ public class CommunicationQueues {
 
 
 	void setHoldToSender(boolean holdToSender) {
-		System.err.println("Change holdToSender"+holdToSender);
 		this.holdToSender.set(holdToSender);
 	}
 

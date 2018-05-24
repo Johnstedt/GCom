@@ -5,7 +5,6 @@ import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.beans.binding.Bindings;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
@@ -120,9 +119,6 @@ public class DebuggerController extends Application{
 		FlowPane recFlowPane = (FlowPane) recAnchorPane.lookup("#recFlowPane");
 		sendFlowPane.applyCss();
 		recFlowPane.applyCss();
-		for (Node n : recFlowPane.getChildren()) {
-			System.err.println("recFlowPane -> "+n.getId());
-		}
 
 		ListView<MessageDebug> recMsgList = (ListView<MessageDebug>) recFlowPane.lookup("#recListAtDebug");
 		ListView<MessageDebug> sendMsgList = (ListView<MessageDebug>) sendFlowPane.lookup("#sendListAtDebug");

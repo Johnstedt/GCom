@@ -69,7 +69,6 @@ public class TwoFieldDialog {
 		Optional<Pair<String, String>> result = dialog.showAndWait();
 
 		result.ifPresent(input -> {
-			System.out.println("field1=" + input.getKey() + ", field2=" + input.getValue());
 			this.val1 = input.getKey();
 			this.val2 = input.getValue();
 		});

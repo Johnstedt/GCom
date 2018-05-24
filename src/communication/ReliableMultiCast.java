@@ -79,8 +79,6 @@ public class ReliableMultiCast extends Multicast implements Serializable, Observ
 				}
 			}
 			super.fromReceiverBeforeDebugger.add(msg);
-		} else {
-			System.err.println("Got some update in communication: "+o.getClass());
 		}
 	}
 }

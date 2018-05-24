@@ -75,13 +75,10 @@ function zingo() {
     sleep 1
     echo "ZINGO"
     echo "This will create 3 clients in one group using FIFO and Unreliable."
-    pause
     eval $javaCMD $PORT A True CREATE ZingoGruppen FIFO UM &
     sleep 2
-    pause
     eval $javaCMD FIND B True localhost $PORT ZingoGruppen &
     sleep 1
-    pause
     eval $javaCMD FIND C True localhost $PORT ZingoGruppen &
     pause
     killalljava
@@ -95,22 +92,19 @@ function coconut() {
     pause
     eval $javaCMD $PORT A True CREATE GENDERISTIC UO TREE &
     sleep 2
-    pause
     eval $javaCMD FIND B True localhost $PORT GENDERISTIC &
     sleep 1
-    pause
     eval $javaCMD FIND C True localhost $PORT GENDERISTIC &
-    pause
+    sleep 1
     eval $javaCMD FIND D True localhost $PORT GENDERISTIC &
-    pause
+    sleep 1
     eval $javaCMD FIND E True localhost $PORT GENDERISTIC &
     pause
     killalljava
 }
 
-
-pepsi
 cola
+pepsi
 #zingo
 coconut
 

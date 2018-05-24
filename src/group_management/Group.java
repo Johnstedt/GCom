@@ -39,8 +39,14 @@ public class Group extends Observable implements Observer, Serializable {
 				case LEAVE:
 					users.remove((User)msg.getMsg());
 					break;
+				case INTERNAL:
+					if (msg.getMsg() instanceof User) {
+						if (!users.contains(msg.getMsg())) {
+							return;
+						}
+						users.remove((User)msg.getMsg());
+					}
 			}
-			System.out.println(msg.getFrom().getNickname() + ": "+ msg.getMsg());
 		}
 		setChanged();
 		notifyObservers(o);

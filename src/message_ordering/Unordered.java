@@ -3,6 +3,7 @@ package message_ordering;
 import clock.Vector;
 import communication.Multicast;
 import message.Message;
+import message.MessageType;
 
 import static group_management.MessageOrderingType.UNORDERED;
 
@@ -15,11 +16,11 @@ public class Unordered extends Order {
 
 	@Override
 	public void send(Message msg) {
-
 		Vector v = null;
-		this.vectorClock.increment(msg.getFrom());
+		if(!msg.getType().equals(MessageType.INTERNAL)) {
+			this.vectorClock.increment(msg.getFrom());
+		}
 		v = (Vector) this.vectorClock.getClone();
-
 		msg.setClock(v);
 		communicator.send(msg);
 	}

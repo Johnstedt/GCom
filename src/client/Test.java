@@ -87,7 +87,6 @@ public class Test extends Application {
 				} catch (InterruptedException ignore) {}
 			}
 		}
-		System.err.println("got ip" + ipaddress.getHostName());
 		username = "U:"+ipaddress.getHostName()+":"+port;
 
 			if (args.length >= 2 && !args[1].equals("GENERIC")) {
@@ -147,7 +146,6 @@ public class Test extends Application {
 				}
 			}
 		}
-		System.err.println("All arguments read");
 		launch(args);
 	}
 

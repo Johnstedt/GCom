@@ -38,7 +38,11 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 		while (!Thread.interrupted()) {
 			try {
 				Message msg = fromReceiverAfterDebugger.take();
-				receiveFromReceiver(msg);
+				if (!msg.getType().equals(MessageType.INTERNAL)) {
+					receiveFromReceiver(msg);
+				} else {
+					toGroupManagement(msg);
+				}
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -47,21 +51,19 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 
 	private void fromDebuggerToSender() {
 		while (!Thread.interrupted()) {
+			Message msg = null;
 			try {
-				Message msg = toSenderAfterDebugger.take();
+				msg = toSenderAfterDebugger.take();
 				sender.send(msg);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
+
 		}
 	}
 
-	private void setObservableReceiver(Observable observableReceiver) {
-		this.deleteObservers();
-		observableReceiver.addObserver(this);
-	}
 
-	public void removeStubs() {
+	public final void removeStubs() {
 		this.sender.remove();
 	}
 
@@ -75,8 +77,6 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 		if (o instanceof Message) {
 			Message msg = (Message) o;
 			fromReceiverBeforeDebugger.add(msg);
-		} else {
-			System.err.println("Got some update in communication: "+o.getClass());
 		}
 	}
 
