@@ -130,7 +130,7 @@ public class ClientController implements Observer {
 			Stage stage = new Stage();
 			DebuggerController.getDebugger().start(stage);
 			stage.setTitle(Test.ipaddress+":"+Test.port);
-			stage.setScene(new Scene(root, 450, 450));
+			stage.setScene(new Scene(root, 420, 710));
 			Rectangle2D primScreenBounds = Screen.getPrimary().getVisualBounds();
 			stage.setX((primScreenBounds.getWidth() - stage.getWidth()) / 4);
 			stage.setY((primScreenBounds.getHeight() - stage.getHeight()) / 4);

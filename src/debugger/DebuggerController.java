@@ -269,16 +269,18 @@ public class DebuggerController extends Application{
 						subMenu_s1.setOnAction(actionEvent -> {
 							//The following code sequence is stupid, but, 'su' will be
 							// incorrect ptr since su is not final.
-							String s = ((MenuItem) actionEvent.getTarget()).getText();
-							s = s.replace("Remove ", "");
-							for (Object u : new ArrayList(cell.getItem().msg.getSendTo())) {
-								User u2 = (User) u;
-								if (u2.getNickname().equals(s)) {
-									cell.getItem().msg.getSendTo().remove(u2);
-									subMenu_s1.getItems().remove(((MenuItem) actionEvent.getTarget()));
-									cq.refreshLists();
+							try {
+								String s = ((MenuItem) actionEvent.getTarget()).getText();
+								s = s.replace("Remove ", "");
+								for (Object u : new ArrayList(cell.getItem().msg.getSendTo())) {
+									User u2 = (User) u;
+									if (u2.getNickname().equals(s)) {
+										cell.getItem().msg.getSendTo().remove(u2);
+										subMenu_s1.getItems().remove(((MenuItem) actionEvent.getTarget()));
+										cq.refreshLists();
+									}
 								}
-							}
+							} catch (NullPointerException ignore) {}
 						});
 						subMenu_s1.getItems().add(subMenuItem1);
 					}

@@ -75,8 +75,8 @@ function zingo() {
     sleep 1
     echo "ZINGO"
     echo "This will create 3 clients in one group using FIFO and Unreliable."
-    eval $javaCMD $PORT A True CREATE ZingoGruppen FIFO UM &
     sleep 2
+    eval $javaCMD $PORT A True CREATE ZingoGruppen FIFO UM &
     eval $javaCMD FIND B True localhost $PORT ZingoGruppen &
     sleep 1
     eval $javaCMD FIND C True localhost $PORT ZingoGruppen &
