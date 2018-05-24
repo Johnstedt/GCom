@@ -5,6 +5,7 @@ import message.Message;
 import message.TMessage;
 
 import java.io.Serializable;
+import java.rmi.ConnectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -71,7 +72,11 @@ public class Sender implements Serializable{
 			    } catch (CloneNotSupportedException e) {
 				    e.printStackTrace();
 			    }
+			    try {
 	    		ro.transferMessage(msg);
+			    } catch (ConnectException e) {
+				    System.err.println("We refuse connection, "+e.getMessage());
+			    }
 		    }
 	    } catch (RemoteException e) {
 		    e.printStackTrace();
