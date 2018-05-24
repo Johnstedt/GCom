@@ -19,6 +19,7 @@ public class GroupManager extends Observable implements Observer {
 	private User self;
 	private HashMap<String, Group> groups;
 	private Receiver receiver;
+	private boolean haveNameServer = true;
 
 	public GroupManager(User u){
 		this.self = u;
@@ -83,9 +84,13 @@ public class GroupManager extends Observable implements Observer {
 			switch (msg.getType()) {
 				case ASK_GROUPS:
 					Group g = groups.get(msg.getGroupName());
-					List<User> sendTo = new LinkedList();
-					sendTo.add(msg.getFrom());
-					g.sendGroups(this.groups, self, sendTo);
+					if (haveNameServer) {
+						List<User> sendTo = new LinkedList();
+						sendTo.add(msg.getFrom());
+						g.sendGroups(this.groups, self, sendTo);
+					}
+					g.leave(msg.getFrom());
+
 					break;
 				case SEND_GROUPS:
 					this.setChanged();
@@ -170,5 +175,9 @@ public class GroupManager extends Observable implements Observer {
 			groups.remove(groupname);
 		}
 
+	}
+
+	public void haveActiveNameServer(boolean b) {
+		haveNameServer = b;
 	}
 }

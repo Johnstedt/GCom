@@ -100,6 +100,7 @@ public class ClientController implements Observer {
 		setTextInChat(TimeFormat.getTimestamp(),"System","Welcome "+Test.username+"");
 		setTextInChat(TimeFormat.getTimestamp(),"System","Currently served at "+ ip+":"+String.valueOf(Test.port)+" ("+host+")");
 		createDebugger();
+		isNameServer(null);
 		groupManager.createGroup("init", MessageOrderingType.UNORDERED, CommunicationType.UNRELIABLE_MULTICAST);
 		if (Test.newGroup.length() > 0) {
 			String name = Test.newGroup;
@@ -323,8 +324,10 @@ public class ClientController implements Observer {
 	public void isNameServer(ActionEvent actionEvent) {
 		if (isNameServer.isSelected()) {
 			setTextInChat(TimeFormat.getTimestamp(),"System","Initialize NameServer");
+			groupManager.haveActiveNameServer(true);
 		} else {
 			setTextInChat(TimeFormat.getTimestamp(),"System","Closing down NameServer");
+			groupManager.haveActiveNameServer(false);
 		}
 	}
 
