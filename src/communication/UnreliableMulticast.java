@@ -25,12 +25,12 @@ public class UnreliableMulticast extends Multicast implements Serializable, Obse
 	}
 
 	@Override
-	void receiveFromReceiver(Message msg) {
+	protected void receiveFromReceiver(Message msg) {
 		toGroupManagement(msg);
 	}
 
 	@Override
-	void sendToSender(Message msg) {
+	protected void sendToSender(Message msg) {
 		toSender(msg);
 	}
 }

@@ -14,13 +14,13 @@ import java.util.*;
  * Multicast received messages first time it's received.
  * Delivers the second time it receives the message and ignores after.
  */
-public class ReliableMultiCast extends Multicast implements Serializable, Observer {
+public class ReliableMulticast extends Multicast implements Serializable, Observer {
 
 	private List<Vector> clocks;
 	private List<Vector> haveDelivered;
 	private List<User> group;
 
-	public ReliableMultiCast(User u){
+	public ReliableMulticast(User u){
 		super(u, CommunicationType.RELIABLE_MULTICAST);
 		this.clocks = new LinkedList<>();
 		this.haveDelivered = new LinkedList<>();
@@ -38,7 +38,7 @@ public class ReliableMultiCast extends Multicast implements Serializable, Observ
 	}
 
 	@Override
-	void receiveFromReceiver(Message msg) {
+	protected void receiveFromReceiver(Message msg) {
 		Boolean shouldSend = true;
 		Boolean shouldDeliver = true;
 
@@ -64,7 +64,7 @@ public class ReliableMultiCast extends Multicast implements Serializable, Observ
 	}
 
 	@Override
-	void sendToSender(Message msg) {
+	protected void sendToSender(Message msg) {
 		msg.setSendTo(new ArrayList<>(this.group));
 		toSender(msg);
 	}

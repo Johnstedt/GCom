@@ -25,7 +25,7 @@ public class TreeMulticast extends Multicast implements Serializable, Observer {
 	}
 
 	@Override
-	void sendToSender(Message msg) {
+	protected void sendToSender(Message msg) {
 		toSender(msg);
 	}
 
@@ -41,7 +41,7 @@ public class TreeMulticast extends Multicast implements Serializable, Observer {
 
 
 	@Override
-	void receiveFromReceiver(Message msg) {
+	protected void receiveFromReceiver(Message msg) {
 
 		if(msg instanceof TMessage) {
 

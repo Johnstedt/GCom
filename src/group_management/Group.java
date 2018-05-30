@@ -1,7 +1,6 @@
 package group_management;
 
 import communication.Multicast;
-import message.InternalMessage;
 import message.Message;
 import message_ordering.Order;
 
@@ -62,20 +61,11 @@ public class Group extends Observable implements Observer, Serializable {
 		this.order.send(msg);
 	}
 
-	public void sendGroups(HashMap<String, Group> hm, User self, List<User> from){
-		Message msg = new Message(SEND_GROUPS, groupName, self, from, hm);
-		this.order.send(msg);
-	}
 
 	public void addUser(User newUser) {
 		if (!users.contains(newUser)) {
 			users.add(newUser);
 		}
-	}
-
-	public void askGroups(User self, List<User> to) {
-		Message msg = new Message(ASK_GROUPS, groupName, self, to, null);
-		this.order.send(msg);
 	}
 
 	public void join(User u) {
@@ -118,17 +108,12 @@ public class Group extends Observable implements Observer, Serializable {
 		this.order.removeStubs();
 	}
 
-	public void setNewReceiver(User self, Observable newReceiver) {
-		List<User> to = new LinkedList<>();
-		to.add(self);
-		InternalMessage im = new InternalMessage(newReceiver, order.orderType, comm.comType);
-		Message msg = new Message(INTERNAL, groupName, self, to, im);
-		send(msg);
-	}
-
 	public Observer getComm() {
 		comm.addObserver(this.order);
 		return comm;
+	}
+	public CommunicationType getCT() {
+		return comm.comType;
 	}
 
 	public void leave(User self) {

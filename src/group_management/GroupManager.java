@@ -2,9 +2,10 @@ package group_management;
 
 import client.Test;
 import communication.Multicast;
-import communication.ReliableMultiCast;
+import communication.ReliableMulticast;
 import communication.TreeMulticast;
 import communication.UnreliableMulticast;
+import message.InternalMessage;
 import message.Message;
 import message_ordering.Causal;
 import message_ordering.Fifo;
@@ -13,6 +14,10 @@ import message_ordering.Unordered;
 import rmi.Receiver;
 
 import java.util.*;
+
+import static message.MessageType.ASK_GROUPS;
+import static message.MessageType.INTERNAL;
+import static message.MessageType.SEND_GROUPS;
 
 public class GroupManager extends Observable implements Observer {
 
@@ -41,7 +46,7 @@ public class GroupManager extends Observable implements Observer {
 				multicast = new UnreliableMulticast(u);
 				break;
 			case RELIABLE_MULTICAST:
-				multicast = new ReliableMultiCast(u);
+				multicast = new ReliableMulticast(u);
 				break;
 			case TREE_MULTICAST:
 				multicast = new TreeMulticast(u);
@@ -87,7 +92,8 @@ public class GroupManager extends Observable implements Observer {
 					if (haveNameServer) {
 						List<User> sendTo = new LinkedList();
 						sendTo.add(msg.getFrom());
-						g.sendGroups(this.groups, self, sendTo);
+						Message msg2 = new Message(SEND_GROUPS, g.getGroupName(), self, sendTo, this.groups);
+						g.send(msg2);
 					}
 					g.leave(msg.getFrom());
 
@@ -122,11 +128,14 @@ public class GroupManager extends Observable implements Observer {
 
 	private void updateReceiverToGroup(Group g) {
 		receiver.addOrder(g.getComm(), g.getGroupName());
-		g.setNewReceiver(self, receiver);
+		List<User> to = new LinkedList<>();
+		to.add(self);
+		InternalMessage im = new InternalMessage(receiver, g.getOrder().orderType, g.getCT());
+		Message msg = new Message(INTERNAL, g.getGroupName(), self, to, im);
+		send(msg);
 	}
 
 	private void addUserToGroup(String groupName, User u){
-
 		groups.get(groupName).addUser(u);
 	}
 
@@ -140,7 +149,9 @@ public class GroupManager extends Observable implements Observer {
 		addUserToGroup("init", otherUser);
 		List<User> userList = new LinkedList<>();
 		userList.add(otherUser);
-		groups.get("init").askGroups(self, userList);
+		Group init = groups.get("init");
+		Message msg = new Message(ASK_GROUPS, init.getGroupName(), self, userList, null);
+		init.send(msg);
 	}
 
 	public User getSelf() {
@@ -172,7 +183,7 @@ public class GroupManager extends Observable implements Observer {
 
 	}
 
-	public void haveActiveNameServer(boolean b) {
+	public void setActiveNameServer(boolean b) {
 		haveNameServer = b;
 	}
 }

@@ -320,10 +320,10 @@ public class ClientController implements Observer {
 	public void isNameServer(ActionEvent actionEvent) {
 		if (isNameServer.isSelected()) {
 			setTextInChat(TimeFormat.getTimestamp(),"System","Initialize NameServer");
-			groupManager.haveActiveNameServer(true);
+			groupManager.setActiveNameServer(true);
 		} else {
 			setTextInChat(TimeFormat.getTimestamp(),"System","Closing down NameServer");
-			groupManager.haveActiveNameServer(false);
+			groupManager.setActiveNameServer(false);
 		}
 	}
 

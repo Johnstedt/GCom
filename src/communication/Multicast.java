@@ -16,11 +16,11 @@ import java.util.concurrent.LinkedBlockingQueue;
 
 public abstract class Multicast extends Observable implements Observer, Serializable {
 
-	private Sender sender;
+	protected Sender sender;
 	protected BlockingQueue<Message> fromReceiverBeforeDebugger;
-	private BlockingQueue<Message> fromReceiverAfterDebugger;
-	private BlockingQueue<Message> toSenderBeforeDebugger;
-	private BlockingQueue<Message> toSenderAfterDebugger;
+	protected BlockingQueue<Message> fromReceiverAfterDebugger;
+	protected BlockingQueue<Message> toSenderBeforeDebugger;
+	protected BlockingQueue<Message> toSenderAfterDebugger;
 	public CommunicationType comType;
 	protected User self;
 
@@ -92,7 +92,7 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 	 * @param msg The message received.
 	 * NOTE: call toGroupManagement to send to user.
 	 */
-	abstract void receiveFromReceiver(Message msg);
+	protected abstract void receiveFromReceiver(Message msg);
 
 	/**
 	 * Subclass method, will send message to Sender,
@@ -100,7 +100,7 @@ public abstract class Multicast extends Observable implements Observer, Serializ
 	 * @param msg
 	 * NOTE: Call toSender when handled the message.
 	 */
-	abstract void sendToSender(Message msg);
+	protected abstract void sendToSender(Message msg);
 
 
 	protected final void toSender(Message msg) {
